@@ -1,5 +1,5 @@
 {
-    "name": "Boilerplate Card",
-    "render_readme": true,
-    "filename": "boilerplate-card.js"
+  "name": "Compass Card",
+  "render_readme": true,
+  "filename": "compass-card.js"
 }

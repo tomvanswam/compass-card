@@ -1,0 +1,9 @@
+{
+  "common": {
+    "version": "Versie",
+    "description": "Toon een kompas met een pijl wijzend naar de waarde van de entity",
+    "invalid_configuration": "Foutieve configuratie",
+    "no_entity": "Entity niet geconfigureerd",
+    "offset_not_a_number": "Direction offset is geen nummer"
+  }
+}
