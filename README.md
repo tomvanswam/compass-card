@@ -24,7 +24,7 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
 ## Lovelace Example
 
-![Lovelace Examples](https://raw.githubusercontent.com/tomvanswam/compass-card/dev/compass-card.png)
+![Lovelace Examples](https://github.com/tomvanswam/compass-card/blob/master/docs/compass-card.png?raw=true)
 
 ## Using the card
 
