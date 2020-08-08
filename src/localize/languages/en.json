@@ -1,7 +1,9 @@
 {
   "common": {
     "version": "Version",
+    "description": "Show a compass with an indicator in the direction of the entity's value",
     "invalid_configuration": "Invalid configuration",
-    "show_warning": "Show Warning"
+    "no_entity": "Entity not configured",
+    "offset_not_a_number": "Direction offset is not a number"
   }
 }

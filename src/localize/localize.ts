@@ -1,16 +1,15 @@
 import * as en from './languages/en.json';
-import * as nb from './languages/nb.json';
+import * as nl from './languages/nl.json';
 
-var languages: any = {
+const languages: any = {
   en: en,
-  nb: nb,
+  nl: nl,
 };
 
-export function localize(string: string, search: string = '', replace: string = '') {
-
+export function localize(string: string, search = '', replace = ''): string {
   const lang = (localStorage.getItem('selectedLanguage') || 'en').replace(/['"]+/g, '').replace('-', '_');
 
-  var translated: string;
+  let translated: string;
 
   try {
     translated = string.split('.').reduce((o, i) => o[i], languages[lang]);
