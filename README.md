@@ -5,22 +5,23 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 [![GitHub Release][releases-shield]][releases]
 [![License][license-shield]](LICENSE.md)
 
-<!-- [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs) -->
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 
 ![Project Maintenance][maintenance-shield]
 [![GitHub Activity][commits-shield]][commits]
 
-<!-- ## HACS installation
+## HACS installation
 
-1. Go into [HACS](https://hacs.xyz/) (Home Assistant Community Store) on your Home Assistant instance
-2. Press menu icon and select **Custom repositories**
-3. Add new repository
+1. Go to [HACS](https://hacs.xyz/) (Home Assistant Community Store) on your Home Assistant instance
+1. Select `Frontend`
+1. Press menu icon and select `Custom repositories`
+1. Add new repository
    <pre>
    url: https://github.com/tomvanswam/compass-card
    category: Lovelace
    </pre>
-4. Force refresh the Home Assistant page (<kbd>Ctrl</kbd> + <kbd>F5</kbd>)
-5. Add compass-card to your page -->
+1. Force refresh the Home Assistant page (<kbd>Ctrl</kbd> + <kbd>F5</kbd>)
+1. Add compass-card to your page
 
 ## Lovelace Example
 
@@ -44,14 +45,13 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 | Name             | Type   | Requirement  | Description                                                                                                                                                                                                    | Default |
 | ---------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | type             | string | **Required** | `custom:compass-card`                                                                                                                                                                                          |
-| name             | string | **Optional** | Card header                                                                                                                                                                                                    | ``      |
-| entity           | string | **Required** | Entity that is used to draw the indicator in the compass (with state in 0-360° or in English direction abbreviations (e.g N or WSW))). Indicator direction is full range (not only the 16 cardinal directions) | `none`  |
-| secondary_entity | string | **Optional** | Value to show under the direction in compass                                                                                                                                                                   | `none`  |
+| name             | string | **Optional** | Card header                                                                                                                                                                                                    |         |
+| entity           | sensor | **Required** | Entity that is used to draw the indicator in the compass (with state in 0-360° or in English direction abbreviations (e.g N or WSW))). Indicator direction is full range (not only the 16 cardinal directions) | `none`  |
+| secondary_entity | sensor | **Optional** | Entity to show under the direction in compass                                                                                                                                                                  | `none`  |
 | direction_offset | number | **Optional** | Value to offset the indicator display with (e.g. to create a relative north)                                                                                                                                   | `0`     |
 
 ## Wish/Todo list
 
-- Implement Github actions, for correct HACS usage
 - Additional entities to show on circle
 - Custom styled indicator (per entity)
 - Background image
