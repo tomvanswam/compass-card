@@ -45,7 +45,7 @@ export class CompassCard extends LitElement {
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
-      throw new Error(localize('common.invalidconfiguration'));
+      throw new Error(localize('common.invalid_configuration'));
     }
 
     if (config.test_gui) {
@@ -75,24 +75,18 @@ export class CompassCard extends LitElement {
         </ha-card>
       `;
     }
-    if (this.config.direction_offset && Number.isNaN(Number(this.config.direction_offset))) {
-      return html`
-        <ha-card style="background-color: var(--error-color);">
-          <div class="warning">
-            ${localize('common.offset_not_a_number')}
-          </div>
-        </ha-card>
-      `;
+    let direction_offset = 0;
+    if (!Number.isNaN(Number(this.config.direction_offset))) {
+      direction_offset =
+        +this.config.direction_offset < 0
+          ? +this.config.direction_offset + (Math.abs(Math.ceil(+this.config.direction_offset / 360)) + 1) * 360
+          : +this.config.direction_offset;
     }
 
     const direction: HassEntity = this.hass.states[this.config.entity];
     const secondary_entity: HassEntity | undefined = this.config.secondary_entity
       ? this.hass.states[this.config.secondary_entity]
       : undefined;
-    const direction_offset =
-      +this.config.direction_offset < 0
-        ? +this.config.direction_offset + (Math.abs(Math.ceil(+this.config.direction_offset / 360)) + 1) * 360
-        : +this.config.direction_offset;
 
     return html`
       <ha-card

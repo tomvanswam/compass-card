@@ -1,4 +1,4 @@
-export const CARD_VERSION = '0.0.1';
+export const CARD_VERSION = '0.0.2';
 export const FONT_SIZE = 14;
 export const FONT_SIZE_HEADER = 14;
 export const ICONS = {
