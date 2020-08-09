@@ -45,7 +45,7 @@ export class CompassCard extends LitElement {
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
-      throw new Error(localize('common.invalidconfiguration'));
+      throw new Error(localize('common.invalid_configuration'));
     }
 
     if (config.test_gui) {
