@@ -9,7 +9,7 @@ jobs:
     name: Prepare release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       # Build
       - name: Build the file
@@ -19,8 +19,8 @@ jobs:
           npm run build
 
       # Upload build file to the releas as an asset.
-      - name: Upload zip to release
-        uses: svenstaro/upload-release-action@v1-release
+      - name: Upload js to release
+        uses: svenstaro/upload-release-action@2.0.0
 
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
