@@ -14,12 +14,8 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
 1. Go to [HACS](https://hacs.xyz/) (Home Assistant Community Store) on your Home Assistant instance
 1. Select `Frontend`
-1. Press menu icon and select `Custom repositories`
-1. Add new repository
-   <pre>
-   url: https://github.com/tomvanswam/compass-card
-   category: Lovelace
-   </pre>
+1. Press add icon and search for `compass`
+1. Select Compass Card repo and install
 1. Force refresh the Home Assistant page (<kbd>Ctrl</kbd> + <kbd>F5</kbd>)
 1. Add compass-card to your page
 
