@@ -18,7 +18,9 @@
     "runem.lit-plugin",
     "auchenberg.vscode-browser-preview",
     "davidanson.vscode-markdownlint",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "lukas-tr.materialdesignicons-intellisense",
+    "oderwat.indent-rainbow"
   ],
   "settings": {
     "files.eol": "\n",
