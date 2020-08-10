@@ -1,6 +1,6 @@
 import { localize } from './localize/localize';
 
-export const CARD_VERSION = '0.0.3';
+export const CARD_VERSION = '0.0.4';
 export const FONT_SIZE = 14;
 export const FONT_SIZE_HEADER = 14;
 export const ICONS = {
