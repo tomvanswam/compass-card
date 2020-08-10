@@ -1,5 +1,5 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, PropertyValues } from 'lit-element';
-import { HomeAssistant, LovelaceCardEditor, getLovelace, hasConfigOrEntityChanged } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceCardEditor, getLovelace } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './types';
 
@@ -19,7 +19,7 @@ console.info(
 
 declare global {
   interface Window {
-    customCards: Array<{ type: string; name: string; description: string }>;
+    customCards: Array<{ type: string; name: string; description: string; preview: boolean }>;
   }
 }
 
@@ -27,6 +27,7 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'compass-card',
   name: 'Compass Card',
+  preview: true,
   description: localize('common.description'),
 });
 
@@ -37,11 +38,16 @@ export class CompassCard extends LitElement {
   }
 
   public static getStubConfig(): Record<string, unknown> {
-    return {};
+    return {
+      entity: '',
+      secondary_entity: '',
+      direction_offset: 0,
+      name: 'Compass Card',
+    };
   }
 
   @property() public hass!: HomeAssistant;
-  @property() private config!: CompassCardConfig;
+  @property() private _config!: CompassCardConfig;
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
@@ -52,49 +58,58 @@ export class CompassCard extends LitElement {
       getLovelace().setEditMode(true);
     }
 
-    this.config = {
+    this._config = {
       ...config,
     };
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    return hasConfigOrEntityChanged(this, changedProps, false);
+    if (changedProps.has('_config')) {
+      return true;
+    }
+
+    if (this._config.entity) {
+      const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
+      if (oldHass) {
+        if (oldHass.states[this._config.entity] !== this.hass.states[this._config.entity]) {
+          return true;
+        }
+      }
+    }
+
+    if (this._config.secondary_entity) {
+      const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
+      if (oldHass) {
+        if (oldHass.states[this._config.secondary_entity] !== this.hass.states[this._config.secondary_entity]) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   protected render(): TemplateResult | void {
-    if (!this.config || !this.hass) {
+    if (!this._config || !this.hass) {
       return html``;
     }
 
-    if (!this.config.entity) {
-      return html`
-        <ha-card style="background-color: var(--error-color);">
-          <div class="warning">
-            ${localize('common.no_entity')}
-          </div>
-        </ha-card>
-      `;
-    }
     let direction_offset = 0;
-    if (!Number.isNaN(Number(this.config.direction_offset))) {
+    if (!Number.isNaN(Number(this._config.direction_offset))) {
       direction_offset =
-        +this.config.direction_offset < 0
-          ? +this.config.direction_offset + (Math.abs(Math.ceil(+this.config.direction_offset / 360)) + 1) * 360
-          : +this.config.direction_offset;
+        +this._config.direction_offset < 0
+          ? +this._config.direction_offset + (Math.abs(Math.ceil(+this._config.direction_offset / 360)) + 1) * 360
+          : +this._config.direction_offset;
     }
 
-    const direction: HassEntity = this.hass.states[this.config.entity];
-    const secondary_entity: HassEntity | undefined = this.config.secondary_entity
-      ? this.hass.states[this.config.secondary_entity]
+    const direction: HassEntity = this.hass.states[this._config.entity];
+    const secondary_entity: HassEntity | undefined = this._config.secondary_entity
+      ? this.hass.states[this._config.secondary_entity]
       : undefined;
 
+    const label = direction ? direction.attributes.friendly_name : this._config.entity;
+
     return html`
-      <ha-card
-        tabindex="0"
-        aria-label=${`Compass: ${direction.attributes.friendly_name || this.config.entity}`}
-        class="flex"
-        style="font-size: 14px;"
-      >
+      <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex" style="font-size: 14px;">
         ${this.renderHeader(direction)}${this.renderCompass(direction, secondary_entity, direction_offset)}
       </ha-card>
     `;
@@ -107,7 +122,7 @@ export class CompassCard extends LitElement {
   ): TemplateResult {
     // default to North
     let degrees = 0;
-    let abbreviation = 'N.A.';
+    let abbreviation = localize('common.invalid');
 
     /* The direction entity may either return degrees or a named abbreviations, thus
            determine the degrees and abbreviation with whichever data was returned. */
@@ -171,14 +186,15 @@ export class CompassCard extends LitElement {
   }
 
   private computeName(): string | undefined {
-    if (this.config.name && this.config.name.trim().length > 0) {
-      return this.config.name;
+    if (this._config.name && this._config.name.trim().length > 0) {
+      return this._config.name;
     }
     return undefined;
   }
 
   private computeIcon(entity: HassEntity): string {
-    return entity.attributes.icon || ICONS.compass;
+    const icon = entity ? (entity.attributes.icon ? entity.attributes.icon : ICONS.compass) : ICONS.compass;
+    return icon;
   }
 
   static get styles(): CSSResult {
