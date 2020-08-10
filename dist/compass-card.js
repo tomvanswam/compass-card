@@ -782,4 +782,4 @@ found at http://polymer.github.io/PATENTS.txt
       <div class="name flex">
         <span class="ellipsis">${this.computeName()}</span>
       </div>
-    `}getCardSize(){return 4}computeName(){if(this._config.name&&this._config.name.trim().length>0)return this._config.name}computeIcon(e){return e&&e.attributes.icon?e.attributes.icon:Te}static get styles(){return xe}static get_degrees(e){return Ae[e]?Ae[e]:0}static get_compass_point(e){let t=Math.round((e+11.25)%360/22.5);return t-=1,t<0&&(t=0),console.log(t),Ve[t]}};e([Z()],ze.prototype,"hass",void 0),e([Z()],ze.prototype,"_config",void 0),ze=De=e([B("compass-card")],ze);export{ze as CompassCard};
+    `}getCardSize(){return 4}computeName(){if(this._config.name&&this._config.name.trim().length>0)return this._config.name}computeIcon(e){return e&&e.attributes.icon?e.attributes.icon:Te}static get styles(){return xe}static get_degrees(e){return Ae[e]?Ae[e]:0}static get_compass_point(e){let t=Math.round((e+11.25)%360/22.5);return t-=1,t<0&&(t=0),Ve[t]}};e([Z()],ze.prototype,"hass",void 0),e([Z()],ze.prototype,"_config",void 0),ze=De=e([B("compass-card")],ze);export{ze as CompassCard};

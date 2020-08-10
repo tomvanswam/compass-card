@@ -214,7 +214,6 @@ export class CompassCard extends LitElement {
     if (index < 0) {
       index = 0;
     }
-    console.log(index);
     return COMPASS_ABBREVIATIONS[index];
   }
 }
