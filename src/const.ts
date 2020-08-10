@@ -1,3 +1,5 @@
+import { localize } from './localize/localize';
+
 export const CARD_VERSION = '0.0.3';
 export const FONT_SIZE = 14;
 export const FONT_SIZE_HEADER = 14;
@@ -23,4 +25,4 @@ export const COMPASS_POINTS = {
   NNW: 337.5,
 };
 export const COMPASS_ABBREVIATIONS = Object.keys(COMPASS_POINTS);
-export const UNAVAILABLE = 'n.a.';
+export const UNAVAILABLE = localize('common.invalid');
