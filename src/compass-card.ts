@@ -209,10 +209,10 @@ export class CompassCard extends LitElement {
   }
 
   static get_compass_point(degrees: number): string {
-    let index = Math.round(((degrees + 11.25) % 360) / 22.5);
-    index = index - 1;
-    if (index < 0) {
-      index = 0;
+    const positiveDegrees = degrees < 0 ? degrees + (Math.abs(Math.ceil(degrees / 360)) + 1) * 360 : degrees;
+    const index = Math.round((positiveDegrees % 360) / 22.5);
+    if (index > 15) {
+      return COMPASS_ABBREVIATIONS[0];
     }
     return COMPASS_ABBREVIATIONS[index];
   }
