@@ -22,9 +22,9 @@ input_number:
   entity:
     name: Entity
     initial: 30
-    min: 0
+    min: -359.9
     max: 359.9
-    step: 0.1
+    step: 1
     unit_of_measurement: °
     icon: mdi:compass
   secondary_entity:
