@@ -2,13 +2,12 @@ homeassistant:
 
 config:
 frontend:
+  themes: !include_dir_merge_named themes
 sun:
+system_health:
 
 lovelace:
-  mode: yaml
-  resources:
-    - url: http://127.0.0.1:5000/compass-card.js
-      type: module
+  mode: storage
   dashboards:
     lovelace-yaml:
       mode: yaml
@@ -35,3 +34,13 @@ input_number:
     step: 0.1
     unit_of_measurement: km/h
     icon: mdi:weather-windy
+
+input_text:
+  dir_str:
+    name: Wind Direction Abbreviation
+    initial: "WSW"
+    icon: mdi:compass-outline
+  dir_combined:
+    name: Wind Direction Neatmo
+    initial: "E (90°)"
+    icon: mdi:compass-outline
