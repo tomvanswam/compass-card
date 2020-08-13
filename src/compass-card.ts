@@ -46,8 +46,8 @@ export class CompassCard extends LitElement {
     };
   }
 
-  @property() public hass!: HomeAssistant;
-  @property() private _config!: CompassCardConfig;
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property({ attribute: false }) private _config!: CompassCardConfig;
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
@@ -131,6 +131,10 @@ export class CompassCard extends LitElement {
     if (Number.isNaN(Number(directionStr))) {
       degrees = CompassCard.get_degrees(directionStr);
       abbreviation = directionStr;
+      if (degrees === -1) {
+        degrees = parseFloat(directionStr.replace(/[^0-9.]/g, ''));
+        abbreviation = CompassCard.get_compass_point(degrees);
+      }
     } else {
       degrees = parseFloat(directionStr);
       abbreviation = CompassCard.get_compass_point(degrees);
@@ -205,7 +209,7 @@ export class CompassCard extends LitElement {
     if (COMPASS_POINTS[abbrevation]) {
       return COMPASS_POINTS[abbrevation];
     }
-    return 0; // default to North if the abbreviation is missing
+    return -1;
   }
 
   static get_compass_point(degrees: number): string {
