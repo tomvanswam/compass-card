@@ -51,13 +51,13 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
 ## Options
 
-| Name             | Type   | Requirement  | Description                                                                                                                                                                                                    | Default |
-| ---------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| type             | string | **Required** | `custom:compass-card`                                                                                                                                                                                          |
-| name             | string | **Optional** | Card header                                                                                                                                                                                                    |         |
-| entity           | sensor | **Required** | Entity that is used to draw the indicator in the compass (with state in 0-360° or in English direction abbreviations (e.g N or WSW))). Indicator direction is full range (not only the 16 cardinal directions) | `none`  |
-| secondary_entity | sensor | **Optional** | Entity to show under the direction in compass                                                                                                                                                                  | `none`  |
-| direction_offset | number | **Optional** | Value to offset the indicator display with (e.g. to create a relative north)                                                                                                                                   | `0`     |
+| Name             | Type   | Requirement  | Description                                                                                                                                                                                                              | Default               | Supported |
+| ---------------- | ------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- | --------- |
+| type             | string | **Required** |                                                                                                                                                                                                                          | `custom:compass-card` | v0.0.1    |
+| name             | string | **Optional** | Card header                                                                                                                                                                                                              |                       | v0.0.1    |
+| entity           | sensor | **Required** | Entity that is used to draw the indicator in the compass<br />(with state in 0-360° or in English direction abbreviations (e.g N or WSW))).<br />Indicator direction is full range (not only the 16 cardinal directions) | `none`                | v0.0.1    |
+| secondary_entity | sensor | **Optional** | Entity to show under the direction in compass                                                                                                                                                                            | `none`                | v0.0.1    |
+| direction_offset | number | **Optional** | Value to offset the indicator display with.<br />(E.g. to create a relative north)                                                                                                                                       | `0`                   | v0.0.1    |
 
 ## Wish/Todo list
 
