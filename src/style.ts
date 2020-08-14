@@ -454,7 +454,7 @@ const style: CSSResult = css`
     height: 100%;
     width: 100%;
     display: block;
-    background: var(--primary-background-color);
+    background-color: rgba(0, 0, 0, 0);
     border-radius: 100%;
     border-width: 3px;
     border-color: var(--primary-color);
