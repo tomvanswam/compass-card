@@ -163,9 +163,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       .editor-entity-select {
         width: 100%;
       }
-      ha-switch {
-        padding-bottom: 8px;
-      }
     `;
   }
 }

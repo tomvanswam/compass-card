@@ -144,7 +144,7 @@ export class CompassCard extends LitElement {
     }
     return html`
       <div class="compass">
-        <div class="direction">
+        <div class="direction" style="${this.getConfigStyle(this._config.compass)}">
           <p>
             ${abbreviation}
             ${secondary
@@ -164,13 +164,9 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private renderHeader(mainEntity: HassEntity): TemplateResult | string {
-    if (this.computeName()) {
-      return html`
-        <div class="header flex" style="font-size: ${FONT_SIZE_HEADER}px;">
-          ${this.renderName()} ${this.renderIcon(mainEntity)}
-        </div>
-      `;
+  private getConfigStyle(style: CCProperties | undefined): string {
+    if (style && style.style_css) {
+      return style.style_css;
     }
     return '';
   }

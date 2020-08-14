@@ -3054,7 +3054,7 @@ function localize(string, search = '', replace = '') {
     return translated;
 }
 
-const CARD_VERSION = '0.0.5';
+const CARD_VERSION = '0.1.0';
 const ICONS = {
     compass: 'mdi:compass',
 };
