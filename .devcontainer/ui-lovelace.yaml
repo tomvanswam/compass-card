@@ -1,12 +1,1 @@
-views:
-  - cards:
-      - type: entities
-        entities:
-          - entity: input_number.entity
-          - entity: input_number.secondary_entity
-        title: Debug sliders
-      - type: custom:compass-card
-        name: Compass Card
-        entity: input_number.entity
-        secondary_entity: input_number.secondary_entity
-        direction_offset: 0
+background: var(--background-image)

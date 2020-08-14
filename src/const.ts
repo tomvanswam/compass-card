@@ -1,8 +1,6 @@
 import { localize } from './localize/localize';
 
-export const CARD_VERSION = '0.0.5';
-export const FONT_SIZE = 14;
-export const FONT_SIZE_HEADER = 14;
+export const CARD_VERSION = '0.1.0';
 export const ICONS = {
   compass: 'mdi:compass',
 };
@@ -26,3 +24,12 @@ export const COMPASS_POINTS = {
 };
 export const COMPASS_ABBREVIATIONS = Object.keys(COMPASS_POINTS);
 export const UNAVAILABLE = localize('common.invalid');
+
+export const INDICATORS = ['arrow_outward', 'arrow_inward', 'circle'];
+
+export const CONFIG_ENTITY = 'entity';
+export const CONFIG_SECONDARY_ENTITY = 'secondary_entity';
+export const CONFIG_COMPASS = 'compass';
+export const CONFIG_INDICATOR = 'indicator';
+export const CONFIG_DIRECTION_OFFSET = 'direction_offset';
+export const CONFIG_NAME = 'name';

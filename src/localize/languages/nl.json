@@ -6,5 +6,16 @@
     "no_entity": "Entity niet geconfigureerd",
     "offset_not_a_number": "Direction offset is geen nummer",
     "invalid": "ongeldig"
+  },
+  "editor": {
+    "name": "Naam",
+    "optional": "Optioneel",
+    "entity": "Entiteit",
+    "required": "Noodzakelijk",
+    "primary": "Richting",
+    "secondary": "Secundaire",
+    "indicator": "Wijzer",
+    "direction": "Richting",
+    "offset": "Afwijking"
   }
 }

@@ -6,5 +6,16 @@
     "no_entity": "Entity not configured",
     "offset_not_a_number": "Direction offset is not a number",
     "invalid": "invalid"
+  },
+  "editor": {
+    "name": "Name",
+    "optional": "Optional",
+    "entity": "Entity",
+    "required": "Required",
+    "primary": "Direction",
+    "secondary": "Secondary",
+    "indicator": "Indicator",
+    "direction": "Direction",
+    "offset": "Offset"
   }
 }
