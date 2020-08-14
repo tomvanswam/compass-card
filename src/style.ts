@@ -35,6 +35,7 @@ const style: CSSResult = css`
     width: 1.7em;
   }
   .compass {
+    padding: 16px;
     display: block;
     width: 120px;
     height: 120px;
@@ -91,19 +92,19 @@ const style: CSSResult = css`
   .compass > .indicator.arrow_outward:after {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 30px solid var(--success-color);
+    border-bottom: 30px solid var(--accent-color);
     /* substract left+right border width from full size to center */
     left: calc((100% - 16px) / 2);
   }
   .compass > .indicator.arrow_inward:after {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 30px solid var(--success-color);
+    border-top: 30px solid var(--accent-color);
     /* substract left+right border width from full size to center */
     left: calc((100% - 16px) / 2);
   }
   .compass > .indicator.circle:after {
-    border: 8px solid orange;
+    border: 8px solid var(--accent-color);
     margin: 8px;
     border-radius: 50%;
     /* substract 2x border + 2x margin from full size to center */

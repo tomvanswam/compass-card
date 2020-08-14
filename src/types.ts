@@ -9,6 +9,25 @@ export interface CompassCardConfig extends LovelaceCardConfig {
   compass?: CCCompass;
 }
 
+export interface CCColorThreshold {
+  style_css: string;
+  from_value?: number;
+}
+
+export interface CCProperties {
+  color_thresholds?: CCColorThreshold[];
+  style_css?: string;
+}
+
+export interface CCIndicatorEntity {
+  entity: string;
+  properties?: CCProperties;
+}
+
+export interface CCValueEntity {
+  secondary_entity: string;
+  properties?: CCProperties;
+}
 
 export interface CCCompass extends CCProperties {
   indicator?: string;

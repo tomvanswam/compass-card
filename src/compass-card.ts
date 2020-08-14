@@ -143,7 +143,7 @@ export class CompassCard extends LitElement {
       abbreviation = CompassCard.getCompassAbbreviation(degrees);
     }
     return html`
-      <div class="compass" style="padding: 16px;">
+      <div class="compass">
         <div class="direction">
           <p>
             ${abbreviation}
