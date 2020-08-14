@@ -2,11 +2,20 @@ import { LitElement, html, customElement, property, TemplateResult, CSSResult, c
 import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
 import { CompassCardConfig } from './types';
+import {
+  INDICATORS,
+  CONFIG_COMPASS,
+  CONFIG_INDICATOR,
+  CONFIG_ENTITY,
+  CONFIG_SECONDARY_ENTITY,
+  CONFIG_DIRECTION_OFFSET,
+  CONFIG_NAME,
+} from './const';
 
 @customElement('compass-card-editor')
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
-  @property() public hass?: HomeAssistant;
-  @property() private _config?: CompassCardConfig;
+  @property({ attribute: false }) public hass?: HomeAssistant;
+  @property({ attribute: false }) private _config?: CompassCardConfig;
 
   public setConfig(config: CompassCardConfig): void {
     this._config = config;
@@ -43,6 +52,13 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     return '0';
   }
 
+  get _compass_indicator(): string {
+    if (this._config) {
+      return this._config?.compass?.indicator || INDICATORS[2];
+    }
+    return INDICATORS[1];
+  }
+
   protected render(): TemplateResult | void {
     if (!this.hass) {
       return html``;
@@ -57,7 +73,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           <paper-input
             label="Name (Optional)"
             .value=${this._name}
-            .configValue=${'name'}
+            .configValue=${CONFIG_NAME}
             @value-changed=${this._valueChanged}
           ></paper-input>
         </div>
@@ -65,7 +81,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           <paper-dropdown-menu
             label="Direction Entity (Required)"
             @value-changed=${this._valueChanged}
-            .configValue=${'entity'}
+            .configValue=${CONFIG_ENTITY}
           >
             <paper-listbox slot="dropdown-content" .selected=${entities.indexOf(this._entity)}>
               ${entities.map((entity) => {
@@ -78,7 +94,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           <paper-dropdown-menu
             label="Secondary Entity (Required)"
             @value-changed=${this._valueChanged}
-            .configValue=${'secondary_entity'}
+            .configValue=${CONFIG_SECONDARY_ENTITY}
           >
             <paper-listbox slot="dropdown-content" .selected=${entities.indexOf(this._secondary_entity)}>
               ${entities.map((secondary_entity) => {
@@ -88,11 +104,24 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           </paper-dropdown-menu>
         </div>
         <div class="values">
+          <paper-dropdown-menu
+            label="Indicator"
+            @value-changed=${this._valueChanged}
+            .configValue=${CONFIG_COMPASS + '.' + CONFIG_INDICATOR}
+          >
+            <paper-listbox slot="dropdown-content" .selected=${INDICATORS.indexOf(this._compass_indicator)}>
+              ${INDICATORS.map((indicator) => {
+                return html` <paper-item>${indicator}</paper-item>`;
+              })}
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </div>
+        <div class="values">
           <paper-input
             label="Direction offset (Optional)"
             .value=${this._direction_offset}
             @value-changed=${this._valueChanged}
-            .configValue=${'direction_offset'}
+            .configValue=${CONFIG_DIRECTION_OFFSET}
           ></paper-input>
         </div>
       </div>
@@ -103,13 +132,17 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     if (!this._config || !this.hass) {
       return;
     }
+
     const target = ev.target;
     if (this[`_${target.configValue}`] === target.value) {
       return;
     }
     if (target.configValue) {
-      if (target.value === '') {
-        delete this._config[target.configValue];
+      if (target.configValue === CONFIG_COMPASS + '.' + CONFIG_INDICATOR) {
+        this._config = {
+          ...this._config,
+          [CONFIG_COMPASS]: { [CONFIG_INDICATOR]: target.value },
+        };
       } else {
         this._config = {
           ...this._config,

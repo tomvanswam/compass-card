@@ -6,4 +6,10 @@ export interface CompassCardConfig extends LovelaceCardConfig {
   direction_offset: string;
   entity: string;
   secondary_entity?: string;
+  compass?: CCCompass;
+}
+
+
+export interface CCCompass extends CCProperties {
+  indicator?: string;
 }

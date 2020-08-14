@@ -8,39 +8,6 @@ system_health:
 
 lovelace:
   mode: storage
-  dashboards:
-    lovelace-yaml:
-      mode: yaml
-      filename: ui-lovelace.yaml
-      title: Compass
-      icon: mdi:compass
-      show_in_sidebar: true
-      require_admin: false
 
 input_number:
-  entity:
-    name: Entity
-    initial: 30
-    min: -359.9
-    max: 359.9
-    step: 1
-    unit_of_measurement: °
-    icon: mdi:compass
-  secondary_entity:
-    name: Secondary Entity
-    initial: 20.8
-    min: 0
-    max: 120
-    step: 0.1
-    unit_of_measurement: km/h
-    icon: mdi:weather-windy
-
 input_text:
-  dir_str:
-    name: Wind Direction Abbreviation
-    initial: "WSW"
-    icon: mdi:compass-outline
-  dir_combined:
-    name: Wind Direction Neatmo
-    initial: "E (90°)"
-    icon: mdi:compass-outline

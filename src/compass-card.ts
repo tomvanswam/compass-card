@@ -1,12 +1,12 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, PropertyValues } from 'lit-element';
 import { HomeAssistant, LovelaceCardEditor, getLovelace } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { CompassCardConfig } from './types';
+import { CompassCardConfig, CCProperties } from './types';
 
 import './editor';
 import style from './style';
 
-import { CARD_VERSION, ICONS, FONT_SIZE_HEADER, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from './const';
+import { CARD_VERSION, ICONS, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE, INDICATORS } from './const';
 
 import { localize } from './localize/localize';
 
@@ -109,15 +109,18 @@ export class CompassCard extends LitElement {
     const label = direction ? direction.attributes.friendly_name : this._config.entity;
 
     return html`
-      <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex" style="font-size: 14px;">
-        ${this.renderHeader(direction)}${this.renderCompass(direction, secondary_entity, direction_offset)}
+      <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex">
+        ${this.renderHeader()}
+        <div id="states" class="card-content">
+          ${this.renderCompass(direction, secondary_entity, direction_offset)}
+        </div>
       </ha-card>
     `;
   }
 
   private renderCompass(
     direction: HassEntity,
-    speed: HassEntity | undefined,
+    secondary: HassEntity | undefined,
     direction_offset: number,
   ): TemplateResult {
     // default to North
@@ -129,31 +132,34 @@ export class CompassCard extends LitElement {
     const directionStr = direction ? direction.state : UNAVAILABLE;
 
     if (Number.isNaN(Number(directionStr))) {
-      degrees = CompassCard.get_degrees(directionStr);
+      degrees = CompassCard.getDegrees(directionStr);
       abbreviation = directionStr;
       if (degrees === -1) {
         degrees = parseFloat(directionStr.replace(/[^0-9.]/g, ''));
-        abbreviation = CompassCard.get_compass_point(degrees);
+        abbreviation = CompassCard.getCompassAbbreviation(degrees);
       }
     } else {
       degrees = parseFloat(directionStr);
-      abbreviation = CompassCard.get_compass_point(degrees);
+      abbreviation = CompassCard.getCompassAbbreviation(degrees);
     }
     return html`
       <div class="compass" style="padding: 16px;">
         <div class="direction">
           <p>
             ${abbreviation}
-            ${speed
+            ${secondary
               ? html`
                   <span>
-                    ${speed.state} ${speed.attributes.unit_of_measurement}
+                    ${secondary.state} ${secondary.attributes.unit_of_measurement}
                   </span>
                 `
               : ''}
           </p>
         </div>
-        <div class="indicator" style="transform: rotate(${(degrees + direction_offset) % 360}deg)"></div>
+        <div
+          class="indicator ${CompassCard.computeIndicator(this._config)}"
+          style="transform: rotate(${(degrees + direction_offset) % 360}deg)"
+        ></div>
       </div>
     `;
   }
@@ -169,20 +175,20 @@ export class CompassCard extends LitElement {
     return '';
   }
 
-  private renderIcon(entity: HassEntity): TemplateResult {
-    return html`
-      <div class="icon" }>
-        <ha-icon .icon=${this.computeIcon(entity)}></ha-icon>
-      </div>
-    `;
-  }
-
-  private renderName(): TemplateResult {
-    return html`
-      <div class="name flex">
-        <span class="ellipsis">${this.computeName()}</span>
-      </div>
-    `;
+  private renderHeader(): TemplateResult | string {
+    if (this.computeName()) {
+      return html`
+        <div class="card-header">
+          <span class="name">
+            ${this.computeName()}
+          </span>
+          <span class="icon">
+            <ha-icon .icon=${this.computeIcon()}></ha-icon>
+          </span>
+        </div>
+      `;
+    }
+    return '';
   }
 
   public getCardSize(): number {
@@ -196,7 +202,8 @@ export class CompassCard extends LitElement {
     return undefined;
   }
 
-  private computeIcon(entity: HassEntity): string {
+  private computeIcon(): string {
+    const entity = this.hass.states[this._config.entity];
     const icon = entity ? (entity.attributes.icon ? entity.attributes.icon : ICONS.compass) : ICONS.compass;
     return icon;
   }
@@ -205,14 +212,21 @@ export class CompassCard extends LitElement {
     return style;
   }
 
-  static get_degrees(abbrevation: string): number {
+  static computeIndicator(config: CompassCardConfig): string {
+    if (config.compass && config.compass.indicator && INDICATORS.indexOf(config.compass.indicator) >= 0) {
+      return config.compass.indicator;
+    }
+    return INDICATORS[0];
+  }
+
+  static getDegrees(abbrevation: string): number {
     if (COMPASS_POINTS[abbrevation]) {
       return COMPASS_POINTS[abbrevation];
     }
     return -1;
   }
 
-  static get_compass_point(degrees: number): string {
+  static getCompassAbbreviation(degrees: number): string {
     const positiveDegrees = degrees < 0 ? degrees + (Math.abs(Math.ceil(degrees / 360)) + 1) * 360 : degrees;
     const index = Math.round((positiveDegrees % 360) / 22.5);
     if (index > 15) {
