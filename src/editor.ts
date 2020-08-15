@@ -20,6 +20,7 @@ import {
   CONFIG_DIRECTION_OFFSET,
   CONFIG_NAME,
   CONFIG_SHOW_NORTH,
+  CONFIG_DOMAINS,
 } from './const';
 
 import { localize } from './localize/localize';
@@ -66,7 +67,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   get _compass_indicator(): string {
     if (this._config) {
-      return this._config?.compass?.indicator || INDICATORS[2];
+      return this._config?.compass?.indicator || INDICATORS[1];
     }
     return INDICATORS[1];
   }
@@ -84,7 +85,9 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // You can restrict on domain type
-    const entities = Object.keys(this.hass.states).sort();
+    const entities = Object.keys(this.hass.states)
+      .filter((eid) => CONFIG_DOMAINS.includes(eid.substr(0, eid.indexOf('.'))))
+      .sort();
     const indicatorsSorted = INDICATORS.sort();
 
     return html`
@@ -125,7 +128,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           @value-changed=${this._valueChanged}
           .configValue=${CONFIG_COMPASS + '.' + CONFIG_INDICATOR}
         >
-          <paper-listbox slot="dropdown-content" .selected=${INDICATORS.indexOf(this._compass_indicator)}>
+          <paper-listbox slot="dropdown-content" .selected=${indicatorsSorted.indexOf(this._compass_indicator)}>
             ${indicatorsSorted.map((indicator) => {
               return html` <paper-item>${indicator}</paper-item>`;
             })}
@@ -157,7 +160,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     const target = ev.target;
-    console.log(target.configValue, target.checked);
     if (target.checked !== undefined) {
       if (this[`_${target.configValue}`] === target.checked) {
         return;
