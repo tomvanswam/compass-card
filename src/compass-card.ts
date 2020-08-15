@@ -95,10 +95,7 @@ export class CompassCard extends LitElement {
 
     let direction_offset = 0;
     if (!Number.isNaN(Number(this._config.direction_offset))) {
-      direction_offset =
-        +this._config.direction_offset < 0
-          ? +this._config.direction_offset + (Math.abs(Math.ceil(+this._config.direction_offset / 360)) + 1) * 360
-          : +this._config.direction_offset;
+      direction_offset = CompassCard.positiveDegrees(+this._config.direction_offset);
     }
 
     const direction: HassEntity = this.hass.states[this._config.entity];
@@ -135,11 +132,16 @@ export class CompassCard extends LitElement {
       degrees = CompassCard.getDegrees(directionStr);
       abbreviation = directionStr;
       if (degrees === -1) {
-        degrees = parseFloat(directionStr.replace(/[^0-9.]/g, ''));
+        const matches = directionStr.replace(/\s+/g, '').match(/[+-]?\d+(\.\d)?/);
+        if (matches?.length) {
+          degrees = CompassCard.positiveDegrees(parseFloat(matches[0]));
+        } else {
+          degrees = 0;
+        }
         abbreviation = CompassCard.getCompassAbbreviation(degrees);
       }
     } else {
-      degrees = parseFloat(directionStr);
+      degrees = CompassCard.positiveDegrees(parseFloat(directionStr));
       abbreviation = CompassCard.getCompassAbbreviation(degrees);
     }
     return html`
@@ -161,7 +163,10 @@ export class CompassCard extends LitElement {
           style="transform: rotate(${(degrees + direction_offset) % 360}deg)"
         ></div>
         ${this._config.compass?.show_north
-          ? html`<div class="indicator north" style="transform: rotate(${direction_offset % 360}deg)"></div>`
+          ? html`<div
+              class="indicator north"
+              style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg)"
+            ></div>`
           : ''}
       </div>
     `;
@@ -226,11 +231,14 @@ export class CompassCard extends LitElement {
   }
 
   static getCompassAbbreviation(degrees: number): string {
-    const positiveDegrees = degrees < 0 ? degrees + (Math.abs(Math.ceil(degrees / 360)) + 1) * 360 : degrees;
-    const index = Math.round((positiveDegrees % 360) / 22.5);
+    const index = Math.round(CompassCard.positiveDegrees(degrees) / 22.5);
     if (index > 15) {
       return COMPASS_ABBREVIATIONS[0];
     }
     return COMPASS_ABBREVIATIONS[index];
+  }
+
+  static positiveDegrees(degrees: number): number {
+    return degrees < 0 ? degrees + (Math.abs(Math.ceil(degrees / 360)) + 1) * 360 : degrees % 360;
   }
 }
