@@ -157,7 +157,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     const target = ev.target;
-    console.log(target.configValue, target.checked);
     if (target.checked !== undefined) {
       if (this[`_${target.configValue}`] === target.checked) {
         return;
