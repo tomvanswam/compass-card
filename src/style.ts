@@ -9,30 +9,44 @@ const style: CSSResult = css`
   :host ::slotted(.card-content) {
     padding: 16px;
   }
+  .floated-label-placeholder {
+    font-family: var(--paper-font-caption_-_font-family);
+    -webkit-font-smoothing: var(--paper-font-caption_-_-webkit-font-smoothing);
+    white-space: var(--paper-font-caption_-_white-space);
+    overflow: var(--paper-font-caption_-_overflow);
+    text-overflow: var(--paper-font-caption_-_text-overflow);
+    font-size: var(--paper-font-caption_-_font-size);
+    font-weight: var(--paper-font-caption_-_font-weight);
+    letter-spacing: var(--paper-font-caption_-_letter-spacing);
+    line-height: var(--paper-font-caption_-_line-height);
+    color: var(--disabled-text-color);
+  }
   ha-card {
     flex-direction: column;
     flex: 1;
     position: relative;
     overflow: hidden;
   }
-  .header {
+  .card-header {
     justify-content: space-between;
     color: var(--ha-card-header-color, --primary-text-color);
+    font-family: var(--paper-font-caption_-_font-family);
     padding: 24px 16px 16px;
-    float: left;
   }
-  #states {
-    flex: 1 1 0%;
+  .card-header > .name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: calc(100%-26px);
+    min-width: 0px;
   }
   .icon {
     color: var(--paper-item-icon-color, #44739e);
-    float: right;
-    flex: 0 0 1.7em;
     text-align: center;
-  }
-  .icon > ha-icon {
-    height: 1.7em;
-    width: 1.7em;
+    padding-top: 4px;
+    line-height: 0px;
+    float: right;
+    width: 28px;
   }
   .compass {
     padding: 16px;
@@ -40,13 +54,13 @@ const style: CSSResult = css`
     width: 120px;
     height: 120px;
     position: relative;
-    margin: 0 auto;
+    margin: 0 auto 10px;
+    font-family: var(--paper-font-caption_-_font-family);
   }
   .compass > .direction {
     height: 100%;
     width: 100%;
     display: block;
-    background-color: rgba(0, 0, 0, 0);
     border-radius: 100%;
     border-width: 3px;
     border-color: var(--primary-color);
@@ -109,6 +123,14 @@ const style: CSSResult = css`
     border-radius: 50%;
     /* substract 2x border + 2x margin from full size to center */
     left: calc((100% - 32px) / 2);
+  }
+  .compass > .indicator.north:after {
+    color: var(--primary-color);
+    content: 'N';
+    padding-top: 0px;
+    margin: -3px;
+    /* substract margin from full size to center */
+    left: calc((100% - 3px) / 2);
   }
 `;
 

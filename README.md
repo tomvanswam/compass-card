@@ -81,6 +81,33 @@ compass:
   indicator: circle
 ```
 
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-north.png?raw=true)
+
+### Compass indicator `north indicator`
+
+Left image yaml:
+
+```yaml
+type: custom:compass-card
+entity: sun.azimuth
+secondary_entity: sun.elevation
+compass:
+  indicator: circle
+  show_north: true
+```
+
+Right image yaml:
+
+```yaml
+type: custom:compass-card
+entity: sun.azimuth
+secondary_entity: sun.elevation
+direction_offset: 15
+compass:
+  indicator: circle
+  show_north: true
+```
+
 ![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
 
 ## Options
@@ -96,9 +123,10 @@ compass:
 
 ### Compass Object
 
-| Name      | Type      | Requirement  | Default         | Supported | Visual Config | Description                                                                                                                       |
-| --------- | --------- | ------------ | --------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| indicator | list item | **Optional** | `arrow_outward` | v0.1.0    | &#10003;      | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
+| Name       | Type      | Requirement  | Default         | Supported | Visual Config | Description                                                                                                                       |
+| ---------- | --------- | ------------ | --------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| indicator  | list item | **Optional** | `arrow_outward` | v0.1.0    | &#10003;      | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
+| show_north | boolean   | **Optional** | `falsed`        | v0.2.0    | &#10003;      | Show an indicator at the northern side of the compass                                                                             |
 
 ## Wish/Todo list
 

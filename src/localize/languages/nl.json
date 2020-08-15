@@ -5,7 +5,9 @@
     "invalid_configuration": "Foutieve configuratie",
     "no_entity": "Entity niet geconfigureerd",
     "offset_not_a_number": "Direction offset is geen nummer",
-    "invalid": "ongeldig"
+    "invalid": "ongeldig",
+    "on": "Aan",
+    "off": "Uit"
   },
   "editor": {
     "name": "Naam",
@@ -16,6 +18,9 @@
     "secondary": "Secundaire",
     "indicator": "Wijzer",
     "direction": "Richting",
-    "offset": "Afwijking"
+    "offset": "Afwijking",
+    "show": "Toon",
+    "north": "Noorden",
+    "toggle": "Wissel"
   }
 }

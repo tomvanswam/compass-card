@@ -1,6 +1,6 @@
 import { localize } from './localize/localize';
 
-export const CARD_VERSION = '0.1.0';
+export const CARD_VERSION = '0.2.0';
 export const ICONS = {
   compass: 'mdi:compass',
 };
@@ -33,3 +33,4 @@ export const CONFIG_COMPASS = 'compass';
 export const CONFIG_INDICATOR = 'indicator';
 export const CONFIG_DIRECTION_OFFSET = 'direction_offset';
 export const CONFIG_NAME = 'name';
+export const CONFIG_SHOW_NORTH = 'show_north';
