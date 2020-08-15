@@ -34,3 +34,4 @@ export const CONFIG_INDICATOR = 'indicator';
 export const CONFIG_DIRECTION_OFFSET = 'direction_offset';
 export const CONFIG_NAME = 'name';
 export const CONFIG_SHOW_NORTH = 'show_north';
+export const CONFIG_DOMAINS = ['sensor', 'input_number', 'input_text'];

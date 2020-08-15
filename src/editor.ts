@@ -20,6 +20,7 @@ import {
   CONFIG_DIRECTION_OFFSET,
   CONFIG_NAME,
   CONFIG_SHOW_NORTH,
+  CONFIG_DOMAINS,
 } from './const';
 
 import { localize } from './localize/localize';
@@ -84,7 +85,9 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // You can restrict on domain type
-    const entities = Object.keys(this.hass.states).sort();
+    const entities = Object.keys(this.hass.states)
+      .filter((eid) => CONFIG_DOMAINS.includes(eid.substr(0, eid.indexOf('.'))))
+      .sort();
     const indicatorsSorted = INDICATORS.sort();
 
     return html`
