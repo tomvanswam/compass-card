@@ -67,7 +67,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   get _compass_indicator(): string {
     if (this._config) {
-      return this._config?.compass?.indicator || INDICATORS[2];
+      return this._config?.compass?.indicator || INDICATORS[1];
     }
     return INDICATORS[1];
   }
@@ -128,7 +128,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           @value-changed=${this._valueChanged}
           .configValue=${CONFIG_COMPASS + '.' + CONFIG_INDICATOR}
         >
-          <paper-listbox slot="dropdown-content" .selected=${INDICATORS.indexOf(this._compass_indicator)}>
+          <paper-listbox slot="dropdown-content" .selected=${indicatorsSorted.indexOf(this._compass_indicator)}>
             ${indicatorsSorted.map((indicator) => {
               return html` <paper-item>${indicator}</paper-item>`;
             })}
