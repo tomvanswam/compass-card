@@ -111,7 +111,7 @@ export class CompassCard extends LitElement {
     return html`
       <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex">
         ${this.renderHeader()}
-        <div id="states" class="card-content">
+        <div class="content">
           ${this.renderCompass(direction, secondary_entity, direction_offset)}
         </div>
       </ha-card>
@@ -160,6 +160,9 @@ export class CompassCard extends LitElement {
           class="indicator ${CompassCard.computeIndicator(this._config)}"
           style="transform: rotate(${(degrees + direction_offset) % 360}deg)"
         ></div>
+        ${this._config.compass?.show_north
+          ? html`<div class="indicator north" style="transform: rotate(${direction_offset % 360}deg)"></div>`
+          : ''}
       </div>
     `;
   }
@@ -175,12 +178,12 @@ export class CompassCard extends LitElement {
     if (this.computeName()) {
       return html`
         <div class="card-header">
-          <span class="name">
-            ${this.computeName()}
-          </span>
-          <span class="icon">
+          <div class="icon">
             <ha-icon .icon=${this.computeIcon()}></ha-icon>
-          </span>
+          </div>
+          <div class="name">
+            ${this.computeName()}
+          </div>
         </div>
       `;
     }

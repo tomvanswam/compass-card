@@ -5,7 +5,9 @@
     "invalid_configuration": "Invalid configuration",
     "no_entity": "Entity not configured",
     "offset_not_a_number": "Direction offset is not a number",
-    "invalid": "invalid"
+    "invalid": "invalid",
+    "on": "On",
+    "off": "Off"
   },
   "editor": {
     "name": "Name",
@@ -16,6 +18,9 @@
     "secondary": "Secondary",
     "indicator": "Indicator",
     "direction": "Direction",
-    "offset": "Offset"
+    "offset": "Offset",
+    "show": "Show",
+    "north": "North",
+    "toggle": "Toggle"
   }
 }
