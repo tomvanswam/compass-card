@@ -81,7 +81,7 @@ compass:
   indicator: circle
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-north.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
 
 ### Compass indicator `north indicator`
 
@@ -108,7 +108,7 @@ compass:
   show_north: true
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-north.png?raw=true)
 
 ## Options
 
