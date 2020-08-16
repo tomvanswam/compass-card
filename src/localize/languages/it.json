@@ -1,0 +1,26 @@
+{
+  "common": {
+    "version": "Versione",
+    "description": "Mostra una bussola con un indicatore nella direzione indicata dal valore dell'entità.",
+    "invalid_configuration": "Configurazione non valida",
+    "no_entity": "Entità non configurata",
+    "offset_not_a_number": "L'offset della direzione non è un numero.",
+    "invalid": "invalido",
+    "on": "Acceso",
+    "off": "Spento"
+  },
+  "editor": {
+    "name": "Nome",
+    "optional": "Opzionale",
+    "entity": "Entità",
+    "required": "Richiesto",
+    "primary": "Direzione",
+    "secondary": "Secondario",
+    "indicator": "Indicatore",
+    "direction": "Direzione",
+    "offset": "Compensazione",
+    "show": "Mostra",
+    "north": "Nord",
+    "toggle": "Inverti stato"
+  }
+}
