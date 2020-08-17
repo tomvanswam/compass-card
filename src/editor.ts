@@ -62,9 +62,9 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   get _compass_language(): string {
     if (this._config) {
-      return this._config?.compass?.language || getLocalLanguage();
+      return this._config?.compass?.language || '';
     }
-    return getLocalLanguage();
+    return '';
   }
 
   protected render(): TemplateResult | void {
@@ -76,8 +76,8 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const entities = Object.keys(this.hass.states)
       .filter((eid) => CONFIG_DOMAINS.includes(eid.substr(0, eid.indexOf('.'))))
       .sort();
-    const indicatorsSorted = INDICATORS.sort();
-    const languages = COMPASS_LANGUAGES.sort();
+    const indicatorsSorted = INDICATORS;
+    const languages = COMPASS_LANGUAGES;
 
     return html`
       <div class="card-config">
@@ -105,7 +105,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         </paper-dropdown-menu>
         <paper-dropdown-menu
           class="editor-entity-select"
-          label="${localize('editor.direction')} ${localize('editor.abbreviation')} ${localize('editor.language')} (${localize('editor.optional')})"
+          label="${localize('editor.direction')} ${localize('editor.abbreviations')} ${localize('editor.language')} (${localize('editor.optional')})"
           @value-changed=${this._valueChanged}
           .configValue=${CONFIG_COMPASS + '.' + CONFIG_LANGUAGE}
         >

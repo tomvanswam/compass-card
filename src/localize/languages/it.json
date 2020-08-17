@@ -20,7 +20,9 @@
     "direction": "Direzione",
     "offset": "Compensazione",
     "show": "Mostra",
-    "toggle": "Inverti stato"
+    "abbreviations": "Abbreviazioni",
+    "toggle": "Inverti stato",
+    "language": "Linguaggio"
   },
   "directions": {
     "north": "Nord",

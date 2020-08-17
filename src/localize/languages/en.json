@@ -20,8 +20,8 @@
     "direction": "Direction",
     "offset": "Offset",
     "show": "Show",
-    "toggle": "Toggle",
     "abbreviations": "Abbreviations",
+    "toggle": "Toggle",
     "language": "Language"
   },
   "directions": {

@@ -20,7 +20,9 @@
     "direction": "Richting",
     "offset": "Afwijking",
     "show": "Toon",
-    "toggle": "Wissel"
+    "abbreviations": "Afkorting",
+    "toggle": "Wissel",
+    "language": "Taal"
   },
   "directions": {
     "north": "Noorden",

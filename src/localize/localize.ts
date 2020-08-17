@@ -9,7 +9,7 @@ export const languages: any = {
   it: it,
   de: de,
 };
-export const COMPASS_LANGUAGES = Object.keys(languages);
+export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
 
 export function getLocalLanguage(): string {
   return (localStorage.getItem('selectedLanguage') || 'en').replace(/['"]+/g, '').replace('-', '_');

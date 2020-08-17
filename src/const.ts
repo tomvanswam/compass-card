@@ -42,7 +42,7 @@ export const COMPASS_ABBREVIATIONS = [
 ];
 export const UNAVAILABLE = localize('common.invalid');
 
-export const INDICATORS = ['arrow_outward', 'arrow_inward', 'circle'];
+export const INDICATORS = ['arrow_outward', 'arrow_inward', 'circle'].sort();
 
 export const CONFIG_ENTITY = 'entity';
 export const CONFIG_SECONDARY_ENTITY = 'secondary_entity';

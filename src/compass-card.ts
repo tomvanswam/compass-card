@@ -219,7 +219,6 @@ export class CompassCard extends LitElement {
       string = COMPASS_ABBREVIATIONS[0];
     }
     string = COMPASS_ABBREVIATIONS[index];
-
     return localize(`directions.${string}`, '', '', language);
   }
 
