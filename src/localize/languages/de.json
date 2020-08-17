@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "Version",
+    "description": "Zeigt einen Kompass mit einem Indikator in Richtung des Entitätswertes an",
+    "invalid_configuration": "Ungültige Konfiguration",
+    "no_entity": "Entität nicht konfiguriert",
+    "offset_not_a_number": "Richtungs-Offset ist keine Zahl",
+    "invalid": "ungültig",
+    "on": "An",
+    "off": "Aus"
+  },
+  "editor": {
+    "name": "Name",
+    "optional": "Optional",
+    "entity": "Entität",
+    "required": "Benötigt",
+    "primary": "Richtung",
+    "secondary": "Sekundär",
+    "indicator": "Indikator",
+    "direction": "Richtung",
+    "offset": "Offset",
+    "show": "Zeige",
+    "abbreviations": "Abkürzungen",
+    "toggle": "Umschalten",
+    "language": "Sprache"
+  },
+  "directions": {
+    "north": "Norden",
+    "east": "Osten",
+    "south": "Süden",
+    "west": "Westen",
+    "N": "N",
+    "NNE": "NNO",
+    "NE": "NO",
+    "ENE": "ONO",
+    "E": "O",
+    "ESE": "OSO",
+    "SE": "SO",
+    "SSE": "SSO",
+    "S": "S",
+    "SSW": "SSW",
+    "SW": "SW",
+    "WSW": "WSW",
+    "W": "W",
+    "WNW": "WNW",
+    "NW": "NW",
+    "NNW": "NNW"
+  }
+}

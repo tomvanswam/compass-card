@@ -32,4 +32,5 @@ export interface CCValueEntity {
 export interface CCCompass extends CCProperties {
   indicator?: string;
   show_north?: boolean;
+  language?: string;
 }

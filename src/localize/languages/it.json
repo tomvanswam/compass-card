@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "Versione",
+    "description": "Mostra una bussola con un indicatore nella direzione indicata dal valore dell'entità.",
+    "invalid_configuration": "Configurazione non valida",
+    "no_entity": "Entità non configurata",
+    "offset_not_a_number": "L'offset della direzione non è un numero.",
+    "invalid": "invalido",
+    "on": "Acceso",
+    "off": "Spento"
+  },
+  "editor": {
+    "name": "Nome",
+    "optional": "Opzionale",
+    "entity": "Entità",
+    "required": "Richiesto",
+    "primary": "Direzione",
+    "secondary": "Secondario",
+    "indicator": "Indicatore",
+    "direction": "Direzione",
+    "offset": "Compensazione",
+    "show": "Mostra",
+    "abbreviations": "Abbreviazioni",
+    "toggle": "Inverti stato",
+    "language": "Lingua"
+  },
+  "directions": {
+    "north": "Nord",
+    "east": "Est",
+    "south": "Sud",
+    "west": "Ovest",
+    "N": "N",
+    "NNE": "NNE",
+    "NE": "NE",
+    "ENE": "ENE",
+    "E": "E",
+    "ESE": "ESE",
+    "SE": "SE",
+    "SSE": "SSE",
+    "S": "S",
+    "SSW": "SSO",
+    "SW": "SO",
+    "WSW": "OSO",
+    "W": "O",
+    "WNW": "ONO",
+    "NW": "NO",
+    "NNW": "NNO"
+  }
+}
