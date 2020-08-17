@@ -4,7 +4,7 @@ import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helper
 import { CompassCardConfig } from './types';
 import { INDICATORS, CONFIG_COMPASS, CONFIG_INDICATOR, CONFIG_ENTITY, CONFIG_SECONDARY_ENTITY, CONFIG_DIRECTION_OFFSET, CONFIG_NAME, CONFIG_SHOW_NORTH, CONFIG_DOMAINS, CONFIG_LANGUAGE } from './const';
 
-import { localize, getLocalLanguage, COMPASS_LANGUAGES } from './localize/localize';
+import { localize, COMPASS_LANGUAGES } from './localize/localize';
 
 @customElement('compass-card-editor')
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
@@ -128,7 +128,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     `;
   }
 
-  private getValue(item: any, ancestor: any): any {
+  private getValue(item, ancestor) {
     const dotLoc = item.configValue.indexOf('.');
     if (dotLoc > -1) {
       const parent = item.configValue.substr(0, dotLoc);
