@@ -182,12 +182,12 @@ export class CompassCard extends LitElement {
   private renderHeader(): TemplateResult | string {
     if (this.computeName()) {
       return html`
-        <div class="card-header">
+        <div class="header">
+          <div class="name">
+            <span>${this.computeName()}</span>
+          </div>
           <div class="icon">
             <ha-icon .icon=${this.computeIcon()}></ha-icon>
-          </div>
-          <div class="name">
-            ${this.computeName()}
           </div>
         </div>
       `;
