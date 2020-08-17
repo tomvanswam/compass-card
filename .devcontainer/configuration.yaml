@@ -5,9 +5,70 @@ frontend:
   themes: !include_dir_merge_named themes
 sun:
 system_health:
+logger:
+history:
+  exclude:
+    domains:
+      - input_text
 
 lovelace:
   mode: storage
 
 input_number:
+  wind_direction:
+    name: Wind
+    initial: 30
+    min: -180
+    max: 359.9
+    step: 2
+    unit_of_measurement: °
+    icon: mdi:compass
+  wind_speed:
+    name: Wind Speed
+    initial: 20.8
+    min: 0
+    max: 120
+    step: 2
+    unit_of_measurement: km/h
+    icon: mdi:weather-windy
+  friend_distance:
+    name: Friend Distance
+    initial: 30
+    min: 0
+    max: 50
+    step: 2
+    unit_of_measurement: km
+    icon: mdi:tape-measure
+  sun_elevation:
+    name: Sun Elevation
+    initial: 30
+    min: 0
+    max: 50
+    step: 2
+    unit_of_measurement: °
+    icon: mdi:axis-x-rotate-clockwise
 input_text:
+  friend_direction:
+    name: Friend Direction
+    icon: mdi:compass-outline
+    initial: "E (90°) @ 40km"
+  sun_direction:
+    name: Sun Direction
+    icon: mdi:compass-outline
+    initial: "-70"
+
+recorder:
+  auto_purge: true
+  purge_keep_days: 1
+  exclude:
+    domains:
+      - input_text
+
+sensor:
+  - platform: template
+    sensors:
+      direction:
+        friendly_name: "Direction"
+        unit_of_measurement: "°"
+        icon_template: "mdi:compass"
+        value_template: "{{ states('input_number.wind_direction') | float }}"
