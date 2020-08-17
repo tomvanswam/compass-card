@@ -11,11 +11,7 @@ import { CARD_VERSION, ICONS, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE
 import { localize } from './localize/localize';
 
 /* eslint no-console: 0 */
-console.info(
-  `%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
-  'color: orange; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: dimgray',
-);
+console.info(`%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
 
 declare global {
   interface Window {
@@ -99,9 +95,7 @@ export class CompassCard extends LitElement {
     }
 
     const direction: HassEntity = this.hass.states[this._config.entity];
-    const secondary_entity: HassEntity | undefined = this._config.secondary_entity
-      ? this.hass.states[this._config.secondary_entity]
-      : undefined;
+    const secondary_entity: HassEntity | undefined = this._config.secondary_entity ? this.hass.states[this._config.secondary_entity] : undefined;
 
     const label = direction ? direction.attributes.friendly_name : this._config.entity;
 
@@ -115,11 +109,7 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private renderCompass(
-    direction: HassEntity,
-    secondary: HassEntity | undefined,
-    direction_offset: number,
-  ): TemplateResult {
+  private renderCompass(direction: HassEntity, secondary: HassEntity | undefined, direction_offset: number): TemplateResult {
     // default to North
     let degrees = 0;
     let abbreviation = localize('common.invalid');
@@ -138,11 +128,11 @@ export class CompassCard extends LitElement {
         } else {
           degrees = 0;
         }
-        abbreviation = CompassCard.getCompassAbbreviation(degrees);
+        abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.compass?.language);
       }
     } else {
       degrees = CompassCard.positiveDegrees(parseFloat(directionStr));
-      abbreviation = CompassCard.getCompassAbbreviation(degrees);
+      abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.compass?.language);
     }
     return html`
       <div class="compass">
@@ -158,16 +148,8 @@ export class CompassCard extends LitElement {
               : ''}
           </p>
         </div>
-        <div
-          class="indicator ${CompassCard.computeIndicator(this._config)}"
-          style="transform: rotate(${(degrees + direction_offset) % 360}deg)"
-        ></div>
-        ${this._config.compass?.show_north
-          ? html`<div
-              class="indicator north"
-              style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg)"
-            ></div>`
-          : ''}
+        <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${(degrees + direction_offset) % 360}deg)"></div>
+        ${this._config.compass?.show_north ? html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg)"></div>` : ''}
       </div>
     `;
   }
@@ -182,12 +164,12 @@ export class CompassCard extends LitElement {
   private renderHeader(): TemplateResult | string {
     if (this.computeName()) {
       return html`
-        <div class="card-header">
+        <div class="header">
+          <div class="name">
+            <span>${this.computeName()}</span>
+          </div>
           <div class="icon">
             <ha-icon .icon=${this.computeIcon()}></ha-icon>
-          </div>
-          <div class="name">
-            ${this.computeName()}
           </div>
         </div>
       `;
@@ -230,12 +212,14 @@ export class CompassCard extends LitElement {
     return -1;
   }
 
-  static getCompassAbbreviation(degrees: number): string {
+  static getCompassAbbreviation(degrees: number, language: string | undefined): string {
     const index = Math.round(CompassCard.positiveDegrees(degrees) / 22.5);
+    let string = 'N';
     if (index > 15) {
-      return COMPASS_ABBREVIATIONS[0];
+      string = COMPASS_ABBREVIATIONS[0];
     }
-    return COMPASS_ABBREVIATIONS[index];
+    string = COMPASS_ABBREVIATIONS[index];
+    return localize(`directions.${string}`, '', '', language);
   }
 
   static positiveDegrees(degrees: number): number {

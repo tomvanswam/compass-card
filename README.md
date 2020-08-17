@@ -39,15 +39,11 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
   ```yaml
   type: custom:compass-card
-  name: Compass
   entity: sensor.wind_dir
   secondary_entity: sensor.wind_speed
-  direction_offset: 0
-  compass:
-    indicator: arrow_outward
   ```
 
-## Lovelace Example
+## Lovelace Examples
 
 ### Default
 
@@ -83,7 +79,7 @@ compass:
 
 ![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
 
-### Compass indicator `north indicator`
+### Compass `north indicator` and `direction_offset`
 
 Left image yaml:
 
@@ -126,7 +122,8 @@ compass:
 | Name       | Type      | Requirement  | Default         | Supported | Visual Config | Description                                                                                                                       |
 | ---------- | --------- | ------------ | --------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | indicator  | list item | **Optional** | `arrow_outward` | v0.1.0    | &#10003;      | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
-| show_north | boolean   | **Optional** | `falsed`        | v0.2.0    | &#10003;      | Show an indicator at the northern side of the compass                                                                             |
+| show_north | boolean   | **Optional** | `false`         | v0.2.0    | &#10003;      | Show an indicator at the northern side of the compass                                                                             |
+| language   | list item | **Optional** |                 | v0.3.0    | &#10003;      | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language                        |
 
 ## Wish/Todo list
 
@@ -148,6 +145,8 @@ And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](
 - [@rsnodgrass](https://github.com/rsnodgrass) for [wind-compass-card](https://github.com/rsnodgrass/wind-compass-card), which gave me the idea to make this
 - [@iantrich](https://www.github.com/iantrich) for the [boiler-plate card](https://github.com/custom-cards/boilerplate-card), which got me started
 - [@xixao](https://codepen.io/xixao/) for [wind speed/direction css](https://codepen.io/xixao/pen/OPovyN)
+- [@matteofranceschini](https://github.com/matteofranceschini) for the Italian translation
+- [@rainer-geiger](https://github.com/rainer-geiger) for the German translation
 
 ## Support
 

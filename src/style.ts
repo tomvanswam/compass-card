@@ -27,26 +27,24 @@ const style: CSSResult = css`
     position: relative;
     overflow: hidden;
   }
-  .card-header {
+  .header {
+    display: flex;
     justify-content: space-between;
-    color: var(--ha-card-header-color, --primary-text-color);
-    font-family: var(--paper-font-caption_-_font-family);
-    padding: 24px 16px 16px;
+    padding: 8px 16px 0px;
   }
-  .card-header > .name {
+  .header > .name {
+    color: var(--secondary-text-color);
+    line-height: 40px;
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
-    width: calc(100%-26px);
-    min-width: 0px;
   }
   .icon {
-    color: var(--paper-item-icon-color, #44739e);
-    text-align: center;
-    padding-top: 4px;
-    line-height: 0px;
+    color: var(--state-icon-color);
+    margin-top: 8px;
     float: right;
-    width: 28px;
   }
   .compass {
     padding: 16px;
