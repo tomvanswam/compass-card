@@ -3,13 +3,15 @@ homeassistant:
 config:
 frontend:
   themes: !include_dir_merge_named themes
-sun:
 system_health:
 logger:
 history:
   exclude:
     domains:
       - input_text
+      - person
+    entities:
+      - sensor.hacs
 
 lovelace:
   mode: storage
@@ -17,9 +19,9 @@ lovelace:
 input_number:
   wind_direction:
     name: Wind
-    initial: 30
-    min: -180
-    max: 359.9
+    initial: 236
+    min: -360
+    max: 360
     step: 2
     unit_of_measurement: °
     icon: mdi:compass
@@ -38,7 +40,7 @@ input_number:
     max: 50
     step: 2
     unit_of_measurement: km
-    icon: mdi:tape-measure
+    icon: mdi:map-marker-distance
   sun_elevation:
     name: Sun Elevation
     initial: 30
@@ -50,12 +52,12 @@ input_number:
 input_text:
   friend_direction:
     name: Friend Direction
-    icon: mdi:compass-outline
-    initial: "E (90°) @ 40km"
+    icon: mdi:map-marker-circle
+    initial: 'SW (235°) @ 40km'
   sun_direction:
     name: Sun Direction
-    icon: mdi:compass-outline
-    initial: "-70"
+    icon: mdi:weather-sunny
+    initial: '-125'
 
 recorder:
   auto_purge: true
@@ -68,7 +70,7 @@ sensor:
   - platform: template
     sensors:
       direction:
-        friendly_name: "Direction"
-        unit_of_measurement: "°"
-        icon_template: "mdi:compass"
+        friendly_name: 'Direction'
+        unit_of_measurement: '°'
+        icon_template: 'mdi:compass-outline'
         value_template: "{{ states('input_number.wind_direction') | float }}"
