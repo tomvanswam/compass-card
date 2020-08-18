@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property, TemplateResult, CSSResult, c
 import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
 import { CompassCardConfig } from './types';
-import { INDICATORS, CONFIG_COMPASS, CONFIG_INDICATOR, CONFIG_ENTITY, CONFIG_SECONDARY_ENTITY, CONFIG_DIRECTION_OFFSET, CONFIG_NAME, CONFIG_SHOW_NORTH, CONFIG_DOMAINS, CONFIG_LANGUAGE } from './const';
+import { INDICATORS, DEFAULT_INDICATOR, CONFIG_COMPASS, CONFIG_INDICATOR, CONFIG_ENTITY, CONFIG_SECONDARY_ENTITY, CONFIG_DIRECTION_OFFSET, CONFIG_NAME, CONFIG_SHOW_NORTH, CONFIG_DOMAINS, CONFIG_LANGUAGE } from './const';
 
 import { localize, COMPASS_LANGUAGES } from './localize/localize';
 
@@ -47,10 +47,11 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   get _compass_indicator(): string {
+    console.log(this._config?.compass?.indicator, INDICATORS[DEFAULT_INDICATOR]);
     if (this._config) {
-      return this._config?.compass?.indicator || INDICATORS[1];
+      return this._config?.compass?.indicator || INDICATORS[DEFAULT_INDICATOR];
     }
-    return INDICATORS[1];
+    return INDICATORS[DEFAULT_INDICATOR];
   }
 
   get _compass_show_north(): boolean {
@@ -76,8 +77,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const entities = Object.keys(this.hass.states)
       .filter((eid) => CONFIG_DOMAINS.includes(eid.substr(0, eid.indexOf('.'))))
       .sort();
-    const indicatorsSorted = INDICATORS;
-    const languages = COMPASS_LANGUAGES;
 
     return html`
       <div class="card-config">
@@ -97,8 +96,8 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           </paper-listbox>
         </paper-dropdown-menu>
         <paper-dropdown-menu class="editor-entity-select" label="${localize('editor.indicator')} (${localize('editor.optional')})" @value-changed=${this._valueChanged} .configValue=${CONFIG_COMPASS + '.' + CONFIG_INDICATOR}>
-          <paper-listbox slot="dropdown-content" .selected=${indicatorsSorted.indexOf(this._compass_indicator)}>
-            ${indicatorsSorted.map((indicator) => {
+          <paper-listbox slot="dropdown-content" .selected=${INDICATORS.indexOf(this._compass_indicator)}>
+            ${INDICATORS.map((indicator) => {
               return html` <paper-item>${indicator}</paper-item>`;
             })}
           </paper-listbox>
@@ -109,8 +108,8 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           @value-changed=${this._valueChanged}
           .configValue=${CONFIG_COMPASS + '.' + CONFIG_LANGUAGE}
         >
-          <paper-listbox slot="dropdown-content" .selected=${languages.indexOf(this._compass_language)}>
-            ${languages.map((language) => {
+          <paper-listbox slot="dropdown-content" .selected=${COMPASS_LANGUAGES.indexOf(this._compass_language)}>
+            ${COMPASS_LANGUAGES.map((language) => {
               return html` <paper-item>${language}</paper-item>`;
             })}
           </paper-listbox>
