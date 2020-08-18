@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "Versjon",
+    "description": "Vis et kompass med en indikator i retning av enhetens verdi",
+    "invalid_configuration": "Ugyldig konfigurasjon",
+    "no_entity": "Enheten er ikke konfigurert",
+    "offset_not_a_number": "Retningsforskyvning er ikke et tall",
+    "invalid": "Ugyldig",
+    "on": "På",
+    "off": "Av"
+  },
+  "editor": {
+    "name": "Navn",
+    "optional": "Valgfri",
+    "entity": "Enhet",
+    "required": "Obligatorisk",
+    "primary": "Primær",
+    "secondary": "Sekundær",
+    "indicator": "Indikator",
+    "direction": "Retning",
+    "offset": "Offset",
+    "show": "Vis",
+    "abbreviations": "Forkortelser",
+    "toggle": "Veksle",
+    "language": "Språk"
+  },
+  "directions": {
+    "north": "Nord",
+    "east": "Øst",
+    "south": "Sør",
+    "west": "Vest",
+    "N": "N",
+    "NNE": "NNØ",
+    "NE": "NØ",
+    "ENE": "ØNØ",
+    "E": "E",
+    "ESE": "ESE",
+    "SE": "SØ",
+    "SSE": "SSE",
+    "S": "S",
+    "SSW": "SSV",
+    "SW": "SV",
+    "WSW": "VSV",
+    "W": "V",
+    "WNW": "VNV",
+    "NW": "NV",
+    "NNW": "NNV"
+  }
+}
