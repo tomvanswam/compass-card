@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "version",
+    "description": "Montre une boussole avec un indicateur dans la direction de la valeur de l'entité",
+    "invalid_configuration": "configuration non valable",
+    "no_entity": "entité non configurée",
+    "offset_not_a_number": "Le décalage de direction n'est pas un nombre",
+    "invalid": "invalide",
+    "on": "allumé",
+    "off": "éteint"
+  },
+  "editor": {
+    "name": "Nom",
+    "optional": "Facultatif",
+    "entity": "entité",
+    "required": "obligatoire",
+    "primary": "primaire",
+    "secondary": "secondaire",
+    "indicator": "indicateur",
+    "direction": "direction",
+    "offset": "décalage",
+    "show": "montrer",
+    "abbreviations": "abréviations",
+    "toggle": "basculer",
+    "language": "langue"
+  },
+  "directions": {
+    "north": "Nord",
+    "east": "Est",
+    "south": "Sud",
+    "west": "Ouest",
+    "N": "N",
+    "NNE": "NNE",
+    "NE": "NE",
+    "ENE": "ENE",
+    "E": "E",
+    "ESE": "ESE",
+    "SE": "SE",
+    "SSE": "SSE",
+    "S": "S",
+    "SSW": "SSO",
+    "SW": "SO",
+    "WSW": "OSO",
+    "W": "O",
+    "WNW": "ONO",
+    "NW": "NO",
+    "NNW": "NNO"
+  }
+}
