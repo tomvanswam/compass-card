@@ -1,21 +1,23 @@
-import * as en from './languages/en.json';
-import * as nl from './languages/nl.json';
-import * as it from './languages/it.json';
 import * as de from './languages/de.json';
-import * as fr from './languages/fr.json';
+import * as en from './languages/en.json';
 import * as es from './languages/es.json';
-import * as pt from './languages/pt.json';
+import * as fr from './languages/fr.json';
+import * as it from './languages/it.json';
+import * as nl from './languages/nl.json';
 import * as no from './languages/no.json';
+import * as pl from './languages/pl.json';
+import * as pt from './languages/pt.json';
 
 export const languages: any = {
-  en: en,
-  nl: nl,
-  it: it,
   de: de,
+  en: en,
   es: es,
-  pt: pt,
-  no: no,
   fr: fr,
+  it: it,
+  nl: nl,
+  no: no,
+  pl: pl,
+  pt: pt,
 };
 export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
 

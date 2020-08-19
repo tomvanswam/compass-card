@@ -138,6 +138,7 @@ The following languages are supported:
 | Italian   | `it`       | v0.3.0    | [@matteofranceschini](https://github.com/matteofranceschini) |
 | Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
 | Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
+| Polish    | `pl`       | v0.3.2    | [@porebas](https://github.com/porebas)                       |
 | Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 
 Pick the language in the visual editor, or add it to yaml config.
