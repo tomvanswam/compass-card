@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "versão",
+    "description": "Exibe uma bússola com um indicador na direção do valor da entidade",
+    "invalid_configuration": "configuração inválida",
+    "no_entity": "entidade não configurada",
+    "offset_not_a_number": "o offset direcional não é um número",
+    "invalid": "inválido",
+    "on": "ligado",
+    "off": "desligado"
+  },
+  "editor": {
+    "name": "nome",
+    "optional": "opcional",
+    "entity": "entidade",
+    "required": "necessário",
+    "primary": "primário",
+    "secondary": "secundário",
+    "indicator": "indicador",
+    "direction": "direção",
+    "offset": "offset",
+    "show": "mostra",
+    "abbreviations": "abreviações",
+    "toggle": "alternar",
+    "language": "idioma"
+  },
+  "directions": {
+    "north": "norte",
+    "east": "leste",
+    "south": "sul",
+    "west": "oeste",
+    "N": "N",
+    "NNE": "NNE",
+    "NE": "NE",
+    "ENE": "ENE",
+    "E": "L",
+    "ESE": "ESE",
+    "SE": "SE",
+    "SSE": "SSE",
+    "S": "S",
+    "SSW": "SSO",
+    "SW": "SO",
+    "WSW": "OSO",
+    "W": "O",
+    "WNW": "ONO",
+    "NW": "NO",
+    "NNW": "NNO"
+  }
+}

@@ -119,20 +119,45 @@ compass:
 
 ### Compass Object
 
-| Name       | Type      | Requirement  | Default         | Supported | Visual Config | Description                                                                                                                       |
-| ---------- | --------- | ------------ | --------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| indicator  | list item | **Optional** | `arrow_outward` | v0.1.0    | &#10003;      | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
-| show_north | boolean   | **Optional** | `false`         | v0.2.0    | &#10003;      | Show an indicator at the northern side of the compass                                                                             |
-| language   | list item | **Optional** |                 | v0.3.0    | &#10003;      | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language                        |
+| Name       | Type                  | Requirement  | Default         | Supported | Visual Config | Description                                                                                                                       |
+| ---------- | --------------------- | ------------ | --------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| indicator  | list item             | **Optional** | `arrow_outward` | v0.1.0    | &#10003;      | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
+| show_north | boolean               | **Optional** | `false`         | v0.2.0    | &#10003;      | Show an indicator at the northern side of the compass                                                                             |
+| language   | [language](#language) | **Optional** |                 | v0.3.0    | &#10003;      | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language                        |
+
+### Language
+
+The following languages are supported:
+
+| Language  | Yaml value | Supported | Translated by                                                |
+| --------- | ---------- | --------- | ------------------------------------------------------------ |
+| Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
+| English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
+| French    | `fr`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
+| German    | `de`       | v0.3.0    | [@rainer-geiger](https://github.com/rainer-geiger)           |
+| Italian   | `it`       | v0.3.0    | [@matteofranceschini](https://github.com/matteofranceschini) |
+| Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
+| Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
+| Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
+
+Pick the language in the visual editor, or add it to yaml config.
+
+Example for Portugese abbreviations (regardless of Home Assistant language setting):
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+compass:
+  language: pt
+```
 
 ## Wish/Todo list
 
 - Additional entities to show on circle
-- Custom styled indicator (per entity)
 - Background image
 - Hide indicator in certain directions (to use the card to display the sun or moon's movement)
 - Css options to change look & feel
-- Localisation of direction abbreviation
 - Cleanup unused boilerplate code
 
 ## Contact
@@ -145,8 +170,7 @@ And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](
 - [@rsnodgrass](https://github.com/rsnodgrass) for [wind-compass-card](https://github.com/rsnodgrass/wind-compass-card), which gave me the idea to make this
 - [@iantrich](https://www.github.com/iantrich) for the [boiler-plate card](https://github.com/custom-cards/boilerplate-card), which got me started
 - [@xixao](https://codepen.io/xixao/) for [wind speed/direction css](https://codepen.io/xixao/pen/OPovyN)
-- [@matteofranceschini](https://github.com/matteofranceschini) for the Italian translation
-- [@rainer-geiger](https://github.com/rainer-geiger) for the German translation
+- [All the translators](#language)
 
 ## Support
 

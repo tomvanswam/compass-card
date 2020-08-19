@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "Versión",
+    "description": "Mostrar una brújula con un indicador en la dirección del valor de la entidad",
+    "invalid_configuration": "Configuración inválida",
+    "no_entity": "Entidad no configurada",
+    "offset_not_a_number": "El desplazamiento de dirección no es un número",
+    "invalid": "inválido",
+    "on": "Encendido",
+    "off": "Apagado"
+  },
+  "editor": {
+    "name": "Nombre",
+    "optional": "Opcional",
+    "entity": "Entidad",
+    "required": "Requerido",
+    "primary": "Primario",
+    "secondary": "Secundario",
+    "indicator": "Indicador",
+    "direction": "Dirección",
+    "offset": "Desplazamiento",
+    "show": "Mostrar",
+    "abbreviations": "Abreviaturas",
+    "toggle": "Conmutar",
+    "language": "Idioma"
+  },
+  "directions": {
+    "north": "Norte",
+    "east": "Este",
+    "south": "Sur",
+    "west": "Oeste",
+    "N": "N",
+    "NNE": "NNE",
+    "NE": "NE",
+    "ENE": "ENE",
+    "E": "E",
+    "ESE": "ESE",
+    "SE": "SE",
+    "SSE": "SSE",
+    "S": "S",
+    "SSW": "SSO",
+    "SW": "SO",
+    "WSW": "OSO",
+    "W": "O",
+    "WNW": "ONO",
+    "NW": "NO",
+    "NNW": "NNO"
+  }
+}

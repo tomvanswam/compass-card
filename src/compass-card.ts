@@ -6,7 +6,7 @@ import { CompassCardConfig, CCProperties } from './types';
 import './editor';
 import style from './style';
 
-import { CARD_VERSION, ICONS, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE, INDICATORS } from './const';
+import { CARD_VERSION, ICONS, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE, INDICATORS, DEFAULT_INDICATOR } from './const';
 
 import { localize } from './localize/localize';
 
@@ -202,7 +202,7 @@ export class CompassCard extends LitElement {
     if (config.compass && config.compass.indicator && INDICATORS.indexOf(config.compass.indicator) >= 0) {
       return config.compass.indicator;
     }
-    return INDICATORS[0];
+    return INDICATORS[DEFAULT_INDICATOR];
   }
 
   static getDegrees(abbrevation: string): number {
