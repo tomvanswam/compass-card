@@ -1,0 +1,49 @@
+{
+  "common": {
+    "version": "Verze",
+    "description": "Zobrazit kompas s indikátorem ve směru hodnoty entity",
+    "invalid_configuration": "Neplatná konfigurace",
+    "no_entity": "Entita není nakonfigurována",
+    "offset_not_a_number": "Kompenzace směru není číslo",
+    "invalid": "Neplatné",
+    "on": "Zapnuto",
+    "off": "Vypnuto"
+  },
+  "editor": {
+    "name": "Název",
+    "optional": "Volitelný",
+    "entity": "Entita",
+    "required": "Požadované",
+    "primary": "Směr",
+    "secondary": "Sekundární",
+    "indicator": "Indikátor",
+    "direction": "Směr",
+    "offset": "Kompenzace",
+    "show": "Ukázat",
+    "abbreviations": "Zkratky",
+    "toggle": "Přepnout",
+    "language": "Jazyk"
+  },
+  "directions": {
+    "north": "Sever",
+    "east": "Východ",
+    "south": "Jih",
+    "west": "Západ",
+    "N": "S",
+    "NNE": "SSV",
+    "NE": "SV",
+    "ENE": "VSV",
+    "E": "V",
+    "ESE": "VJV",
+    "SE": "JV",
+    "SSE": "JJV",
+    "S": "J",
+    "SSW": "JJZ",
+    "SW": "JZ",
+    "WSW": "ZJZ",
+    "W": "Z",
+    "WNW": "ZSZ",
+    "NW": "SZ",
+    "NNW": "SSZ"
+  }
+}

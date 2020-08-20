@@ -1,3 +1,4 @@
+import * as cz from './languages/cz.json';
 import * as de from './languages/de.json';
 import * as en from './languages/en.json';
 import * as es from './languages/es.json';
@@ -9,6 +10,7 @@ import * as pl from './languages/pl.json';
 import * as pt from './languages/pt.json';
 
 export const languages: any = {
+  cz: cz,
   de: de,
   en: en,
   es: es,
