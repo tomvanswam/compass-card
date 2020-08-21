@@ -8,6 +8,7 @@ import * as nl from './languages/nl.json';
 import * as no from './languages/no.json';
 import * as pl from './languages/pl.json';
 import * as pt from './languages/pt.json';
+import * as ru from './languages/ru.json';
 
 export const languages: any = {
   cz: cz,
@@ -20,6 +21,7 @@ export const languages: any = {
   no: no,
   pl: pl,
   pt: pt,
+  ru: ru,
 };
 export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
 
