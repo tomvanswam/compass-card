@@ -108,22 +108,88 @@ compass:
 
 ## Options
 
-| Name             | Type                              | Requirement  | Default               | Supported | Visual Config | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------- | --------------------------------- | ------------ | --------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type             | string                            | **Required** | `custom:compass-card` | v0.0.1    |               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| name             | string                            | **Optional** |                       | v0.0.1    | &#10003;      | Card header                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| entity           | sensor                            | **Required** | `none`                | v0.0.1    | &#10003;      | Entity that is used to draw the indicator in the compass. Valid entity states are:<br />number - (positive and/or negative, multiples of 360 are removed).<br />string - only Cardinal directions in English (e.g. E of WSW)<br/>string - any string with numbers in it will use the numbers as direction for both indicator and display value (e.g. `E (90.4)` parsed to `90.4`)<br />Indicator direction is full range (not only the 16 cardinal directions) |
-| secondary_entity | sensor                            | **Optional** | `none`                | v0.0.1    | &#10003;      | Entity to show under the direction in compass                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| direction_offset | number                            | **Optional** | `0`                   | v0.0.1    | &#10003;      | Value to offset the indicator display with.<br />(E.g. to create a relative north)                                                                                                                                                                                                                                                                                                                                                                             |
-| compass          | [compass object](#compass-object) | **Optional** |                       | v0.1.0    | &#8594;       | Compass properties                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Name             | Type                              | Requirement  | Default               | Supported | Config                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------- | --------------------------------- | ------------ | --------------------- | --------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type             | string                            | **Required** | `custom:compass-card` | v0.0.1    |                                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| name             | string                            | **Optional** |                       | v0.0.1    | Visual/YAML                           | Card header                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| entity           | sensor                            | **Required** | `none`                | v0.0.1    | Visual/YAML                           | Entity that is used to draw the indicator in the compass. Valid entity states are:<br />number - (positive and/or negative, multiples of 360 are removed).<br />string - only Cardinal directions in English (e.g. E of WSW)<br/>string - any string with numbers in it will use the numbers as direction for both indicator and display value (e.g. `E (90.4)` parsed to `90.4`)<br />Indicator direction is full range (not only the 16 cardinal directions) |
+| secondary_entity | sensor                            | **Optional** | `none`                | v0.0.1    | Visual/YAML                           | Entity to show under the direction in compass                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| direction_offset | number                            | **Optional** | `0`                   | v0.0.1    | Visual/YAML                           | Value to offset the indicator display with.<br />(E.g. to create a relative north)                                                                                                                                                                                                                                                                                                                                                                             |
+| compass          | [compass object](#compass-object) | **Optional** |                       | v0.1.0    | See [compass object](#compass-object) | Compass properties                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| tap_action       | [action config](#action-config)   | **Optional** |                       | v0.4.0    | See [action config](#action-config)   | Tap action settings (what happens when you click/touch the card)                                                                                                                                                                                                                                                                                                                                                                                               |
 
 ### Compass Object
 
-| Name       | Type                  | Requirement  | Default         | Supported | Visual Config | Description                                                                                                                       |
-| ---------- | --------------------- | ------------ | --------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| indicator  | list item             | **Optional** | `arrow_outward` | v0.1.0    | &#10003;      | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
-| show_north | boolean               | **Optional** | `false`         | v0.2.0    | &#10003;      | Show an indicator at the northern side of the compass                                                                             |
-| language   | [language](#language) | **Optional** |                 | v0.3.0    | &#10003;      | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language                        |
+| Name       | Type                  | Requirement  | Default         | Supported | Config      | Description                                                                                                                       |
+| ---------- | --------------------- | ------------ | --------------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| indicator  | list item             | **Optional** | `arrow_outward` | v0.1.0    | Visual/YAML | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
+| show_north | boolean               | **Optional** | `false`         | v0.2.0    | Visual/YAML | Show an indicator at the northern side of the compass                                                                             |
+| language   | [language](#language) | **Optional** |                 | v0.3.0    | Visual/YAML | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language                        |
+
+### Action Config
+
+| Name            | Type                | Requirement                            | Default                             | Supported | Config    | Description                                                                                                                                                                                         |
+| --------------- | ------------------- | -------------------------------------- | ----------------------------------- | --------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| action          | list item           | **Optional**                           | `more-info`                         | v0.4.0    | YAML only | Type of action to launch when clicking/touching the card:<br />`more-info`<br />`navigate`<br />`url`<br/>`call-service`                                                                            |
+| entity          | string              | **Optional** for action `more-info`    | `entity` used for compass direction | v0.4.0    | YAML only | Entity to show the `more-info` of. When empty the compass direction `more-info` is shown                                                                                                            |
+| navigation_path | string              | **Required** for action `navigate`     |                                     | v0.4.0    | YAML only | Path to navigate to, has to be on the same host as the card is. E.g. `/logbook`, `/config/dashboard` or `lovelace/default_view`                                                                     |
+| url             | string              | **Required** for action `url`          |                                     | v0.4.0    | YAML only | Url to navigate to, can be any valid webpage                                                                                                                                                        |
+| service         | string              | **Required** for action `call-service` |                                     | v0.4.0    | YAML only | Home Assistant service to call, see `Developer Tools -> Services` what services are available, e.g. `light.turn_on`                                                                                 |
+| service_data    | string, json format | **Optional** for action `call-service` |                                     | v0.4.0    | YAML only | Service data to send, see `Developer Tools -> Services` what data specific services need.<br/>Needs to be a string in json format e.g. `{"entity_id": "light.kitchen", "rgb_color": [255,100,100]}` |
+
+#### Action config examples
+
+##### More Info
+
+Open the more info of a person entity when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  entity: person.friend
+```
+
+##### Navigate
+
+Open the Home Assistant map page when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  action: navigate
+  navigation_path: /map
+```
+
+##### Url
+
+Open Google Maps when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  action: url
+  url: https://www.google.nl/maps
+```
+
+##### Call Service
+
+Send notification when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  action: call-service
+  service: notify.notify
+  service_data: '{"message": "Hey Im watching you.", "title": "Message from your best friend"}'
+```
 
 ### Language
 
@@ -131,6 +197,7 @@ The following languages are supported:
 
 | Language  | Yaml value | Supported | Translated by                                                |
 | --------- | ---------- | --------- | ------------------------------------------------------------ |
+| Czech     | `cz`       | v0.4.0    | [@woodcat64](https://github.com/Woodcat64)                   |
 | Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
 | English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
 | French    | `fr`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
@@ -139,6 +206,7 @@ The following languages are supported:
 | Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
 | Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 | Polish    | `pl`       | v0.3.2    | [@porebas](https://github.com/porebas)                       |
+| Russian   | `ru`       | v0.4.0    | [@artemyevav](https://github.com/artemyevav)                 |
 | Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 
 Pick the language in the visual editor, or add it to yaml config.

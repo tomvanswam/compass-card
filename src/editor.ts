@@ -47,7 +47,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   get _compass_indicator(): string {
-    console.log(this._config?.compass?.indicator, INDICATORS[DEFAULT_INDICATOR]);
     if (this._config) {
       return this._config?.compass?.indicator || INDICATORS[DEFAULT_INDICATOR];
     }
