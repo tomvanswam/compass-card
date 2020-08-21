@@ -1,10 +1,10 @@
 homeassistant:
 
-config:
+default_config:
+
 frontend:
   themes: !include_dir_merge_named themes
-system_health:
-logger:
+
 history:
   exclude:
     domains:
@@ -53,11 +53,11 @@ input_text:
   friend_direction:
     name: Friend Direction
     icon: mdi:map-marker-circle
-    initial: 'SW (235°) @ 40km'
+    initial: "SW (235°) @ 40km"
   sun_direction:
     name: Sun Direction
     icon: mdi:weather-sunny
-    initial: '-125'
+    initial: "-125"
 
 recorder:
   auto_purge: true
@@ -70,7 +70,7 @@ sensor:
   - platform: template
     sensors:
       direction:
-        friendly_name: 'Direction'
-        unit_of_measurement: '°'
-        icon_template: 'mdi:compass-outline'
+        friendly_name: "Direction"
+        unit_of_measurement: "°"
+        icon_template: "mdi:compass-outline"
         value_template: "{{ states('input_number.wind_direction') | float }}"
