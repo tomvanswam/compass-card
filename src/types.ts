@@ -37,7 +37,7 @@ export interface CCCompass extends CCProperties {
 }
 
 export interface ActionConfig {
-  action: string;
+  action?: string;
   entity?: string;
   service?: string;
   service_data?: string;

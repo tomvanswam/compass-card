@@ -5,7 +5,7 @@ import { ActionConfig, CompassCardConfig } from '../types';
 
 export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: ActionConfig): void => {
   let e;
-  switch (actionConfig.action) {
+  switch (actionConfig.action || 'more-info') {
     case 'more-info': {
       e = new Event('hass-more-info', { composed: true });
       e.detail = {

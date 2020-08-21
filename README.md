@@ -137,6 +137,60 @@ compass:
 | service         | string              | **Required** for action `call-service` |                                     | v0.4.0    | YAML only | Home Assistant service to call, see `Developer Tools -> Services` what services are available, e.g. `light.turn_on`                                                                                 |
 | service_data    | string, json format | **Optional** for action `call-service` |                                     | v0.4.0    | YAML only | Service data to send, see `Developer Tools -> Services` what data specific services need.<br/>Needs to be a string in json format e.g. `{"entity_id": "light.kitchen", "rgb_color": [255,100,100]}` |
 
+#### Action config examples
+
+##### More Info
+
+Open the more info of a person entity when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  entity: person.friend
+```
+
+##### Navigate
+
+Open the Home Assistant map page when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  action: navigate
+  navigation_path: /map
+```
+
+##### Url
+
+Open Google Maps when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  action: url
+  url: https://www.google.nl/maps
+```
+
+##### Call Service
+
+Send notification when clicking/touching the card
+
+```yaml
+type: custom:compass-card
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+tap_action:
+  action: call-service
+  service: notify.notify
+  service_data: '{"message": "Hey Im watching you.", "title": "Message from your best friend"}'
+```
+
 ### Language
 
 The following languages are supported:

@@ -158,7 +158,7 @@ export class CompassCard extends LitElement {
   private handlePopup(e) {
     e.stopPropagation();
     if (this._config.tap_action) {
-      handleClick(this, this.hass, this._config, this._config.tap_action || 'more-info');
+      handleClick(this, this.hass, this._config, this._config.tap_action);
     }
   }
 
