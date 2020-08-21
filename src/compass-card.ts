@@ -2,6 +2,7 @@ import { LitElement, html, customElement, property, CSSResult, TemplateResult, P
 import { HomeAssistant, LovelaceCardEditor, getLovelace } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { CompassCardConfig, CCProperties } from './types';
+import handleClick from './utils/handleClick';
 
 import './editor';
 import style from './style';
@@ -100,7 +101,7 @@ export class CompassCard extends LitElement {
     const label = direction ? direction.attributes.friendly_name : this._config.entity;
 
     return html`
-      <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex">
+      <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex" @click=${(e) => this.handlePopup(e)}>
         ${this.renderHeader()}
         <div class="content">
           ${this.renderCompass(direction, secondary_entity, direction_offset)}
@@ -152,6 +153,13 @@ export class CompassCard extends LitElement {
         ${this._config.compass?.show_north ? html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg)"></div>` : ''}
       </div>
     `;
+  }
+
+  private handlePopup(e) {
+    e.stopPropagation();
+    if (this._config.tap_action) {
+      handleClick(this, this.hass, this._config, this._config.tap_action || 'more-info');
+    }
   }
 
   private getConfigStyle(style: CCProperties | undefined): string {

@@ -7,6 +7,7 @@ export interface CompassCardConfig extends LovelaceCardConfig {
   entity: string;
   secondary_entity?: string;
   compass?: CCCompass;
+  tap_action?: ActionConfig;
 }
 
 export interface CCColorThreshold {
@@ -33,4 +34,13 @@ export interface CCCompass extends CCProperties {
   indicator?: string;
   show_north?: boolean;
   language?: string;
+}
+
+export interface ActionConfig {
+  action: string;
+  entity?: string;
+  service?: string;
+  service_data?: string;
+  navigation_path?: string;
+  url?: string;
 }
