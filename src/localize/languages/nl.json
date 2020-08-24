@@ -22,7 +22,12 @@
     "show": "Toon",
     "abbreviations": "Afkorting",
     "toggle": "Wissel",
-    "language": "Taal"
+    "language": "Taal",
+    "primary entity description": "Richtings Entiteit",
+    "secondary entity description": "Secundaire Entiteit",
+    "language description": "Richting Afkortings Taal",
+    "offset description": "Richtings Afwijking",
+    "show north description": "Toon Indicator Noorden"
   },
   "directions": {
     "north": "Noorden",

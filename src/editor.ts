@@ -80,14 +80,14 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     return html`
       <div class="card-config">
         <paper-input label="${localize('editor.name')} (${localize('editor.optional')})" .value=${this._name} .configValue=${CONFIG_NAME} @value-changed=${this._valueChanged}></paper-input>
-        <paper-dropdown-menu class="editor-entity-select" label="${localize('editor.primary')} ${localize('editor.entity')} (${localize('editor.required')})" @value-changed=${this._valueChanged} .configValue=${CONFIG_ENTITY}>
+        <paper-dropdown-menu class="editor-entity-select" label="${localize('editor.primary entity description')} (${localize('editor.required')})" @value-changed=${this._valueChanged} .configValue=${CONFIG_ENTITY}>
           <paper-listbox slot="dropdown-content" .selected=${entities.indexOf(this._entity)}>
             ${entities.map((entity) => {
               return html` <paper-item>${entity}</paper-item> `;
             })}
           </paper-listbox>
         </paper-dropdown-menu>
-        <paper-dropdown-menu class="editor-entity-select" label="${localize('editor.secondary')} ${localize('editor.entity')} (${localize('editor.optional')})" @value-changed=${this._valueChanged} .configValue=${CONFIG_SECONDARY_ENTITY}>
+        <paper-dropdown-menu class="editor-entity-select" label="${localize('editor.secondary entity description')} (${localize('editor.optional')})" @value-changed=${this._valueChanged} .configValue=${CONFIG_SECONDARY_ENTITY}>
           <paper-listbox slot="dropdown-content" .selected=${entities.indexOf(this._secondary_entity)}>
             ${entities.map((secondary_entity) => {
               return html` <paper-item>${secondary_entity}</paper-item> `;
@@ -101,26 +101,21 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
             })}
           </paper-listbox>
         </paper-dropdown-menu>
-        <paper-dropdown-menu
-          class="editor-entity-select"
-          label="${localize('editor.direction')} ${localize('editor.abbreviations')} ${localize('editor.language')} (${localize('editor.optional')})"
-          @value-changed=${this._valueChanged}
-          .configValue=${CONFIG_COMPASS + '.' + CONFIG_LANGUAGE}
-        >
+        <paper-dropdown-menu class="editor-entity-select" label="${localize('editor.language description')} (${localize('editor.optional')})" @value-changed=${this._valueChanged} .configValue=${CONFIG_COMPASS + '.' + CONFIG_LANGUAGE}>
           <paper-listbox slot="dropdown-content" .selected=${COMPASS_LANGUAGES.indexOf(this._compass_language)}>
             ${COMPASS_LANGUAGES.map((language) => {
               return html` <paper-item>${language}</paper-item>`;
             })}
           </paper-listbox>
         </paper-dropdown-menu>
-        <paper-input label="${localize('editor.direction')} ${localize('editor.offset')} (${localize('editor.optional')})" .value=${this._direction_offset} @value-changed=${this._valueChanged} .configValue=${CONFIG_DIRECTION_OFFSET}></paper-input>
+        <paper-input label="${localize('editor.offset description')} (${localize('editor.optional')})" .value=${this._direction_offset} @value-changed=${this._valueChanged} .configValue=${CONFIG_DIRECTION_OFFSET}></paper-input>
         <div class="floated-label-placeholder">${localize('editor.show')} ${localize('directions.north')}</div>
         <ha-switch
           aria-label=${`${localize('editor.toggle')} ${localize('directions.north')} ${this._compass_show_north ? localize('common.off') : localize('common.on')}`}
           .checked=${this._compass_show_north !== false}
           .configValue=${CONFIG_COMPASS + '.' + CONFIG_SHOW_NORTH}
           @change=${this._valueChanged}
-          >${localize('editor.show')} ${localize('directions.north')}</ha-switch
+          >${localize('editor.show north description')}</ha-switch
         >
       </div>
     `;

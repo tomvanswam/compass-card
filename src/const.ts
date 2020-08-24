@@ -22,24 +22,8 @@ export const COMPASS_POINTS = {
   NW: 315,
   NNW: 337.5,
 };
-export const COMPASS_ABBREVIATIONS = [
-  localize('directions.N'),
-  localize('directions.NNE'),
-  localize('directions.NE'),
-  localize('directions.ENE'),
-  localize('directions.E'),
-  localize('directions.ESE'),
-  localize('directions.SE'),
-  localize('directions.SSE'),
-  localize('directions.S'),
-  localize('directions.SSW'),
-  localize('directions.SW'),
-  localize('directions.WSW'),
-  localize('directions.W'),
-  localize('directions.WNW'),
-  localize('directions.NW'),
-  localize('directions.NNW'),
-];
+export const COMPASS_ABBREVIATIONS = [...Object.keys(COMPASS_POINTS)];
+
 export const UNAVAILABLE = localize('common.invalid');
 
 export const INDICATORS = ['arrow_inward', 'arrow_outward', 'circle'].sort();
