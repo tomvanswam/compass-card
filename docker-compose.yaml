@@ -10,7 +10,7 @@ services:
     environment:
       - TZ=Europe/Amsterdam
     ports:
-      - "80:8123"
+      - "8123:8123"
     depends_on:
       - npm
   npm:
@@ -22,5 +22,5 @@ services:
     volumes:
       - ./:/home/node/app
     ports:
-      - "8080:5000"
+      - "5000:5000"
     command: "npm start"
