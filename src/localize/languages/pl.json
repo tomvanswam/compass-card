@@ -22,7 +22,12 @@
     "show": "Pokaż",
     "abbreviations": "Skróty",
     "toggle": "Przełącznik",
-    "language": "Język"
+    "language": "Język",
+    "primary entity description": "Encja Kierunku",
+    "secondary entity description": "Encja Dodatkowa",
+    "language description": "Język Skrótów Kierunków",
+    "offset description": "Przesunięcie Kierunku",
+    "show north description": "Pokaż Wskaźnik Północy"
   },
   "directions": {
     "north": "Północ",
