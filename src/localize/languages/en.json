@@ -23,11 +23,11 @@
     "abbreviations": "Abbreviations",
     "toggle": "Toggle",
     "language": "Language",
-    "primary entity description": "Direction Entity",
-    "secondary entity description": "Secondary Entity",
-    "language description": "Direction Abbreviation Language",
-    "offset description": "Direction Offset",
-    "show north description": "Show North Indicator"
+    "primary entity description": "Direction entity",
+    "secondary entity description": "Secondary entity",
+    "language description": "Direction abbreviation language",
+    "offset description": "Direction offset",
+    "show north description": "Show north indicator"
   },
   "directions": {
     "north": "North",

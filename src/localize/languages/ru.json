@@ -22,7 +22,12 @@
     "show": "Показать",
     "abbreviations": "Сокращения",
     "toggle": "Включить",
-    "language": "Язык"
+    "language": "Язык",
+    "primary entity description": "Объект направления",
+    "secondary entity description": "Дополнительный объект",
+    "language description": "Язык аббревиатуры направления",
+    "offset description": "Смещение направления",
+    "show north description": "Показать индикатор севера"
   },
   "directions": {
     "north": "Север",

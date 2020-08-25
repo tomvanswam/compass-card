@@ -23,11 +23,11 @@
     "abbreviations": "Afkorting",
     "toggle": "Wissel",
     "language": "Taal",
-    "primary entity description": "Richtings Entiteit",
-    "secondary entity description": "Secundaire Entiteit",
-    "language description": "Richting Afkortings Taal",
-    "offset description": "Richtings Afwijking",
-    "show north description": "Toon Indicator Noorden"
+    "primary entity description": "Richtings entiteit",
+    "secondary entity description": "Secundaire entiteit",
+    "language description": "Richting afkortings taal",
+    "offset description": "Richtingsafwijking",
+    "show north description": "Toon indicator noorden"
   },
   "directions": {
     "north": "Noorden",
