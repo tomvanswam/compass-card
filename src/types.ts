@@ -43,4 +43,5 @@ export interface ActionConfig {
   service_data?: string;
   navigation_path?: string;
   url?: string;
+  new_tab?: boolean;
 }
