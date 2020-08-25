@@ -2,13 +2,13 @@
 
 A custom Lovelace card that displays an indicator in a circle for use with [Home Assistant](https://home-assistant.io/).
 
-[![GitHub Release][releases-shield]][releases]
-[![License][license-shield]](LICENSE.md)
+[![GitHub Release][releases-shield]][releases-link] ![GitHub Release Date][release-date-shield] ![GitHub Releases][latest-download-shield] ![GitHub Releases][total-download-shield]
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+[![HACS Badge][hacs-shield]][hacs-link] ![HomeAssistant][home-assistant-shield] [![License][license-shield]][license-link]
 
-![Project Maintenance][maintenance-shield]
-[![GitHub Activity][commits-shield]][commits]
+![Project Maintenance][maintenance-shield] [![GitHub Activity][activity-shield]][activity-link] ![Open bugs][bugs-shield] ![Open enhancements][enhancements-shield]
+
+[![Community Forum][forum-shield]][forum-link] [![Buy Me A Coffee][coffee-shield]][coffee-link]
 
 ## Installation
 
@@ -25,7 +25,7 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
 1. Download the 'compass-card.js' from the latest [release](https://github.com/tomvanswam/compass-card/releases) (with right click, save link as)
 1. Place the downloaded file on your Home Assistant machine in the `config/www` folder (when there is no `www` folder in the folder where your `configuration.yaml` file is, create it and place the file there)
-1. In Home Assistant go to `Configuration->Lovelace Dashboards->Resources` (When there is no `resources` tag on the `Lovelace Dashboard` page, enable advanced mode in your account settings, rand retry this step)
+1. In Home Assistant go to `Configuration->Lovelace Dashboards->Resources` (When there is no `resources` tag on the `Lovelace Dashboard` page, enable advanced mode in your account settings, and retry this step)
 1. Add a new resource
    1. Url = `/local/compass-card.js`
    1. Resource type = `module`
@@ -35,7 +35,7 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 ## Using the card
 
 - Add the card with the visual editor
-- Or add the card manually with the following configuration:
+- Or add the card manually with the following (minimal) configuration:
 
   ```yaml
   type: custom:compass-card
@@ -248,9 +248,22 @@ Or clone, and create and a PR to help make the card even better.
 
 [![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://www.buymeacoffee.com/tomvanswam)
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/tomvanswam/compass-card.svg?style=for-the-badge
-[commits]: https://github.com/tomvanswam/compass-card/commits/master
-[license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2020.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/tomvanswam/compass-card.svg?style=for-the-badge
-[releases]: https://github.com/tomvanswam/compass-card/releases
+[releases-shield]: https://img.shields.io/github/release/tomvanswam/compass-card.svg?style=flat-square
+[releases-link]: https://github.com/tomvanswam/compass-card/releases
+[release-date-shield]: https://img.shields.io/github/release-date/tomvanswam/compass-card?style=flat-square
+[latest-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/latest/total?style=flat-square&label=downloads%20latest
+[total-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/total?style=flat-square&label=downloads%20total
+[hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square
+[hacs-link]: https://github.com/custom-components/hacs
+[home-assistant-shield]: https://img.shields.io/badge/Home%20Assistant-visual%20editor/yaml-green?style=flat-square
+[license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=flat-square
+[license-link]: LICENSE.md
+[activity-shield]: https://img.shields.io/github/commit-activity/y/tomvanswam/compass-card.svg?style=flat-square
+[activity-link]: https://github.com/tomvanswam/compass-card/commits/master
+[bugs-shield]: https://img.shields.io/github/issues/tomvanswam/compass-card/bug?color=red&style=flat-square&label=bugs
+[enhancements-shield]: https://img.shields.io/github/issues/tomvanswam/compass-card/enhancement?color=blue&style=flat-square&label=enhancements
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2020.svg?style=flat-square
+[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=flat-square
+[forum-link]: https://community.home-assistant.io/t/compass-card-points-you-in-the-right-direction/217909
+[coffee-shield]: https://img.shields.io/badge/Donate-buymeacoffe-tan?style=flat-square
+[coffee-link]: https://www.buymeacoffee.com/tomvanswam
