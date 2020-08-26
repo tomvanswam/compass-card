@@ -12,7 +12,11 @@ import { CARD_VERSION, ICONS, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE
 import { localize } from './localize/localize';
 
 /* eslint no-console: 0 */
-console.info(`%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(
+  `%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  'color: orange; font-weight: bold; background: black',
+  'color: white; font-weight: bold; background: dimgray',
+);
 
 declare global {
   interface Window {
