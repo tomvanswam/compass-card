@@ -153,8 +153,8 @@ export class CompassCard extends LitElement {
               : ''}
           </p>
         </div>
-        <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${(degrees + direction_offset) % 360}deg)"></div>
-        ${this._config.compass?.show_north ? html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg)"></div>` : ''}
+        <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${CompassCard.positiveDegrees(degrees + direction_offset)}deg)"></div>
+        ${this.renderNorthIndicator(direction_offset)}
       </div>
     `;
   }
@@ -169,6 +169,13 @@ export class CompassCard extends LitElement {
   private getConfigStyle(style: CCProperties | undefined): string {
     if (style && style.style_css) {
       return style.style_css;
+    }
+    return '';
+  }
+
+  private renderNorthIndicator(offset: number): TemplateResult | string {
+    if (this._config.compass?.show_north) {
+      return html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(offset)}deg)"></div>`;
     }
     return '';
   }
