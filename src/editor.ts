@@ -164,7 +164,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         </div>
         <ha-switch
           aria-label=${`${localize('editor.toggle')} ${localize('directions.north')} ${value ? localize('common.off') : localize('common.on')}`}
-          .checked=${this._compass_show_north !== false}
+          .checked=${value !== false}
           .configValue=${key}
           @change=${this._valueChanged}
           >${localize(label)}</ha-switch>
