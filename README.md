@@ -225,10 +225,9 @@ compass:
 ## Wish/Todo list
 
 - Additional entities to show on circle
-- Background image
-- Hide indicator in certain directions (to use the card to display the sun or moon's movement)
-- Css options to change look & feel
-- Cleanup unused boilerplate code
+- Background image ([#12](https://github.com/tomvanswam/compass-card/issues/12))
+- Hide indicator in certain directions (to use the card to display the sun or moon's movement) ([#12](https://github.com/tomvanswam/compass-card/issues/12))
+- Css options to change look & feel ([#12](https://github.com/tomvanswam/compass-card/issues/12)/[#14](https://github.com/tomvanswam/compass-card/issues/14))
 
 ## Contact
 
