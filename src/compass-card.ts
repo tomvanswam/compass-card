@@ -107,9 +107,7 @@ export class CompassCard extends LitElement {
     return html`
       <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex" @click=${(e) => this.handlePopup(e)}>
         ${this.renderHeader()}
-        <div class="content">
-          ${this.renderCompass(direction, secondary_entity, direction_offset)}
-        </div>
+        <div class="content">${this.renderCompass(direction, secondary_entity, direction_offset)}</div>
       </ha-card>
     `;
   }
@@ -142,16 +140,7 @@ export class CompassCard extends LitElement {
     return html`
       <div class="compass">
         <div class="direction" style="${this.getConfigStyle(this._config.compass)}">
-          <p>
-            ${abbreviation}
-            ${secondary
-              ? html`
-                  <span>
-                    ${secondary.state} ${secondary.attributes.unit_of_measurement}
-                  </span>
-                `
-              : ''}
-          </p>
+          <p>${abbreviation}${secondary ? html`<span>${secondary.state} ${secondary.attributes.unit_of_measurement}</span>` : ''}</p>
         </div>
         <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${CompassCard.positiveDegrees(degrees + direction_offset)}deg)"></div>
         ${this.renderNorthIndicator(direction_offset)}
