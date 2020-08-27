@@ -22,7 +22,12 @@
     "show": "Mostra",
     "abbreviations": "Abbreviazioni",
     "toggle": "Inverti stato",
-    "language": "Lingua"
+    "language": "Lingua",
+    "primary entity description": "Entità primaria",
+    "secondary entity description": "Entità secondaria",
+    "language description": "Lingua abbreviazione direzione",
+    "offset description": "Compensazione direzione",
+    "show north description": "Mostra indicatore Nord"
   },
   "directions": {
     "north": "Nord",

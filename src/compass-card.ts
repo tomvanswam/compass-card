@@ -12,7 +12,11 @@ import { CARD_VERSION, ICONS, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE
 import { localize } from './localize/localize';
 
 /* eslint no-console: 0 */
-console.info(`%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `, 'color: orange; font-weight: bold; background: black', 'color: white; font-weight: bold; background: dimgray');
+console.info(
+  `%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  'color: orange; font-weight: bold; background: black',
+  'color: white; font-weight: bold; background: dimgray',
+);
 
 declare global {
   interface Window {
@@ -103,9 +107,7 @@ export class CompassCard extends LitElement {
     return html`
       <ha-card tabindex="0" aria-label=${`Compass: ${label}`} class="flex" @click=${(e) => this.handlePopup(e)}>
         ${this.renderHeader()}
-        <div class="content">
-          ${this.renderCompass(direction, secondary_entity, direction_offset)}
-        </div>
+        <div class="content">${this.renderCompass(direction, secondary_entity, direction_offset)}</div>
       </ha-card>
     `;
   }
@@ -138,19 +140,10 @@ export class CompassCard extends LitElement {
     return html`
       <div class="compass">
         <div class="direction" style="${this.getConfigStyle(this._config.compass)}">
-          <p>
-            ${abbreviation}
-            ${secondary
-              ? html`
-                  <span>
-                    ${secondary.state} ${secondary.attributes.unit_of_measurement}
-                  </span>
-                `
-              : ''}
-          </p>
+          <p>${abbreviation} ${secondary ? html` <span> ${secondary.state} ${secondary.attributes.unit_of_measurement} </span> ` : ''}</p>
         </div>
-        <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${(degrees + direction_offset) % 360}deg)"></div>
-        ${this._config.compass?.show_north ? html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg)"></div>` : ''}
+        <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${CompassCard.positiveDegrees(degrees + direction_offset)}deg)"></div>
+        ${this.renderNorthIndicator(direction_offset)}
       </div>
     `;
   }
@@ -165,6 +158,13 @@ export class CompassCard extends LitElement {
   private getConfigStyle(style: CCProperties | undefined): string {
     if (style && style.style_css) {
       return style.style_css;
+    }
+    return '';
+  }
+
+  private renderNorthIndicator(offset: number): TemplateResult | string {
+    if (this._config.compass?.show_north) {
+      return html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(offset)}deg)"></div>`;
     }
     return '';
   }

@@ -22,7 +22,12 @@
     "show": "Mostrar",
     "abbreviations": "Abreviaturas",
     "toggle": "Conmutar",
-    "language": "Idioma"
+    "language": "Idioma",
+    "primary entity description": "Entidad primaria",
+    "secondary entity description": "Entidad secundaria",
+    "language description": "Idioma abreviatura dirección",
+    "offset description": "Desplazamiento de la dirección",
+    "show north description": "Mostrar indicador del norte"
   },
   "directions": {
     "north": "Norte",

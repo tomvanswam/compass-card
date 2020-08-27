@@ -22,7 +22,12 @@
     "show": "Ukázat",
     "abbreviations": "Zkratky",
     "toggle": "Přepnout",
-    "language": "Jazyk"
+    "language": "Jazyk",
+    "primary entity description": "Entita směru ",
+    "secondary entity description": "Sekundární entita",
+    "language description": "Jazyk zkratky směru",
+    "offset description": "Kompenzace směru",
+    "show north description": "Zobrazit indikátor severu"
   },
   "directions": {
     "north": "Sever",

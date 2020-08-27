@@ -1,0 +1,26 @@
+version: "3"
+services:
+  homeassistant:
+    container_name: ha-dev-ha
+    restart: unless-stopped
+    image: homeassistant/home-assistant
+    volumes:
+      - ./.ha-config:/config
+    privileged: true
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "8123:8123"
+    depends_on:
+      - npm
+  npm:
+    container_name: ha-dev-npm
+    image: "node:current-alpine3.12"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/home/node/app
+    ports:
+      - "5000:5000"
+    command: "npm start"

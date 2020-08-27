@@ -16,6 +16,10 @@ export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfi
     }
     case 'navigate': {
       if (!actionConfig.navigation_path) return;
+      if (actionConfig.new_tab || actionConfig.new_tab === undefined) {
+        window.open(actionConfig.navigation_path, '_blank');
+        break;
+      }
       window.history.pushState(null, '', actionConfig.navigation_path);
       e = new Event('location-changed', { composed: true });
       e.detail = { replace: false };
@@ -31,6 +35,10 @@ export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfi
     }
     case 'url': {
       if (!actionConfig.url) return;
+      if (actionConfig.new_tab || actionConfig.new_tab === undefined) {
+        window.open(actionConfig.url, '_blank');
+        break;
+      }
       window.location.href = actionConfig.url;
       break;
     }

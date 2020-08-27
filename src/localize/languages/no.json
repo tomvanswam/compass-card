@@ -22,7 +22,12 @@
     "show": "Vis",
     "abbreviations": "Forkortelser",
     "toggle": "Veksle",
-    "language": "Språk"
+    "language": "Språk",
+    "primary entity description": "Retningsenhet",
+    "secondary entity description": "Sekundær enhet",
+    "language description": "Retning for språkforkortelser",
+    "offset description": "Retningsforskyvningt",
+    "show north description": "Vis nordindikator"
   },
   "directions": {
     "north": "Nord",

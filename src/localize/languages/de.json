@@ -22,7 +22,12 @@
     "show": "Zeige",
     "abbreviations": "Abkürzungen",
     "toggle": "Umschalten",
-    "language": "Sprache"
+    "language": "Sprache",
+    "primary entity description": "Richtungsentität",
+    "secondary entity description": "Sekundäre Entität",
+    "language description": "Sprache der Himmelsrichtungen",
+    "offset description": "Richtungsversatz",
+    "show north description": "Nord-Indikator anzeigen"
   },
   "directions": {
     "north": "Norden",
