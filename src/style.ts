@@ -33,7 +33,7 @@ const style: CSSResult = css`
     padding: 8px 16px 0px;
   }
   .header > .name {
-    color: var(--secondary-text-color);
+    color: var(--compass-secondary-text-color, var(--secondary-text-color));
     line-height: 40px;
     font-weight: 500;
     font-size: 16px;
@@ -42,7 +42,7 @@ const style: CSSResult = css`
     overflow: hidden;
   }
   .icon {
-    color: var(--state-icon-color);
+    color: var(--compass-state-icon-color, var(--state-icon-color));
     margin-top: 8px;
     float: right;
   }
@@ -52,18 +52,19 @@ const style: CSSResult = css`
     width: 120px;
     height: 120px;
     position: relative;
-    margin: 0 auto 10px;
-    font-family: var(--paper-font-caption_-_font-family);
+    margin: 10px auto;
+    font-family: var(--compass-font-caption_-_font-family, var(--paper-font-caption_-_font-family));
   }
   .compass > .direction {
     height: 100%;
     width: 100%;
+    margin: -3px;
     display: block;
     border-radius: 100%;
     border-width: 3px;
-    border-color: var(--primary-color);
+    border-color: var(--compass-ring-color, var(--primary-color));
     border-style: solid;
-    color: var(--primary-text-color);
+    color: var(--compass-primary-text-color, var(--primary-text-color));
   }
   .compass > .direction > p {
     text-align: center;
@@ -82,53 +83,54 @@ const style: CSSResult = css`
     font-size: 11px;
     font-weight: normal;
   }
-  .compass > .indicator {
+  .indicator-pane {
     width: 100%;
     height: 100%;
     display: block;
     position: absolute;
     /* substract the direction border width to get correct size */
-    right: -3px;
+    right: 0px;
     /* add the direction border width to get correct size */
-    top: 3px;
+    top: 0px;
   }
-  .compass > .indicator:after {
+  .indicator {
     content: '';
     width: 0;
     height: 0;
     position: absolute;
-    margin-left: 0;
+    margin-left: -3px;
+  }
+  .arrow_outward {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 30px solid var(--compass-indicator-color, var(--accent-color));
+    /* substract left+right border width from full size to center */
+    left: calc((100% - 10px) / 2);
     z-index: 99;
   }
-
-  .compass > .indicator.arrow_outward:after {
+  .arrow_inward {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 30px solid var(--accent-color);
+    border-top: 30px solid var(--compass-indicator-color, var(--accent-color));
     /* substract left+right border width from full size to center */
-    left: calc((100% - 16px) / 2);
+    left: calc((100% - 10px) / 2);
+    z-index: 89;
   }
-  .compass > .indicator.arrow_inward:after {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 30px solid var(--accent-color);
-    /* substract left+right border width from full size to center */
-    left: calc((100% - 16px) / 2);
-  }
-  .compass > .indicator.circle:after {
-    border: 8px solid var(--accent-color);
+  .circle {
+    border: 8px solid var(--compass-indicator-color, var(--accent-color));
     margin: 8px;
     border-radius: 50%;
     /* substract 2x border + 2x margin from full size to center */
     left: calc((100% - 32px) / 2);
+    z-index: 79;
   }
-  .compass > .indicator.north:after {
-    color: var(--primary-color);
-    content: 'N';
+  .north {
+    color: var(--compass-north-color, var(--primary-color));
     padding-top: 0px;
     margin: -3px;
     /* substract margin from full size to center */
-    left: calc((100% - 3px) / 2);
+    left: calc((100% - 5px) / 2);
+    z-index: 109;
   }
 `;
 

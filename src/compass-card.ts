@@ -48,7 +48,7 @@ export class CompassCard extends LitElement {
   }
 
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @property({ attribute: false }) private _config!: CompassCardConfig;
+  @property({ attribute: false }) protected _config!: CompassCardConfig;
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
@@ -138,12 +138,14 @@ export class CompassCard extends LitElement {
       abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.compass?.language);
     }
     return html`
-      <div class="compass">
-        <div class="direction" style="${this.getConfigStyle(this._config.compass)}">
+      <div class="compass" style="${this.getConfigStyle(this._config.compass)}">
+        <div class="direction">
           <p>${abbreviation} ${secondary ? html` <span> ${secondary.state} ${secondary.attributes.unit_of_measurement} </span> ` : ''}</p>
         </div>
-        <div class="indicator ${CompassCard.computeIndicator(this._config)}" style="transform: rotate(${CompassCard.positiveDegrees(degrees + direction_offset)}deg)"></div>
-        ${this.renderNorthIndicator(direction_offset)}
+        <div class="indicator-pane" style="transform: rotate(${CompassCard.positiveDegrees(direction_offset)}deg);">${this.renderNorthIndicator()}</div>
+        <div class="indicator-pane" style="transform: rotate(${CompassCard.positiveDegrees(degrees + direction_offset)}deg);">
+          <div class="indicator ${CompassCard.computeIndicator(this._config)}"></div>
+        </div>
       </div>
     `;
   }
@@ -162,9 +164,9 @@ export class CompassCard extends LitElement {
     return '';
   }
 
-  private renderNorthIndicator(offset: number): TemplateResult | string {
+  private renderNorthIndicator(): TemplateResult | string {
     if (this._config.compass?.show_north) {
-      return html`<div class="indicator north" style="transform: rotate(${CompassCard.positiveDegrees(offset)}deg)"></div>`;
+      return html`<div class="indicator north">${localize('directions.N', '', '', this._config.compass?.language)}</div>`;
     }
     return '';
   }
