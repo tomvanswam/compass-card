@@ -53,6 +53,8 @@ entity: sensor.friends_direction
 secondary_entity: sensor.friends_distance
 ```
 
+[Issue #41](https://github.com/tomvanswam/compass-card/issues/41) show an example how to calculate the distance/direction of your friend.
+
 ![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-outward.png?raw=true)
 
 ### Compass indicator `arrow_inward`
