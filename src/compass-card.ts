@@ -100,7 +100,8 @@ export class CompassCard extends LitElement {
     };
 
     const direction: HassEntity = this.hass.states[this._config?.entity];
-    const directionOffset = !Number.isNaN(Number(this._config.directionOffset)) ? CompassCard.positiveDegrees(+this._config.directionOffset) : 0;
+    const directionOffset = !Number.isNaN(Number(this._config.direction_offset)) ? CompassCard.positiveDegrees(+this._config.direction_offset) : 0;
+    console.log(this._config.directionOffset);
 
     const label = direction ? direction.attributes.friendly_name : this._config.entity;
 
