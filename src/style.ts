@@ -1,14 +1,6 @@
 import { CSSResult, css } from 'lit-element';
 
 const style: CSSResult = css`
-  :host ::slotted(.card-content:not(:first-child)),
-  slot:not(:first-child)::slotted(.card-content) {
-    padding-top: 0px;
-    margin-top: -8px;
-  }
-  :host ::slotted(.card-content) {
-    padding: 16px;
-  }
   .floated-label-placeholder {
     font-family: var(--paper-font-caption_-_font-family);
     -webkit-font-smoothing: var(--paper-font-caption_-_-webkit-font-smoothing);
@@ -32,7 +24,8 @@ const style: CSSResult = css`
     justify-content: space-between;
     padding: 8px 16px 0px;
   }
-  .header > .name {
+  .header > .name,
+  .direction {
     color: var(--compass-secondary-text-color, var(--secondary-text-color));
     line-height: 40px;
     font-weight: 500;
@@ -47,90 +40,41 @@ const style: CSSResult = css`
     float: right;
   }
   .compass {
-    padding: 16px;
     display: block;
-    width: 120px;
-    height: 120px;
-    position: relative;
+    /* position: relative; */
+    width: 152px;
+    height: 152px;
     margin: 10px auto;
-    font-family: var(--compass-font-caption_-_font-family, var(--paper-font-caption_-_font-family));
+    /* font-family: var(--compass-font-caption_-_font-family, var(--paper-font-caption_-_font-family)); */
   }
-  .compass > .direction {
-    height: 100%;
+  .content {
+    height: 162px;
+    position: relative;
     width: 100%;
-    margin: -3px;
-    display: block;
-    border-radius: 100%;
-    border-width: 3px;
-    border-color: var(--compass-ring-color, var(--primary-color));
-    border-style: solid;
-    color: var(--compass-primary-text-color, var(--primary-text-color));
-  }
-  .compass > .direction > p {
-    text-align: center;
-    margin: 0;
-    padding: 30% 0 0 0;
-    top: 30px;
-    width: 100%;
-    line-height: normal;
-    display: block;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  .compass > .direction > p > span {
-    display: block;
-    line-height: normal;
-    font-size: 11px;
     font-weight: normal;
+    line-height: 28px;
   }
-  .indicator-pane {
-    width: 100%;
-    height: 100%;
-    display: block;
+  .info {
+    text-overflow: ellipsis;
+    white-space: nowrap;
     position: absolute;
-    /* substract the direction border width to get correct size */
-    right: 0px;
-    /* add the direction border width to get correct size */
-    top: 0px;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
   }
-  .indicator {
-    content: '';
-    width: 0;
-    height: 0;
+  .direction {
     position: absolute;
-    margin-left: -3px;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
   }
-  .arrow_outward {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 30px solid var(--compass-indicator-color, var(--accent-color));
-    /* substract left+right border width from full size to center */
-    left: calc((100% - 10px) / 2);
-    z-index: 99;
+  .measurement {
+    font-size: 18px;
+    color: var(--secondary-text-color);
   }
-  .arrow_inward {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 30px solid var(--compass-indicator-color, var(--accent-color));
-    /* substract left+right border width from full size to center */
-    left: calc((100% - 10px) / 2);
-    z-index: 89;
-  }
-  .circle {
-    border: 8px solid var(--compass-indicator-color, var(--accent-color));
-    margin: 8px;
-    border-radius: 50%;
-    /* substract 2x border + 2x margin from full size to center */
-    left: calc((100% - 32px) / 2);
-    z-index: 79;
-  }
-  .north {
-    color: var(--compass-north-color, var(--primary-color));
-    padding-top: 0px;
-    margin: -3px;
-    /* substract margin from full size to center */
-    left: calc((100% - 5px) / 2);
-    z-index: 109;
+  .value {
+    font-size: 28px;
+    color: var(--primary-text-color);
   }
 `;
 

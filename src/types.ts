@@ -45,3 +45,8 @@ export interface ActionConfig {
   url?: string;
   new_tab?: boolean;
 }
+
+export interface CCDirectionInfo {
+  abbreviation: string;
+  degrees: number;
+}
