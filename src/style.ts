@@ -1,6 +1,14 @@
 import { CSSResult, css } from 'lit-element';
 
 const style: CSSResult = css`
+  :host ::slotted(.card-content:not(:first-child)),
+  slot:not(:first-child)::slotted(.card-content) {
+    padding-top: 0px;
+    margin-top: -8px;
+  }
+  :host ::slotted(.card-content) {
+    padding: 16px;
+  }
   .floated-label-placeholder {
     font-family: var(--paper-font-caption_-_font-family);
     -webkit-font-smoothing: var(--paper-font-caption_-_-webkit-font-smoothing);
@@ -24,9 +32,7 @@ const style: CSSResult = css`
     justify-content: space-between;
     padding: 8px 16px 0px;
   }
-  .header > .name,
-  .direction {
-    color: var(--compass-secondary-text-color, var(--secondary-text-color));
+  .header > .name {
     line-height: 40px;
     font-weight: 500;
     font-size: 16px;
@@ -35,17 +41,14 @@ const style: CSSResult = css`
     overflow: hidden;
   }
   .icon {
-    color: var(--compass-state-icon-color, var(--state-icon-color));
     margin-top: 8px;
     float: right;
   }
   .compass {
     display: block;
-    /* position: relative; */
     width: 152px;
     height: 152px;
     margin: 10px auto;
-    /* font-family: var(--compass-font-caption_-_font-family, var(--paper-font-caption_-_font-family)); */
   }
   .content {
     height: 162px;
@@ -58,23 +61,29 @@ const style: CSSResult = css`
     text-overflow: ellipsis;
     white-space: nowrap;
     position: absolute;
-    top: 50%;
+    text-align: center;
+    top: 62px;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%);
   }
   .direction {
+    line-height: 18px;
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    overflow: hidden;
     position: absolute;
-    top: 25%;
+    top: 32px;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%);
   }
   .measurement {
     font-size: 18px;
-    color: var(--secondary-text-color);
   }
   .value {
     font-size: 28px;
-    color: var(--primary-text-color);
   }
 `;
 
