@@ -49,6 +49,9 @@ indicator_entities:
 
 ```yaml
 type: custom:compass-card
+header:
+  title:
+    value: Friend's location
 indicator_entities:
   - sensor: sensor.friends_direction
 value_entities:
@@ -63,6 +66,9 @@ value_entities:
 
 ```yaml
 type: custom:compass-card
+header:
+  title:
+    value: Wind
 indicator_entities:
   - sensor: sensor.wind_dir
     indicator:
@@ -77,6 +83,9 @@ value_entities:
 
 ```yaml
 type: custom:compass-card
+header:
+  title:
+    value: Sun
 indicator_entities:
   - sensor:  sun.sun
     attribute: azimuth
@@ -95,6 +104,9 @@ Left image yaml:
 
 ```yaml
 type: custom:compass-card
+header:
+  title:
+    value: Sun
 indicator_entities:
   - sensor:  sun.sun
     attribute: azimuth
@@ -112,6 +124,9 @@ Right image yaml:
 
 ```yaml
 type: custom:compass-card
+header:
+  title:
+    value: Sun
 indicator_entities:
   - sensor:  sun.sun
     attribute: azimuth
@@ -344,7 +359,50 @@ compass:
 
 v1.0.0 has breaking changes, meaning the card wil not work as expected after updating.
 
-To upgrade your v0.x.x card, just open the card in the editor, and save it. No changes needed. The configuration will update to the correct version, and your card is v1.0.0 ready.
+### Semi-automatic update procedure
+
+To upgrade your v0.x.x card, just open the card in the editor, and save it.
+No changes needed to the card.
+The configuration will update to the correct version, and your card is v1.0.0 ready.
+
+### Manual update procedure
+
+See following YAML examples of a full v0.x.x config and its v1.0.0 equivalent
+_Note: the tap_action object does not change and you can keep the v0.x.x version._
+
+v0.x.x
+
+```yaml
+type: custom:compass-card
+name: title
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+direction_offset: 15
+compass:
+  language: pt
+  indicator: arrow_outward
+  show_north: true
+```
+
+v1.0.0
+
+```yaml
+type: custom:compass-card
+header:
+  title:
+    value: title
+indicator_entities:
+  - sensor:  sensor.friends_direction
+    indicator:
+      type: arrow_outward
+value_entities:
+  - sensor: sensor.friends_distance
+compass:
+  north:
+    show: true
+    offset: 15
+language: pt
+```
 
 ## Wish/Todo list
 
