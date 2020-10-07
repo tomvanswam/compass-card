@@ -1,3 +1,5 @@
+import { HassEntity } from 'home-assistant-js-websocket';
+
 export interface CCSensor extends CCEntity {
   state_value: CCProperties;
   state_units: CCProperties;
@@ -42,9 +44,7 @@ export interface CCProperties {
   show: boolean;
 }
 
-export interface CCDynamicStyle {
-  sensor: string;
-  is_attribute: boolean;
+export interface CCDynamicStyle extends CCEntity {
   bands: CCStyleBand[];
 }
 
@@ -55,8 +55,11 @@ export interface CCStyleBand {
 }
 
 export interface CCEntity {
+  entity: HassEntity;
   sensor: string;
   is_attribute: boolean;
+  units: string;
+  number_format: string;
 }
 
 export interface CCDirectionInfo {
@@ -65,10 +68,19 @@ export interface CCDirectionInfo {
 }
 
 export interface CCSensorAttrib {
+  entity: HassEntity;
   sensor: string;
   attribute: string;
+  units: string;
+  number_format: string;
 }
 
 export interface CCColors {
   [propName: string]: string;
+}
+
+export interface CCValue {
+  value: string;
+  units: string;
+  number_format: string;
 }

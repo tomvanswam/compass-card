@@ -71,11 +71,8 @@ export interface CCStyleBandConfig {
 export interface CCEntityConfig {
   sensor: string;
   attribute?: string;
-}
-
-export interface CCValue {
-  value: string;
-  units: string;
+  units?: string;
+  number_format?: string;
 }
 
 export interface ActionConfig {

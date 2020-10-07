@@ -1,8 +1,8 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult, internalProperty } from 'lit-element';
 import { getLovelace, HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
-import { HassEntity } from 'home-assistant-js-websocket';
-import { CCValue, CompassCardConfig } from './editorTypes';
-import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor } from './cardTypes';
+import { HassEntities, HassEntity, HassServices } from 'home-assistant-js-websocket';
+import { CompassCardConfig } from './editorTypes';
+import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue } from './cardTypes';
 import handleClick from './utils/handleClick';
 
 import './editor';
@@ -11,7 +11,7 @@ import style from './style';
 import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from './const';
 
 import { localize } from './localize/localize';
-import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean } from './utils/objectHelpers';
+import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues } from './utils/objectHelpers';
 
 /* eslint no-console: 0 */
 console.info(
@@ -55,8 +55,9 @@ export class CompassCard extends LitElement {
   @internalProperty() protected colors!: CCColors;
   @internalProperty() protected header!: CCHeader;
   @internalProperty() protected compass!: CCCompass;
-  @internalProperty() protected indicator_sensors!: CCIndicatorSensor[];
-  @internalProperty() protected value_sensors!: CCValueSensor[];
+  @internalProperty() protected indicatorSensors!: CCIndicatorSensor[];
+  @internalProperty() protected entities: HassEntities = {};
+  @internalProperty() protected valueSensors!: CCValueSensor[];
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
@@ -114,15 +115,22 @@ export class CompassCard extends LitElement {
     if (!hass || !config) {
       return;
     }
-    this.header = getHeader(this._config, this.colors, this._hass.states[this._config?.indicator_sensors[0].sensor]);
-    this.compass = getCompass(this._config, this.colors);
-    this.indicator_sensors = getIndicatorSensors(this._config, this.colors);
-    this.value_sensors = getValueSensors(this._config, this.colors);
+    const stringEntities = findValues(this._config, 'sensor');
+    stringEntities.forEach((stringEntity) => {
+      if (this._hass.states[stringEntity]) {
+        const entity = this._hass.states[stringEntity];
+        this.entities[entity.entity_id] = this._hass.states[stringEntity];
+      }
+    });
+    this.header = getHeader(this._config, this.colors, this._hass.states[this._config?.indicator_sensors[0].sensor], this.entities);
+    this.compass = getCompass(this._config, this.colors, this.entities);
+    this.indicatorSensors = getIndicatorSensors(this._config, this.colors, this.entities);
+    this.valueSensors = getValueSensors(this._config, this.colors, this.entities);
     if (this._config.debug && getBoolean(this._config.debug, false)) {
       console.info('header', this.header);
       console.info('compass', this.compass);
-      console.info('indicator sensors', this.indicator_sensors);
-      console.info('value sensors', this.value_sensors);
+      console.info('indicator sensors', this.indicatorSensors);
+      console.info('value sensors', this.valueSensors);
     }
   }
 
@@ -181,13 +189,13 @@ export class CompassCard extends LitElement {
   private renderDirections(): TemplateResult[] {
     const divs: TemplateResult[] = [];
     let index = 0;
-    this.indicator_sensors.forEach((indicator) => {
+    this.indicatorSensors.forEach((indicator) => {
       if (indicator.state_abbreviation.show || indicator.state_value.show) {
         divs.push(html`<div class="sensor-${index}">
           <span class="abbr" style="color: ${indicator.state_abbreviation.color};">${indicator.state_abbreviation.show ? this.computeIndicator(indicator).abbreviation : ''}</span>
           <span class="value" style="color: ${indicator.state_value.color};">${indicator.state_value.show ? this.computeIndicator(indicator).degrees : ''}</span>
           <span class="measurement" style="color: ${indicator.state_units.color}; ${indicator.state_units.show ? 'margin-left: -3px;' : ''}"
-            >${indicator.state_units.show ? '°' : ''}</span
+            >${indicator.state_units.show ? indicator.units : ''}</span
           >
         </div>`);
         index++;
@@ -203,12 +211,12 @@ export class CompassCard extends LitElement {
   private renderValues(): TemplateResult[] {
     const divs: TemplateResult[] = [];
     let index = 0;
-    this.value_sensors.forEach((value) => {
+    this.valueSensors.forEach((value) => {
       if (value.state_value.show) {
         divs.push(html`<div class="sensor-${index}">
           <span class="value" style="color: ${value.state_value.color};">${value.state_value.show ? this.getValue(value).value : ''}</span>
           <span class="measurement" style="color: ${value.state_units.color}; ${value.state_units.show ? 'margin-left: -3px;' : ''}"
-            >${value.state_units.show ? this.getValue(value).units : ''}</span
+            >${value.state_units.show ? value.units : ''}</span
           >
         </div>`);
         index++;
@@ -239,7 +247,7 @@ export class CompassCard extends LitElement {
 
   private svgIndicators(): SVGTemplateResult[] {
     const result: SVGTemplateResult[] = [];
-    this.indicator_sensors.forEach((indicatorSensor) => {
+    this.indicatorSensors.forEach((indicatorSensor) => {
       if (indicatorSensor.indicator.show) {
         result.push(this.svgSingleIndicator(indicatorSensor));
       }
@@ -319,13 +327,13 @@ export class CompassCard extends LitElement {
       const entityObj = this._hass.states[entityStr];
       if (entityObj && entityObj.attributes) {
         const attribStr = entity.sensor.slice(entity.sensor.lastIndexOf('.') + 1);
-        return { value: entityObj.attributes[attribStr] || UNAVAILABLE, units: '' };
+        return { value: entityObj.attributes[attribStr] || UNAVAILABLE, units: '', number_format: '' };
       }
-      return { value: UNAVAILABLE, units: '' };
+      return { value: UNAVAILABLE, units: '', number_format: '' };
     }
     return this._hass.states[entity.sensor]
-      ? { value: this._hass.states[entity.sensor].state, units: this._hass.states[entity.sensor].attributes?.unit_of_measurement || '' }
-      : { value: UNAVAILABLE, units: '' };
+      ? { value: this._hass.states[entity.sensor].state, units: this._hass.states[entity.sensor].attributes?.unit_of_measurement || '', number_format: '' }
+      : { value: UNAVAILABLE, units: '', number_format: '' };
   }
 
   private handlePopup(e) {
