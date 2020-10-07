@@ -79,10 +79,10 @@ const style: CSSResult = css`
     left: 50%;
     transform: translateX(-50%);
   }
-  .measurement {
+  .value-sensors .measurement {
     font-size: 18px;
   }
-  .value {
+  .value-sensors .value {
     font-size: 28px;
   }
 `;
