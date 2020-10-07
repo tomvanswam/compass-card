@@ -39,7 +39,7 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
 ```yaml
 type: custom:compass-card
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.wind_dir
 ```
 
@@ -52,9 +52,9 @@ type: custom:compass-card
 header:
   title:
     value: Friend's location
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.friends_direction
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 ```
 
@@ -69,11 +69,11 @@ type: custom:compass-card
 header:
   title:
     value: Wind
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.wind_dir
     indicator:
       type: arrow_inward
-value_entities:
+value_sensors:
   - sensor: sensor.wind_speed
 ```
 
@@ -86,12 +86,12 @@ type: custom:compass-card
 header:
   title:
     value: Sun
-indicator_entities:
+indicator_sensors:
   - sensor:  sun.sun
     attribute: azimuth
     indicator:
       type: circle
-value_entities:
+value_sensors:
   - sensor: sun.sun
     attribute: elevation
 ```
@@ -107,12 +107,12 @@ type: custom:compass-card
 header:
   title:
     value: Sun
-indicator_entities:
+indicator_sensors:
   - sensor:  sun.sun
     attribute: azimuth
     indicator:
       type: circle
-value_entities:
+value_sensors:
   - sensor: sun.sun
     attribute: elevation
 compass:
@@ -127,12 +127,12 @@ type: custom:compass-card
 header:
   title:
     value: Sun
-indicator_entities:
+indicator_sensors:
   - sensor:  sun.sun
     attribute: azimuth
     indicator:
       type: circle
-value_entities:
+value_sensors:
   - sensor: sun.sun
     attribute: elevation
 compass:
@@ -269,9 +269,9 @@ Open the more info of a person entity when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.friends_direction
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 tap_action:
   entity: person.friend
@@ -283,9 +283,9 @@ Open the Home Assistant map page when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.friends_direction
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 tap_action:
   action: navigate
@@ -298,9 +298,9 @@ Open Google Maps when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.friends_direction
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 tap_action:
   action: url
@@ -313,9 +313,9 @@ Send notification when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.friends_direction
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 tap_action:
   action: call-service
@@ -347,9 +347,9 @@ Example for Portugese abbreviations (regardless of Home Assistant language setti
 
 ```yaml
 type: custom:compass-card
-indicator_entities:
+indicator_sensors:
   - sensor: sensor.friends_direction
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 compass:
   language: pt
@@ -391,11 +391,11 @@ type: custom:compass-card
 header:
   title:
     value: title
-indicator_entities:
+indicator_sensors:
   - sensor:  sensor.friends_direction
     indicator:
       type: arrow_outward
-value_entities:
+value_sensors:
   - sensor: sensor.friends_distance
 compass:
   north:
