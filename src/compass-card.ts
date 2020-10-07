@@ -1,6 +1,6 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult, internalProperty } from 'lit-element';
 import { getLovelace, HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
-import { HassEntities, HassEntity, HassServices } from 'home-assistant-js-websocket';
+import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './editorTypes';
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue } from './cardTypes';
 import handleClick from './utils/handleClick';

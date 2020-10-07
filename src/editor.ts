@@ -150,18 +150,18 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           const sensorsIndicatorSensor = [...this._config.indicator_sensors];
           sensorsIndicatorSensor[0] = { ...this._config.indicator_sensors[0], sensor: target.value };
           this._config = { ...this._config, indicator_sensors: sensorsIndicatorSensor };
-          if (this._config.indicator_sensors[0].attribute) {
-            delete this._config.indicator_sensors[0].attribute;
-          }
+          // if (this._config.indicator_sensors[0].attribute) {
+          //   delete this._config.indicator_sensors[0].attribute;
+          // }
           break;
         case 'value_sensors[0].sensor':
           const valuesSensorsSensor = this._config.value_sensors ? [...this._config.value_sensors] : [];
           valuesSensorsSensor[0] = { ...valuesSensorsSensor[0], sensor: target.value };
           this._config = { ...this._config, value_sensors: valuesSensorsSensor };
           if (this._config.value_sensors && this._config.value_sensors.length > 0) {
-            if (this._config.value_sensors[0].attribute) {
-              delete this._config.value_sensors[0].attribute;
-            }
+            // if (this._config.value_sensors[0].attribute) {
+            //   delete this._config.value_sensors[0].attribute;
+            // }
             if (target.value.trim() === '') {
               this._config.value_sensors = this._config.value_sensors.slice(1);
             }
