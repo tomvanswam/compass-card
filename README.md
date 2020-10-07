@@ -365,6 +365,8 @@ To upgrade your v0.x.x card, just open the card in the editor, and save it.
 No changes needed to the card.
 The configuration will update to the correct version, and your card is v1.0.0 ready.
 
+If the compass-card is inside another card (horizontal/vertical-stack), use the visual editor menu to navigate to the compass-card. It will update to the new config.
+
 ### Manual update procedure
 
 See following YAML examples of a full v0.x.x config and its v1.0.0 equivalent
