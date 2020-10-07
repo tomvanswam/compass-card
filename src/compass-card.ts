@@ -142,12 +142,12 @@ export class CompassCard extends LitElement {
     }
 
     return html`
-      <ha-card tabindex="0" aria-label=${`Compass: ${this.header.label}`} class="flex" @click=${(e) => this.handlePopup(e)}>
+      <ha-card tabindex="0" aria-label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.header.title.show || this.header.icon.show ? this.renderHeader() : ''}
         <div class="content">
           <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
-          <div class="direction">${this.renderDirections()}</div>
-          <div class="info">${this.renderValues()}</div>
+          <div class="indicator-sensors">${this.renderDirections()}</div>
+          <div class="value-sensors">${this.renderValues()}</div>
         </div>
       </ha-card>
     `;
@@ -160,18 +160,18 @@ export class CompassCard extends LitElement {
   private renderHeader(): TemplateResult {
     return html`
       <div class="header">
-        <div class="name">${this.header.title.show ? this.renderTitle() : html`<span>&nbsp;</span>`}</div>
-        <div class="icon">${this.header.icon.show ? this.renderIcon() : html`<span>&nbsp;</span>`}</div>
+        <div class="name" style="color:${this.header.title.color};">${this.header.title.show ? this.renderTitle() : html`<span>&nbsp;</span>`}</div>
+        <div class="icon" style="color:${this.header.icon.color};">${this.header.icon.show ? this.renderIcon() : html`<span>&nbsp;</span>`}</div>
       </div>
     `;
   }
 
   private renderTitle(): TemplateResult {
-    return html`<span style="color:${this.header.title.color};">${this.header.title.value} </span>`;
+    return html`<span>${this.header.title.value} </span>`;
   }
 
   private renderIcon(): TemplateResult {
-    return html`<ha-icon .icon=${this.header.icon.value} style="color:${this.header.icon.color};"></ha-icon>`;
+    return html`<ha-icon .icon=${this.header.icon.value}></ha-icon>`;
   }
 
   /**
@@ -180,13 +180,17 @@ export class CompassCard extends LitElement {
 
   private renderDirections(): TemplateResult[] {
     const divs: TemplateResult[] = [];
+    let index = 0;
     this.indicator_sensors.forEach((indicator) => {
       if (indicator.state_abbreviation.show || indicator.state_value.show) {
-        divs.push(html`<div class="indicator-state">
-          <span style="color: ${indicator.state_abbreviation.color};">${indicator.state_abbreviation.show ? this.computeIndicator(indicator).abbreviation : ''}</span>
-          <span style="color: ${indicator.state_value.color};">${indicator.state_value.show ? this.computeIndicator(indicator).degrees : ''}</span>
-          <span style="color: ${indicator.state_units.color}; ${indicator.state_units.show ? 'margin-left: -4px;' : ''}">${indicator.state_units.show ? '°' : ''}</span>
+        divs.push(html`<div class="sensor-${index}">
+          <span class="abbr" style="color: ${indicator.state_abbreviation.color};">${indicator.state_abbreviation.show ? this.computeIndicator(indicator).abbreviation : ''}</span>
+          <span class="value" style="color: ${indicator.state_value.color};">${indicator.state_value.show ? this.computeIndicator(indicator).degrees : ''}</span>
+          <span class="measurement" style="color: ${indicator.state_units.color}; ${indicator.state_units.show ? 'margin-left: -3px;' : ''}"
+            >${indicator.state_units.show ? '°' : ''}</span
+          >
         </div>`);
+        index++;
       }
     });
     return divs;
@@ -198,12 +202,16 @@ export class CompassCard extends LitElement {
 
   private renderValues(): TemplateResult[] {
     const divs: TemplateResult[] = [];
+    let index = 0;
     this.value_sensors.forEach((value) => {
       if (value.state_value.show) {
-        divs.push(html`<div>
+        divs.push(html`<div class="sensor-${index}">
           <span class="value" style="color: ${value.state_value.color};">${value.state_value.show ? this.getValue(value).value : ''}</span>
-          <span class="measurement" style="color: ${value.state_units.color}; margin-left: -4px;">${value.state_units.show ? this.getValue(value).units : ''}</span>
+          <span class="measurement" style="color: ${value.state_units.color}; ${value.state_units.show ? 'margin-left: -3px;' : ''}"
+            >${value.state_units.show ? this.getValue(value).units : ''}</span
+          >
         </div>`);
+        index++;
       }
     });
     return divs;

@@ -57,7 +57,7 @@ const style: CSSResult = css`
     font-weight: normal;
     line-height: 28px;
   }
-  .info {
+  .value-sensors {
     text-overflow: ellipsis;
     white-space: nowrap;
     position: absolute;
@@ -66,7 +66,7 @@ const style: CSSResult = css`
     left: 50%;
     transform: translateX(-50%);
   }
-  .direction {
+  .indicator-sensors {
     line-height: 18px;
     font-weight: 500;
     font-size: 16px;
