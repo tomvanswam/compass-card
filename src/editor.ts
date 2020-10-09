@@ -8,6 +8,7 @@ import { INDICATORS, DEFAULT_INDICATOR } from './const';
 
 import { localize, COMPASS_LANGUAGES } from './localize/localize';
 import { isNumeric } from './utils/objectHelpers';
+import { EditorTarget } from './utils/ha-types';
 
 @customElement('compass-card-editor')
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
@@ -88,7 +89,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     if (!this._config || !this.hass) {
       return;
     }
-    const target = ev.target;
+    const target: EditorTarget = ev.target;
     if (target.checked !== undefined) {
       if (this[`_${target.configValue}`] === target.checked) {
         return;
@@ -100,7 +101,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       switch (target.configValue) {
         case 'language':
           this._config = { ...this._config, language: target.value };
-          if (target.value.trim() === '') {
+          if (target.value?.trim() === '') {
             delete this._config.language;
           }
           break;
@@ -122,7 +123,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           const titleValue: CCHeaderItemConfig = { ...this._config.header?.title, value: target.value };
           const headerTitleValue: CCHeaderConfig = { ...this._config.header, title: titleValue };
           this._config = { ...this._config, header: headerTitleValue };
-          if (target.value.trim() === '') {
+          if (target.value?.trim() === '') {
             delete this._config.header?.title?.value;
             if (this._config.header?.title && Object.keys(this._config.header?.title).length === 0) {
               delete this._config.header?.title;
@@ -136,7 +137,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           const northOffset: CCNorthConfig = { ...this._config.compass?.north, offset: Number(target.value) };
           const compassNorthOffset: CCCompassConfig = { ...this._config.compass, north: northOffset };
           this._config = { ...this._config, compass: compassNorthOffset };
-          if (isNumeric(target.value) && Number(target.value) === 0) {
+          if (target.value && isNumeric(target.value) && Number(target.value) === 0) {
             delete this._config.compass?.north?.offset;
             if (this._config.compass?.north && Object.keys(this._config.compass?.north).length === 0) {
               delete this._config.compass?.north;
@@ -148,12 +149,12 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           break;
         case 'indicator_sensors[0].sensor':
           const sensorsIndicatorSensor = [...this._config.indicator_sensors];
-          sensorsIndicatorSensor[0] = { ...this._config.indicator_sensors[0], sensor: target.value };
+          sensorsIndicatorSensor[0] = { ...this._config.indicator_sensors[0], sensor: target.value || '' };
           this._config = { ...this._config, indicator_sensors: sensorsIndicatorSensor };
           break;
         case 'value_sensors[0].sensor':
           const valuesSensorsSensor = this._config.value_sensors ? [...this._config.value_sensors] : [];
-          valuesSensorsSensor[0] = { ...valuesSensorsSensor[0], sensor: target.value };
+          valuesSensorsSensor[0] = { ...valuesSensorsSensor[0], sensor: target.value || '' };
           this._config = { ...this._config, value_sensors: valuesSensorsSensor };
           break;
         case 'indicator_sensors[0].indicator.type':
