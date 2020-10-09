@@ -194,9 +194,7 @@ export class CompassCard extends LitElement {
         divs.push(html`<div class="sensor-${index}">
           <span class="abbr" style="color: ${indicator.state_abbreviation.color};">${indicator.state_abbreviation.show ? this.computeIndicator(indicator).abbreviation : ''}</span>
           <span class="value" style="color: ${indicator.state_value.color};">${indicator.state_value.show ? this.computeIndicator(indicator).degrees : ''}</span>
-          <span class="measurement" style="color: ${indicator.state_units.color}; ${indicator.state_units.show ? 'margin-left: -3px;' : ''}"
-            >${indicator.state_units.show ? indicator.units : ''}</span
-          >
+          <span class="measurement" style="color: ${indicator.state_units.color};">${indicator.state_units.show ? indicator.units : ''}</span>
         </div>`);
         index++;
       }
@@ -215,9 +213,7 @@ export class CompassCard extends LitElement {
       if (value.state_value.show) {
         divs.push(html`<div class="sensor-${index}">
           <span class="value" style="color: ${value.state_value.color};">${value.state_value.show ? this.getValue(value).value : ''}</span>
-          <span class="measurement" style="color: ${value.state_units.color}; ${value.state_units.show ? 'margin-left: -3px;' : ''}"
-            >${value.state_units.show ? value.units : ''}</span
-          >
+          <span class="measurement" style="color: ${value.state_units.color};">${value.state_units.show ? value.units : ''}</span>
         </div>`);
         index++;
       }
