@@ -72,7 +72,7 @@ export interface CCEntityConfig {
   sensor: string;
   attribute?: string;
   units?: string;
-  number_format?: string;
+  decimals?: number;
 }
 
 export interface ActionConfig {

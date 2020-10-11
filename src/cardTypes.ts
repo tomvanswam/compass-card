@@ -59,7 +59,7 @@ export interface CCEntity {
   sensor: string;
   is_attribute: boolean;
   units: string;
-  number_format: string;
+  decimals: number;
 }
 
 export interface CCDirectionInfo {
@@ -72,7 +72,7 @@ export interface CCSensorAttrib {
   sensor: string;
   attribute: string;
   units: string;
-  number_format: string;
+  decimals: number;
 }
 
 export interface CCColors {
@@ -82,5 +82,4 @@ export interface CCColors {
 export interface CCValue {
   value: string;
   units: string;
-  number_format: string;
 }

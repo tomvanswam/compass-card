@@ -11,7 +11,7 @@ import style from './style';
 import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from './const';
 
 import { localize } from './localize/localize';
-import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues } from './utils/objectHelpers';
+import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
 
 /* eslint no-console: 0 */
 console.info(
@@ -193,7 +193,9 @@ export class CompassCard extends LitElement {
       if (indicator.state_abbreviation.show || indicator.state_value.show) {
         divs.push(html`<div class="sensor-${index}">
           <span class="abbr" style="color: ${indicator.state_abbreviation.color};">${indicator.state_abbreviation.show ? this.computeIndicator(indicator).abbreviation : ''}</span>
-          <span class="value" style="color: ${indicator.state_value.color};">${indicator.state_value.show ? this.computeIndicator(indicator).degrees : ''}</span>
+          <span class="value" style="color: ${indicator.state_value.color};"
+            >${indicator.state_value.show ? this.computeIndicator(indicator).degrees.toFixed(indicator.decimals) : ''}</span
+          >
           <span class="measurement" style="color: ${indicator.state_units.color};">${indicator.state_units.show ? indicator.units : ''}</span>
         </div>`);
         index++;
@@ -323,13 +325,13 @@ export class CompassCard extends LitElement {
       const entityObj = this._hass.states[entityStr];
       if (entityObj && entityObj.attributes) {
         const attribStr = entity.sensor.slice(entity.sensor.lastIndexOf('.') + 1);
-        return { value: entityObj.attributes[attribStr] || UNAVAILABLE, units: '', number_format: '' };
+        const value = entityObj.attributes[attribStr] || UNAVAILABLE;
+        return { value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value, units: entity.units };
       }
-      return { value: UNAVAILABLE, units: '', number_format: '' };
+      return { value: UNAVAILABLE, units: entity.units };
     }
-    return this._hass.states[entity.sensor]
-      ? { value: this._hass.states[entity.sensor].state, units: this._hass.states[entity.sensor].attributes?.unit_of_measurement || '', number_format: '' }
-      : { value: UNAVAILABLE, units: '', number_format: '' };
+    const value = this._hass.states[entity.sensor].state || UNAVAILABLE;
+    return { value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value, units: entity.units };
   }
 
   private handlePopup(e) {

@@ -56,7 +56,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: attrib !== '',
     entity: entities[sens],
-    number_format: indicatorSensor.number_format || '',
+    decimals: indicatorSensor.decimals || 0,
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
     indicator: {
       type: indicatorSensor.indicator?.type || INDICATORS[DEFAULT_INDICATOR],
@@ -101,7 +101,7 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
   const sensor: CCValueSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     entity: entities[sens],
-    number_format: valueSensor.number_format || '',
+    decimals: valueSensor.decimals || 0,
     units: attrib !== '' ? valueSensor.units || '' : valueSensor.units || entities[sens].attributes?.unit_of_measurement || '',
     is_attribute: attrib !== '',
     state_min: {
@@ -142,14 +142,14 @@ function getDynamicStyle(dynamicStyle: CCDynamicStyleConfig | undefined, config:
   const sensorAttributes = getSensorAttrib(config, entities);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
   const attrib = dynamicStyle?.attribute || sensorAttributes.attribute;
-  const units = dynamicStyle?.attribute || sensorAttributes.units;
-  const numberFormat = dynamicStyle?.attribute || sensorAttributes.number_format;
+  const units = sensorAttributes.units;
+  const numberFormat = sensorAttributes.decimals;
   return {
     entity: entities[sens],
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: attrib !== '',
     bands: getBands(dynamicStyle?.bands),
-    number_format: numberFormat,
+    decimals: numberFormat,
     units: units,
   };
 }
@@ -160,7 +160,7 @@ function getSensorAttrib(config: CompassCardConfig, entities: HassEntities): CCS
     sensor: config.indicator_sensors[0]?.sensor || '',
     attribute: config.indicator_sensors[0]?.attribute || '',
     units: config.indicator_sensors[0]?.units || '',
-    number_format: config.indicator_sensors[0]?.units || '',
+    decimals: config.indicator_sensors[0]?.decimals || 0,
   };
 
   if (config.value_sensors && config.value_sensors.length > 0 && entities[config.value_sensors[0].sensor]) {
@@ -168,7 +168,7 @@ function getSensorAttrib(config: CompassCardConfig, entities: HassEntities): CCS
     sa.sensor = config.value_sensors[0].sensor;
     sa.attribute = config.value_sensors[0].attribute || sa.attribute;
     sa.units = config.value_sensors[0].units || sa.units;
-    sa.number_format = config.value_sensors[0].number_format || sa.number_format;
+    sa.decimals = config.value_sensors[0].decimals || sa.decimals;
   }
 
   return sa;
@@ -182,11 +182,8 @@ export function getBoolean(value: boolean | number | string | undefined, defValu
 }
 
 export function isNumeric(str: string): boolean {
-  if (typeof str != 'string') return false; // we only process strings!
-  return (
-    !isNaN(Number(str)) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-    !isNaN(parseFloat(str))
-  ); // ...and ensure strings of whitespace fail
+  if (typeof str !== 'string' && typeof str !== 'number') return false;
+  return !isNaN(Number(str)) && !isNaN(parseFloat(str));
 }
 
 // eslint-disable-next-line
