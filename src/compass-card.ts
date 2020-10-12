@@ -231,7 +231,7 @@ export class CompassCard extends LitElement {
     }
     const value = this.getValue(properties.dynamic_style);
     if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value < Number(value.value));
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
       return getBoolean(usableBands[usableBands.length - 1]?.show, properties.show);
     }
     return properties.show;
@@ -243,7 +243,7 @@ export class CompassCard extends LitElement {
     }
     const value = this.getValue(properties.dynamic_style);
     if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value < Number(value.value));
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
       return usableBands[usableBands.length - 1]?.color || properties.color;
     }
     return properties.color;
