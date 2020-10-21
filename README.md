@@ -154,7 +154,7 @@ compass:
 | value_sensors     | Array of [value sensors object](#value-sensor-objects)         | **Optional** | v1.0.0    | See [value sensors object](#value-sensors-object)         | Entities to show under the direction in compass                                                            |
 | language          | [language](#language)                                          | **Optional** | v1.0.0    | Visual/YAML                                               | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language |
 | tap_action        | [action config object](#action-config-object)                  | **Optional** | v1.0.0    | See [action config object](#action-config-object)         | Tap action settings (what happens when you click/touch the card)                                           |
-| debug             | boolean                                                        | **Optional** | v1.0.0    | YAML                                                      | Show expanded confugration in browsers developers console                                                  |
+| debug             | boolean                                                        | **Optional** | v1.0.0    | YAML                                                      | Show inflated configration & incorrect configured entities and attributes in browsers developers console   |
 
 ### Header object
 
@@ -207,33 +207,37 @@ compass:
 
 ### Indicator Sensors object
 
-| Name               | Type                                    | Requirement  | Supported | Config                                    | Description                                                    |
-|--------------------|-----------------------------------------|--------------|-----------|-------------------------------------------|----------------------------------------------------------------|
-| sensor             | string                                  | **Required** | v1.0.0    | First visual, others YAML                 | Entity to read state from                                      |
-| attribute          | string                                  | **Optional** | v1.0.0    | YAML                                      | Attribute of sensor to read value from instead of entity state |
-| indicator          | [indicator object](#indicator-object)   | **Optional** | v1.0.0    | See [indicator object](#indicator-object) | Settings for displaying the state as indicator                 |
-| state_abbreviation | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state abbreviation                 |
-| state_value        | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state value                        |
-| state_units        | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state units                        |
+| Name               | Type                                    | Requirement  | Supported | Config                                    | Description                                                                                                   |
+|--------------------|-----------------------------------------|--------------|-----------|-------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| sensor             | string                                  | **Required** | v1.0.0    | First visual, others YAML                 | Entity to read state from                                                                                     |
+| attribute          | string                                  | **Optional** | v1.0.0    | YAML                                      | Attribute of sensor to read value from instead of entity state                                                |
+| units              | string                                  | **Optional** | v1.0.0    | YAML                                      | Units of measurement to display, default for entity, units of measurement of entity, default for attribute '' |
+| decimals           | number                                  | **Optional** | v1.0.0    | YAML                                      | Decimals to show the value in, default 0                                                                      |
+| indicator          | [indicator object](#indicator-object)   | **Optional** | v1.0.0    | See [indicator object](#indicator-object) | Settings for displaying the state as indicator                                                                |
+| state_abbreviation | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state abbreviation                                                                |
+| state_value        | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state value                                                                       |
+| state_units        | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state units                                                                       |
 
 ### Value Sensors object
 
-| Name        | Type                                    | Requirement  | Supported | Config                    | Description                                                    |
-|-------------|-----------------------------------------|--------------|-----------|---------------------------|----------------------------------------------------------------|
-| sensor      | string                                  | **Required** | v1.0.0    | First visual, others YAML | Entity to read state from                                      |
-| attribute   | string                                  | **Optional** | v1.0.0    | YAML                      | Attribute of sensor to read value from instead of entity state |
-| state_value | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state value                        |
-| state_units | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state units                        |
+| Name        | Type                                    | Requirement  | Supported | Config                    | Description                                                                                                   |
+|-------------|-----------------------------------------|--------------|-----------|---------------------------|---------------------------------------------------------------------------------------------------------------|
+| sensor      | string                                  | **Required** | v1.0.0    | First visual, others YAML | Entity to read state from                                                                                     |
+| attribute   | string                                  | **Optional** | v1.0.0    | YAML                      | Attribute of sensor to read value from instead of entity state                                                |
+| units       | string                                  | **Optional** | v1.0.0    | YAML                      | Units of measurement to display, default for entity, units of measurement of entity, default for attribute '' |
+| decimals    | number                                  | **Optional** | v1.0.0    | YAML                      | Decimals to show the value in, default 0                                                                      |
+| state_value | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state value                                                                       |
+| state_units | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state units                                                                       |
 
 ### Properties object
 
-| Name          | Type                                                    | Requirement  | Supported    | Config | Description                   |
-|---------------|---------------------------------------------------------|--------------|--------------|--------|-------------------------------|
-| color         | string                                                  | **Optional** | v1.0.0       | YAML   | Color of object               |
-| show          | boolean                                                 | **Optional** | v1.0.0       | YAML   | Show object                   |
-| dynamic_style | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values |
+| Name          | Type                                                    | Requirement  | Supported | Config | Description                   |
+|---------------|---------------------------------------------------------|--------------|-----------|--------|-------------------------------|
+| color         | string                                                  | **Optional** | v1.0.0    | YAML   | Color of object               |
+| show          | boolean                                                 | **Optional** | v1.0.0    | YAML   | Show object                   |
+| dynamic_style | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0    | YAML   | Change style on entity values |
 
-### Dynamic Style object (WIP)
+### Dynamic Style object
 
 | Name      | Type                                              | Requirement  | Supported | Config | Description                                                                                                                                              |
 |-----------|---------------------------------------------------|--------------|-----------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -241,13 +245,88 @@ compass:
 | attribute | string                                            | **Optional** | v1.0.0    | YAML   | Attribute of sensor to read value from to change style                                                                                                   |
 | bands     | Array of [style band objects](#style-band-object) | **Required** | v1.0.0    | YAML   | Styles to use from a certain value (values below the lowest configured value will display as the parent [properties object](#properties-object)settings) |
 
-### Style band object (WIP)
+### Style band object
 
 | Name       | Type    | Requirement  | Supported | Config | Description                                                                            |
 |------------|---------|--------------|-----------|--------|----------------------------------------------------------------------------------------|
 | from_value | string  | **Required** | v1.0.0    | YAML   | Value from which upward this bands settings are used to display the parent object with |
 | color      | string  | **Optional** | v1.0.0    | YAML   | Color of object                                                                        |
 | show       | boolean | **Optional** | v1.0.0    | YAML   | Show object                                                                            |
+
+#### Dynamic Style & Style band example
+
+For a card that
+
+- Displays indicator for the suns azimuth
+- Changes color of the icon, compass and north indicator depending on the current UV Index
+- Hide sun indicator when elevation is below horizon
+
+Use the following configuration
+
+```yaml
+type: 'custom:compass-card'
+header:
+  title:
+    value: Sun
+  icon:
+    color: green # default color (for state is less than the lowest dynamic_style.bands.from_value)
+    dynamic_style:
+      sensor: sensor.uvi
+      bands:
+        - from_value: 3
+          color: yellow
+        - from_value: 6
+          color: orange
+        - from_value: 8
+          color: red
+        - from_value: 11
+          color: purple
+indicator_sensors:
+  - sensor: sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+      color: orange
+      show: false # default visibility (for state is less than the lowest dynamic_style.bands.from_value)
+      dynamic_style:
+        sensor: sun.sun
+        attribute: elevation
+        bands:
+          - from_value: 0
+            show: true
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
+    decimals: 1
+compass:
+  north:
+    show: true
+    color: green # default color (for state is less than the lowest dynamic_style.bands.from_value)
+    dynamic_style:
+      sensor: sensor.uvi
+      bands:
+        - from_value: 3
+          color: yellow
+        - from_value: 6
+          color: orange
+        - from_value: 8
+          color: red
+        - from_value: 11
+          color: purple
+  circle:
+    color: green # default color (for state is less than the lowest dynamic_style.bands.from_value)
+    dynamic_style:
+      sensor: sensor.uvi
+      bands:
+        - from_value: 3
+          color: yellow
+        - from_value: 6
+          color: orange
+        - from_value: 8
+          color: red
+        - from_value: 11
+          color: purple
+```
 
 ### Action Config object
 
@@ -334,6 +413,7 @@ The following languages are supported:
 | English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
 | French    | `fr`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 | German    | `de`       | v0.3.0    | [@rainer-geiger](https://github.com/rainer-geiger)           |
+| Hungarian | `hu`       | v1.0.0    | [@bboti86](https://github.com/bboti86)                       |
 | Italian   | `it`       | v0.3.0    | [@matteofranceschini](https://github.com/matteofranceschini) |
 | Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
 | Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
@@ -417,9 +497,8 @@ And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](
 
 ## Thanks to
 
-- [@rsnodgrass](https://github.com/rsnodgrass) for [wind-compass-card](https://github.com/rsnodgrass/wind-compass-card), which gave me the idea to make this
+- [@rsnodgrass](https://github.com/rsnodgrass) for the idea to make this
 - [@iantrich](https://www.github.com/iantrich) for the [boiler-plate card](https://github.com/custom-cards/boilerplate-card), which got me started
-- [@xixao](https://codepen.io/xixao/) for [wind speed/direction css](https://codepen.io/xixao/pen/OPovyN)
 - [All the translators](#language)
 
 ## Support
