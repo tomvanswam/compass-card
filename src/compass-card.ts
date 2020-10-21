@@ -100,15 +100,15 @@ export class CompassCard extends LitElement {
     if (changedProps.has('_config')) {
       return true;
     }
-
-    // if (this.entityChanged(changedProps, this._config.entity.name)) {
-    //   return true;
-    // }
-    // if (this.entityChanged(changedProps, this._config.secondary_entity?.name)) {
-    //   return true;
-    // }
-
-    return true;
+    if (changedProps.has('_hass')) {
+      const newHass = changedProps.get('_hass') as HomeAssistant;
+      for (const entity in this.entities) {
+        if (newHass.states[entity] !== this._hass.states[entity]) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private updateConfig(hass: HomeAssistant, config: CompassCardConfig): void {
@@ -131,17 +131,8 @@ export class CompassCard extends LitElement {
       console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line
       console.info('Compass-Card inflated configuration: indicator sensors', this.indicatorSensors); //eslint-disable-line
       console.info('Compass-Card inflated configuration: value sensors', this.valueSensors); //eslint-disable-line
+      console.info('Compass-Card configuration: listening to entities', this.entities); // eslint-disable-line
     }
-  }
-
-  private entityChanged(changedProps: PropertyValues, entity: string | undefined): boolean {
-    if (entity) {
-      const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
-      if (oldHass?.states[entity] !== this._hass.states[entity]) {
-        return true;
-      }
-    }
-    return false;
   }
 
   protected render(): TemplateResult {
