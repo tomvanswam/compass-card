@@ -26,8 +26,7 @@
     "primary entity description": "Entité primaire",
     "secondary entity description": "Entité secondaire",
     "language description": "Langue abréviation de la direction",
-    "offset description": "Décalage de la direction",
-    "show north description": "Afficher l'indicateur du nord"
+    "offset description": "Décalage de la direction"
   },
   "directions": {
     "north": "Nord",

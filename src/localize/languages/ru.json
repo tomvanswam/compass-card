@@ -26,8 +26,7 @@
     "primary entity description": "Объект направления",
     "secondary entity description": "Дополнительный объект",
     "language description": "Язык аббревиатуры направления",
-    "offset description": "Смещение направления",
-    "show north description": "Показать индикатор севера"
+    "offset description": "Смещение направления"
   },
   "directions": {
     "north": "Север",

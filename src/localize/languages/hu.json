@@ -26,8 +26,7 @@
         "primary entity description": "Irány entitás",
         "secondary entity description": "Másodlagos entitás",
         "language description": "Irány rövidítés nyelve",
-        "offset description": "Irány offszet",
-        "show north description": "Észak mutatása"
+        "offset description": "Irány offszet"
     },
     "directions": {
         "north": "Észak",

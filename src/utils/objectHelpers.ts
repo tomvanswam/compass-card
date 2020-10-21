@@ -57,13 +57,13 @@ export function getIndicatorSensors(config: CompassCardConfig, colors: CCColors,
   return sensors;
 }
 
-function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicatorSensor: CCIndicatorSensorConfig, index: number, entities: HassEntities): CCIndicatorSensor {
+function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicatorSensor: CCIndicatorSensorConfig, validIndex: number, entities: HassEntities): CCIndicatorSensor {
   const sens = indicatorSensor.sensor || '';
   const attrib = indicatorSensor.attribute || '';
   const indColor = indicatorSensor.indicator?.color || colors.accent;
   const indShow = getBoolean(indicatorSensor.indicator?.show, true);
   const abbrColor = indicatorSensor.state_abbreviation?.color || colors.secondaryText;
-  const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, index === 0);
+  const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, validIndex === 0);
   const valueColor = indicatorSensor.state_value?.color || colors.secondaryText;
   const valueShow = getBoolean(indicatorSensor.state_value?.show, false);
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
@@ -181,10 +181,12 @@ function getDynamicStyle(
   const attrib = dynamicStyle?.attribute || sensorAttributes.attribute;
   const units = sensorAttributes.units;
   const decimals = sensorAttributes.decimals;
+  const is_attribute = attrib !== '';
+  const entity = entities[sens];
   return {
-    entity: entities[sens],
+    entity: entity,
     sensor: attrib === '' ? sens : sens + '.' + attrib,
-    is_attribute: attrib !== '',
+    is_attribute: is_attribute,
     bands: getBands(dynamicStyle?.bands, startColor, startVisibility),
     decimals: decimals,
     units: units,
@@ -223,26 +225,55 @@ export function isNumeric(str: string): boolean {
   return !isNaN(Number(str)) && !isNaN(parseFloat(str));
 }
 
-// eslint-disable-next-line
-export function findValues(obj: any, key: string): string[] {
-  const seen = new Set();
-  let active = [obj];
-  while (active.length) {
-    const new_active: string[] = [];
-    const found: string[] = [];
-    for (let i = 0; i < active.length; i++) {
-      Object.keys(active[i]).forEach(function (k) {
-        const x = active[i][k];
-        if (k === key) {
-          found.push(x);
-        } else if (x && typeof x === 'object' && !seen.has(x)) {
-          seen.add(x);
-          new_active.push(x);
-        }
-      });
-    }
-    if (found.length) return [...new Set(found)];
-    active = new_active;
+export function findValues(obj: CompassCardConfig, entities: HassEntities, debug: boolean, root = ''): string[] {
+  const active = [obj];
+  let found: string[] = [];
+  for (let currentElement = 0; currentElement < active.length; currentElement++) {
+    Object.keys(active[currentElement]).forEach(function (currentKey, index, currentKeys) {
+      const currentValue = active[currentElement][currentKey];
+      let name = '';
+      if (isNumeric(currentKeys[index])) {
+        name = root !== '' ? root + '[' + currentKeys[index] + ']' : '';
+      } else if (currentKeys[index] !== '') {
+        name = root !== '' ? root + '.' + currentKeys[index] : currentKeys[index];
+      }
+      switch (currentKey) {
+        case 'sensor':
+          if (entities[currentValue]) {
+            found.push(currentValue);
+          } else {
+            debug && console.warn('Compass-Card configuration: ' + name + ' (' + currentValue + ') is invalid');
+          }
+          break;
+
+        case 'attribute':
+          const sensor = active[currentElement]['sensor'];
+          const entity = entities[sensor];
+          if (entity && entity.attributes && entity.attributes[currentValue]) {
+            found.push(sensor);
+          } else {
+            debug &&
+              console.warn(
+                'Compass-Card configuration: attribute ' +
+                  name +
+                  ' (' +
+                  currentValue +
+                  ') is invalid for entity ' +
+                  name.slice(0, name.lastIndexOf('.')) +
+                  '.sensor (' +
+                  sensor +
+                  ')',
+              );
+          }
+          break;
+
+        default:
+          if (currentValue && typeof currentValue === 'object') {
+            found = [...found, ...findValues(currentValue, entities, debug, name)];
+          }
+          break;
+      }
+    });
   }
-  return [];
+  return found.length ? [...new Set(found)] : [];
 }

@@ -9,18 +9,6 @@ const style: CSSResult = css`
   :host ::slotted(.card-content) {
     padding: 16px;
   }
-  .floated-label-placeholder {
-    font-family: var(--paper-font-caption_-_font-family);
-    -webkit-font-smoothing: var(--paper-font-caption_-_-webkit-font-smoothing);
-    white-space: var(--paper-font-caption_-_white-space);
-    overflow: var(--paper-font-caption_-_overflow);
-    text-overflow: var(--paper-font-caption_-_text-overflow);
-    font-size: var(--paper-font-caption_-_font-size);
-    font-weight: var(--paper-font-caption_-_font-weight);
-    letter-spacing: var(--paper-font-caption_-_letter-spacing);
-    line-height: var(--paper-font-caption_-_line-height);
-    color: var(--disabled-text-color);
-  }
   ha-card {
     flex-direction: column;
     flex: 1;

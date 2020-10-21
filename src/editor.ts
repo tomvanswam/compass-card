@@ -13,7 +13,9 @@ import { EditorTarget } from './utils/ha-types';
 @customElement('compass-card-editor')
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
+  @internalProperty() private _helpers?;
   @internalProperty() private _config?: CompassCardConfig;
+  private _initialized = false;
 
   public setConfig(config: CompassCardConfig | CompassCardConfigV0): void {
     if (isV0Config(config)) {
@@ -22,6 +24,15 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     } else {
       this._config = config;
     }
+    this.loadCardHelpers();
+  }
+
+  protected shouldUpdate(): boolean {
+    if (!this._initialized) {
+      this._initialize();
+    }
+
+    return true;
   }
 
   get _name(): string {
@@ -62,9 +73,12 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   protected render(): TemplateResult | void {
-    if (!this.hass) {
+    if (!this.hass || !this._helpers) {
       return html``;
     }
+
+    // The climate more-info has ha-switch and paper-dropdown-menu elements that are lazy loaded unless explicitly done here
+    this._helpers.importMoreInfoControl('climate');
 
     const entityDomains = ['sensor', 'sun', 'input_number', 'input_text'];
     const entities = Object.keys(this.hass.states)
@@ -80,7 +94,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.type', this._compass_indicator, INDICATORS)}
         ${this.getEditorDropDown('editor.language description', 'editor.optional', 'language', this._compass_language, COMPASS_LANGUAGES)}
         ${this.getEditorInput('editor.offset description', 'editor.optional', 'compass.north.offset', this._direction_offset)}
-        ${this.getEditorSwitch('editor.show north description', 'compass.north.show', this._compass_show_north)}
+        ${this.getEditorSwitch('directions.north', 'compass.north.show', this._compass_show_north)}
       </div>
     `;
   }
@@ -193,16 +207,26 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   private getEditorSwitch(label: string, key: string, value: boolean): TemplateResult {
     return html`
-      <div class="floated-label-placeholder">
-          ${localize(label)}
-        </div>
-        <ha-switch
-          aria-label=${`${localize('editor.toggle')} ${localize('directions.north')} ${value ? localize('common.off') : localize('common.on')}`}
-          .checked=${value !== false}
-          .configValue=${key}
-          @change=${this._valueChanged}
-          >${localize(label)}</ha-switch>
+        <ha-formfield
+          .label=${`${localize('editor.toggle')} ${localize(label)}  ${localize('editor.indicator')} ${value ? localize('common.off') : localize('common.on')}`}>
+          <ha-switch
+            .checked=${value !== false}
+            .configValue=${key}
+            @change=${this._valueChanged}
+            ></ha-switch>
+        </ha-formfield>
       </div>`;
+  }
+
+  private _initialize(): void {
+    if (this.hass === undefined) return;
+    if (this._config === undefined) return;
+    if (this._helpers === undefined) return;
+    this._initialized = true;
+  }
+
+  private async loadCardHelpers(): Promise<void> {
+    this._helpers = await window.loadCardHelpers();
   }
 
   static get styles(): CSSResult {
@@ -210,21 +234,9 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       .editor-entity-select {
         width: 100%;
       }
-
       ha-switch {
+      ha-formfield {
         padding-bottom: 8px;
-      }
-      .floated-label-placeholder {
-        font-family: var(--paper-font-caption_-_font-family);
-        -webkit-font-smoothing: var(--paper-font-caption_-_-webkit-font-smoothing);
-        white-space: var(--paper-font-caption_-_white-space);
-        overflow: var(--paper-font-caption_-_overflow);
-        text-overflow: var(--paper-font-caption_-_text-overflow);
-        font-size: var(--paper-font-caption_-_font-size);
-        font-weight: var(--paper-font-caption_-_font-weight);
-        letter-spacing: var(--paper-font-caption_-_letter-spacing);
-        line-height: var(--paper-font-caption_-_line-height);
-        color: var(--secondary-text-color);
       }
     `;
   }

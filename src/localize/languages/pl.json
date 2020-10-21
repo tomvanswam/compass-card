@@ -26,8 +26,7 @@
     "primary entity description": "Encja Kierunku",
     "secondary entity description": "Encja Dodatkowa",
     "language description": "Język skrótów kierunków",
-    "offset description": "Korekcja kierunku",
-    "show north description": "Pokaż wskaźnik Północy"
+    "offset description": "Korekcja kierunku"
   },
   "directions": {
     "north": "Północ",

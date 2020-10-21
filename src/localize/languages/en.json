@@ -27,8 +27,7 @@
     "primary entity description": "Direction entity",
     "secondary entity description": "Secondary entity",
     "language description": "Direction abbreviation language",
-    "offset description": "Direction offset",
-    "show north description": "Show north indicator"
+    "offset description": "Direction offset"
   },
   "directions": {
     "north": "North",

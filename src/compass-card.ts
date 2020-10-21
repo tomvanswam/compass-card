@@ -1,5 +1,5 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult, internalProperty } from 'lit-element';
-import { getLovelace, HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
+import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './editorTypes';
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties } from './cardTypes';
@@ -13,19 +13,21 @@ import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from
 import { localize } from './localize/localize';
 import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
 
-/* eslint no-console: 0 */
-console.info(
-  `%c  COMPASS-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
-  'color: orange; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: dimgray',
-);
-
 declare global {
   interface Window {
     customCards: Array<{ type: string; name: string; description: string; preview: boolean }>;
     loadCardHelpers;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'compass-card-editor': LovelaceCardEditor;
+    'hui-error-card': LovelaceCard;
+  }
+}
+
+console.info(`%c COMPASS-CARD %c ${CARD_VERSION} `, 'color: white; background: coral; font-weight: 700;', 'color: coral; background: white; font-weight: 700;'); // eslint-disable-line
 
 window.customCards = window.customCards || [];
 window.customCards.push({
@@ -38,9 +40,7 @@ window.customCards.push({
 @customElement('compass-card')
 export class CompassCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
-    (await window.loadCardHelpers()).createCardElement({ type: 'entities', entities: [] });
-    await customElements.get('hui-entities-card').getConfigElement();
-    return document.createElement('compass-card-editor') as LovelaceCardEditor;
+    return document.createElement('compass-card-editor');
   }
 
   public static getStubConfig(): CompassCardConfig {
@@ -115,22 +115,22 @@ export class CompassCard extends LitElement {
     if (!hass || !config) {
       return;
     }
-    const stringEntities = findValues(this._config, 'sensor');
+    const stringEntities = findValues(this._config, hass.states, getBoolean(this._config.debug, false));
     stringEntities.forEach((stringEntity) => {
       if (this._hass.states[stringEntity]) {
         const entity = this._hass.states[stringEntity];
         this.entities[entity.entity_id] = this._hass.states[stringEntity];
       }
     });
-    this.header = getHeader(this._config, this.colors, this._hass.states[this._config?.indicator_sensors[0].sensor], this.entities);
+    this.header = getHeader(this._config, this.colors, this.entities[this._config?.indicator_sensors[0].sensor], this.entities);
     this.compass = getCompass(this._config, this.colors, this.entities);
     this.indicatorSensors = getIndicatorSensors(this._config, this.colors, this.entities);
     this.valueSensors = getValueSensors(this._config, this.colors, this.entities);
-    if (this._config.debug && getBoolean(this._config.debug, false)) {
-      console.info('header', this.header);
-      console.info('compass', this.compass);
-      console.info('indicator sensors', this.indicatorSensors);
-      console.info('value sensors', this.valueSensors);
+    if (getBoolean(this._config.debug, false)) {
+      console.info('Compass-Card inflated configuration: header', this.header); // eslint-disable-line
+      console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line
+      console.info('Compass-Card inflated configuration: indicator sensors', this.indicatorSensors); //eslint-disable-line
+      console.info('Compass-Card inflated configuration: value sensors', this.valueSensors); //eslint-disable-line
     }
   }
 
@@ -150,7 +150,7 @@ export class CompassCard extends LitElement {
     }
 
     return html`
-      <ha-card tabindex="0" aria-label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
+      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.getVisibility(this.header.title) || this.getVisibility(this.header.icon) ? this.renderHeader() : ''}
         <div class="content">
           <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
@@ -352,7 +352,7 @@ export class CompassCard extends LitElement {
   private getValue(entity: CCEntity): CCValue {
     if (entity.is_attribute) {
       const entityStr = entity.sensor.slice(0, entity.sensor.lastIndexOf('.'));
-      const entityObj = this._hass.states[entityStr];
+      const entityObj = this.entities[entityStr];
       if (entityObj && entityObj.attributes) {
         const attribStr = entity.sensor.slice(entity.sensor.lastIndexOf('.') + 1);
         const value = entityObj.attributes[attribStr] || UNAVAILABLE;
@@ -360,7 +360,7 @@ export class CompassCard extends LitElement {
       }
       return { value: UNAVAILABLE, units: entity.units };
     }
-    const value = this._hass.states[entity.sensor].state || UNAVAILABLE;
+    const value = this.entities[entity.sensor]?.state || UNAVAILABLE;
     return { value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value, units: entity.units };
   }
 
