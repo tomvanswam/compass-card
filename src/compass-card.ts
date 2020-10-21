@@ -103,7 +103,7 @@ export class CompassCard extends LitElement {
     if (changedProps.has('_hass')) {
       const newHass = changedProps.get('_hass') as HomeAssistant;
       for (const entity in this.entities) {
-        if (newHass.states[entity] !== this._hass.states[entity]) {
+        if (newHass.states[entity].last_updated !== this._hass.states[entity].last_updated) {
           return true;
         }
       }
