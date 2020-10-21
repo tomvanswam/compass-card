@@ -176,7 +176,7 @@ function getDynamicStyle(
   startColor: string,
   startVisibility: boolean,
 ): CCDynamicStyle {
-  const sensorAttributes = getSensorAttrib(config, entities);
+  const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
   const attrib = dynamicStyle?.attribute || sensorAttributes.attribute;
   const units = sensorAttributes.units;
@@ -193,21 +193,29 @@ function getDynamicStyle(
   };
 }
 
-function getSensorAttrib(config: CompassCardConfig, entities: HassEntities): CCSensorAttrib {
+function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConfig | undefined, entities: HassEntities): CCSensorAttrib {
   const sa: CCSensorAttrib = {
     entity: entities[config.indicator_sensors[0]?.sensor],
     sensor: config.indicator_sensors[0]?.sensor || '',
     attribute: config.indicator_sensors[0]?.attribute || '',
-    units: config.indicator_sensors[0]?.units || '',
+    units: config.indicator_sensors[0]?.units || entities[config.indicator_sensors[0].sensor].attributes['unit_of_measurement'] || '',
     decimals: config.indicator_sensors[0]?.decimals || 0,
   };
 
   if (config.value_sensors && config.value_sensors.length > 0 && entities[config.value_sensors[0].sensor]) {
     sa.entity = entities[config.value_sensors[0].sensor];
     sa.sensor = config.value_sensors[0].sensor;
-    sa.attribute = config.value_sensors[0].attribute || sa.attribute;
-    sa.units = config.value_sensors[0].units || sa.units;
-    sa.decimals = config.value_sensors[0].decimals || sa.decimals;
+    sa.attribute = config.value_sensors[0].attribute || '';
+    sa.units = config.value_sensors[0].units || entities[config.value_sensors[0].sensor].attributes['unit_of_measurement'] || '';
+    sa.decimals = config.value_sensors[0].decimals || 0;
+  }
+
+  if (dynStyle && dynStyle.sensor) {
+    sa.entity = entities[dynStyle.sensor];
+    sa.sensor = dynStyle.sensor;
+    sa.attribute = dynStyle.attribute || '';
+    sa.units = '';
+    sa.decimals = 0;
   }
 
   return sa;
