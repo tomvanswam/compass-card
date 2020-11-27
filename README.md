@@ -489,6 +489,7 @@ language: pt
 ## Wish/Todo list
 
 - Background image ([#12](https://github.com/tomvanswam/compass-card/issues/12))
+- Resizing compass on smaller cards ([#44](https://github.com/tomvanswam/compass-card/issues/44))
 
 ## Contact
 
