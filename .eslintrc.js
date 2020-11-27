@@ -12,5 +12,6 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/camelcase': 0,
+    'no-console': ['error', { allow: ['warn'] }],
   },
 };

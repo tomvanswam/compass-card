@@ -26,8 +26,7 @@
     "primary entity description": "Richtungsentität",
     "secondary entity description": "Sekundäre Entität",
     "language description": "Sprache der Himmelsrichtungen",
-    "offset description": "Richtungsversatz",
-    "show north description": "Nord-Indikator anzeigen"
+    "offset description": "Richtungsversatz"
   },
   "directions": {
     "north": "Norden",

@@ -1,7 +1,6 @@
-import { CONFIG_ENTITY } from '../const';
 import { HomeAssistant } from 'custom-card-helpers';
 import { CompassCard } from '../compass-card';
-import { ActionConfig, CompassCardConfig } from '../types';
+import { ActionConfig, CompassCardConfig } from '../editorTypes';
 
 export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: ActionConfig): void => {
   let e;
@@ -9,7 +8,7 @@ export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfi
     case 'more-info': {
       e = new Event('hass-more-info', { composed: true });
       e.detail = {
-        entityId: actionConfig.entity || config?.[CONFIG_ENTITY],
+        entityId: actionConfig.entity || config?.['tap_action'],
       };
       node.dispatchEvent(e);
       break;

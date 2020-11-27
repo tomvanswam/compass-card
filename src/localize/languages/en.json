@@ -3,6 +3,7 @@
     "version": "Version",
     "description": "Show a compass with an indicator in the direction of the entity's value",
     "invalid_configuration": "Invalid configuration",
+    "missing_direction_entity": "Missing direction entity",
     "no_entity": "Entity not configured",
     "offset_not_a_number": "Direction offset is not a number",
     "invalid": "invalid",
@@ -26,8 +27,7 @@
     "primary entity description": "Direction entity",
     "secondary entity description": "Secondary entity",
     "language description": "Direction abbreviation language",
-    "offset description": "Direction offset",
-    "show north description": "Show north indicator"
+    "offset description": "Direction offset"
   },
   "directions": {
     "north": "North",

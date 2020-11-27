@@ -9,18 +9,6 @@ const style: CSSResult = css`
   :host ::slotted(.card-content) {
     padding: 16px;
   }
-  .floated-label-placeholder {
-    font-family: var(--paper-font-caption_-_font-family);
-    -webkit-font-smoothing: var(--paper-font-caption_-_-webkit-font-smoothing);
-    white-space: var(--paper-font-caption_-_white-space);
-    overflow: var(--paper-font-caption_-_overflow);
-    text-overflow: var(--paper-font-caption_-_text-overflow);
-    font-size: var(--paper-font-caption_-_font-size);
-    font-weight: var(--paper-font-caption_-_font-weight);
-    letter-spacing: var(--paper-font-caption_-_letter-spacing);
-    line-height: var(--paper-font-caption_-_line-height);
-    color: var(--disabled-text-color);
-  }
   ha-card {
     flex-direction: column;
     flex: 1;
@@ -33,7 +21,6 @@ const style: CSSResult = css`
     padding: 8px 16px 0px;
   }
   .header > .name {
-    color: var(--secondary-text-color);
     line-height: 40px;
     font-weight: 500;
     font-size: 16px;
@@ -42,93 +29,49 @@ const style: CSSResult = css`
     overflow: hidden;
   }
   .icon {
-    color: var(--state-icon-color);
     margin-top: 8px;
     float: right;
   }
   .compass {
-    padding: 16px;
     display: block;
-    width: 120px;
-    height: 120px;
+    width: 152px;
+    height: 152px;
+    margin: 10px auto;
+  }
+  .content {
+    height: 162px;
     position: relative;
-    margin: 0 auto 10px;
-    font-family: var(--paper-font-caption_-_font-family);
-  }
-  .compass > .direction {
-    height: 100%;
     width: 100%;
-    display: block;
-    border-radius: 100%;
-    border-width: 3px;
-    border-color: var(--primary-color);
-    border-style: solid;
-    color: var(--primary-text-color);
-  }
-  .compass > .direction > p {
-    text-align: center;
-    margin: 0;
-    padding: 30% 0 0 0;
-    top: 30px;
-    width: 100%;
-    line-height: normal;
-    display: block;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  .compass > .direction > p > span {
-    display: block;
-    line-height: normal;
-    font-size: 11px;
     font-weight: normal;
+    line-height: 28px;
   }
-  .compass > .indicator {
-    width: 100%;
-    height: 100%;
-    display: block;
+  .value-sensors {
+    text-overflow: ellipsis;
+    white-space: nowrap;
     position: absolute;
-    /* substract the direction border width to get correct size */
-    right: -3px;
-    /* add the direction border width to get correct size */
-    top: 3px;
+    text-align: center;
+    top: 62px;
+    left: 50%;
+    transform: translateX(-50%);
   }
-  .compass > .indicator:after {
-    content: '';
-    width: 0;
-    height: 0;
+  .indicator-sensors {
+    line-height: 18px;
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    overflow: hidden;
     position: absolute;
-    margin-left: 0;
-    z-index: 99;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
   }
-
-  .compass > .indicator.arrow_outward:after {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 30px solid var(--accent-color);
-    /* substract left+right border width from full size to center */
-    left: calc((100% - 16px) / 2);
+  .value-sensors .measurement {
+    font-size: 18px;
   }
-  .compass > .indicator.arrow_inward:after {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 30px solid var(--accent-color);
-    /* substract left+right border width from full size to center */
-    left: calc((100% - 16px) / 2);
-  }
-  .compass > .indicator.circle:after {
-    border: 8px solid var(--accent-color);
-    margin: 8px;
-    border-radius: 50%;
-    /* substract 2x border + 2x margin from full size to center */
-    left: calc((100% - 32px) / 2);
-  }
-  .compass > .indicator.north:after {
-    color: var(--primary-color);
-    content: 'N';
-    padding-top: 0px;
-    margin: -3px;
-    /* substract margin from full size to center */
-    left: calc((100% - 3px) / 2);
+  .value-sensors .value {
+    font-size: 28px;
   }
 `;
 

@@ -26,8 +26,7 @@
     "primary entity description": "Richtings entiteit",
     "secondary entity description": "Secundaire entiteit",
     "language description": "Richting afkortings taal",
-    "offset description": "Richtingsafwijking",
-    "show north description": "Toon indicator noorden"
+    "offset description": "Richtingsafwijking"
   },
   "directions": {
     "north": "Noorden",

@@ -26,8 +26,7 @@
     "primary entity description": "Entita směru ",
     "secondary entity description": "Sekundární entita",
     "language description": "Jazyk zkratky směru",
-    "offset description": "Kompenzace směru",
-    "show north description": "Zobrazit indikátor severu"
+    "offset description": "Kompenzace směru"
   },
   "directions": {
     "north": "Sever",

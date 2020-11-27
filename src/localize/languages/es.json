@@ -26,8 +26,7 @@
     "primary entity description": "Entidad primaria",
     "secondary entity description": "Entidad secundaria",
     "language description": "Idioma abreviatura dirección",
-    "offset description": "Desplazamiento de la dirección",
-    "show north description": "Mostrar indicador del norte"
+    "offset description": "Desplazamiento de la dirección"
   },
   "directions": {
     "north": "Norte",

@@ -2,11 +2,11 @@
 
 A custom Lovelace card that displays an indicator in a circle for use with [Home Assistant](https://home-assistant.io/).
 
-[![GitHub Release][releases-shield]][releases-link] ![GitHub Release Date][release-date-shield] ![GitHub Releases][latest-download-shield] ![GitHub Releases][total-download-shield]
+[![GitHub Release][releases-shield]][releases-link] [![GitHub Release Date][release-date-shield]][releases-link] [![GitHub Releases][latest-download-shield]][traffic-link] [![GitHub Releases][total-download-shield]][traffic-link]
 
-[![HACS Badge][hacs-shield]][hacs-link] ![HomeAssistant][home-assistant-shield] [![License][license-shield]][license-link]
+[![HACS Badge][hacs-shield]][hacs-link] [![HomeAssistant][home-assistant-shield]][home-assistant-link] [![License][license-shield]][license-link]
 
-![Project Maintenance][maintenance-shield] [![GitHub Activity][activity-shield]][activity-link] ![Open bugs][bugs-shield] ![Open enhancements][enhancements-shield]
+![Project Maintenance][maintenance-shield] [![GitHub Activity][activity-shield]][activity-link] [![Open bugs][bugs-shield]][bugs-link] [![Open enhancements][enhancements-shield]][enhancement-link]
 
 [![Community Forum][forum-shield]][forum-link] [![Buy Me A Coffee][coffee-shield]][coffee-link]
 
@@ -37,11 +37,11 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 - Add the card with the visual editor
 - Or add the card manually with the following (minimal) configuration:
 
-  ```yaml
-  type: custom:compass-card
-  entity: sensor.wind_dir
-  secondary_entity: sensor.wind_speed
-  ```
+```yaml
+type: custom:compass-card
+indicator_sensors:
+  - sensor: sensor.wind_dir
+```
 
 ## Lovelace Examples
 
@@ -49,87 +49,289 @@ A custom Lovelace card that displays an indicator in a circle for use with [Home
 
 ```yaml
 type: custom:compass-card
-entity: sensor.friends_direction
-secondary_entity: sensor.friends_distance
+header:
+  title:
+    value: Friend's location
+indicator_sensors:
+  - sensor: sensor.friends_direction
+value_sensors:
+  - sensor: sensor.friends_distance
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-outward.png?raw=true)
+[Issue #41](https://github.com/tomvanswam/compass-card/issues/41) shows an example how to calculate the distance/direction of your friend.
+
+![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-outward.png?raw=true)
 
 ### Compass indicator `arrow_inward`
 
 ```yaml
 type: custom:compass-card
-entity: sensor.wind_dir
-secondary_entity: sensor.wind_speed
-compass:
-  indicator: arrow_inward
+header:
+  title:
+    value: Wind
+indicator_sensors:
+  - sensor: sensor.wind_dir
+    indicator:
+      type: arrow_inward
+value_sensors:
+  - sensor: sensor.wind_speed
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-inward.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-inward.png?raw=true)
 
 ### Compass indicator `circle`
 
 ```yaml
 type: custom:compass-card
-entity: sun.azimuth
-secondary_entity: sun.elevation
-compass:
-  indicator: circle
+header:
+  title:
+    value: Sun
+indicator_sensors:
+  - sensor:  sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-circle.png?raw=true)
 
-### Compass `north indicator` and `direction_offset`
+### Compass `north indicator` and `direction offset`
 
 Left image yaml:
 
 ```yaml
 type: custom:compass-card
-entity: sun.azimuth
-secondary_entity: sun.elevation
+header:
+  title:
+    value: Sun
+indicator_sensors:
+  - sensor:  sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
 compass:
-  indicator: circle
-  show_north: true
+  north:
+    show: true
 ```
 
 Right image yaml:
 
 ```yaml
 type: custom:compass-card
-entity: sun.azimuth
-secondary_entity: sun.elevation
-direction_offset: 15
+header:
+  title:
+    value: Sun
+indicator_sensors:
+  - sensor:  sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
 compass:
-  indicator: circle
-  show_north: true
+  north:
+    show: true
+    offset: 15
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-north.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-north.png?raw=true)
 
 ## Options
 
-| Name             | Type                              | Requirement  | Default               | Supported | Config                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ---------------- | --------------------------------- | ------------ | --------------------- | --------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type             | string                            | **Required** | `custom:compass-card` | v0.0.1    |                                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| name             | string                            | **Optional** |                       | v0.0.1    | Visual/YAML                           | Card header                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| entity           | sensor                            | **Required** | `none`                | v0.0.1    | Visual/YAML                           | Entity that is used to draw the indicator in the compass. Valid entity states are:<br />number - (positive and/or negative, multiples of 360 are removed).<br />string - only Cardinal directions in English (e.g. E of WSW)<br/>string - any string with numbers in it will use the numbers as direction for both indicator and display value (e.g. `E (90.4)` parsed to `90.4`)<br />Indicator direction is full range (not only the 16 cardinal directions) |
-| secondary_entity | sensor                            | **Optional** | `none`                | v0.0.1    | Visual/YAML                           | Entity to show under the direction in compass                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| direction_offset | number                            | **Optional** | `0`                   | v0.0.1    | Visual/YAML                           | Value to offset the indicator display with.<br />(E.g. to create a relative north)                                                                                                                                                                                                                                                                                                                                                                             |
-| compass          | [compass object](#compass-object) | **Optional** |                       | v0.1.0    | See [compass object](#compass-object) | Compass properties                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| tap_action       | [action config](#action-config)   | **Optional** |                       | v0.4.0    | See [action config](#action-config)   | Tap action settings (what happens when you click/touch the card)                                                                                                                                                                                                                                                                                                                                                                                               |
+| Name              | Type                                                           | Requirement  | Supported | Config                                                    | Description                                                                                                |
+|-------------------|----------------------------------------------------------------|--------------|-----------|-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| type              | string                                                         | **Required** | v0.0.1    | N.a.                                                      |                                                                                                            |
+| header            | [header object](#header-object)                                | **Optional** | v1.0.0    | See [header object](#header-object)                       | Card header settings                                                                                       |
+| compass           | [compass object](#compass-object)                              | **Optional** | v1.0.0    | See [compass object](#compass-object)                     | Compass settings                                                                                           |
+| indicator_sensors | Array of [indicator sensors object](#indicator-sensors-object) | **Required** | v1.0.0    | See [indicator sensors object](#indicator-sensors-object) | Entities to use as indicator on compass                                                                    |
+| value_sensors     | Array of [value sensors object](#value-sensor-objects)         | **Optional** | v1.0.0    | See [value sensors object](#value-sensors-object)         | Entities to show under the direction in compass                                                            |
+| language          | [language](#language)                                          | **Optional** | v1.0.0    | Visual/YAML                                               | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language |
+| tap_action        | [action config object](#action-config-object)                  | **Optional** | v1.0.0    | See [action config object](#action-config-object)         | Tap action settings (what happens when you click/touch the card)                                           |
+| debug             | boolean                                                        | **Optional** | v1.0.0    | YAML                                                      | Show inflated configration & incorrect configured entities and attributes in browsers developers console   |
 
-### Compass Object
+### Header object
 
-| Name       | Type                  | Requirement  | Default         | Supported | Config      | Description                                                                                                                       |
-| ---------- | --------------------- | ------------ | --------------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| indicator  | list item             | **Optional** | `arrow_outward` | v0.1.0    | Visual/YAML | Type of indicator to display in compass following indicators are possible:<br />`arrow_outward`<br />`arrow_inward`<br />`circle` |
-| show_north | boolean               | **Optional** | `false`         | v0.2.0    | Visual/YAML | Show an indicator at the northern side of the compass                                                                             |
-| language   | [language](#language) | **Optional** |                 | v0.3.0    | Visual/YAML | Show the abbreviation in the language configured in Home Assistant (default/empty), or configured language                        |
+| Name  | Type                          | Requirement  | Supported | Config                            | Description                          |
+|-------|-------------------------------|--------------|-----------|-----------------------------------|--------------------------------------|
+| title | [title object](#title-object) | **Optional** | v1.0.0    | See [title object](#title-object) | Settings for the title in the header |
+| icon  | [icon object](#icon-object)   | **Optional** | v1.0.0    | See [icon object](#icon-object)   | Settings for the icon in the header  |
 
-### Action Config
+### Title object
+
+| Name          | Type                                          | Requirement  | Supported    | Config | Description                      |
+|---------------|-----------------------------------------------|--------------|--------------|--------|----------------------------------|
+| value         | string                                        | **Optional** | v1.0.0       | YAML   | Title to show in the card header |
+| color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object                  |
+| show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                      |
+| dynamic_style | [dynamic style object](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values    |
+
+### Icon object
+
+| Name          | Type                                          | Requirement  | Supported    | Config | Description                   |
+|---------------|-----------------------------------------------|--------------|--------------|--------|-------------------------------|
+| value         | string                                        | **Optional** | v1.0.0       | YAML   | Icon show in the card header  |
+| color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object               |
+| show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                   |
+| dynamic_style | [dynamic style object](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values |
+
+### Compass object
+
+| Name   | Type                            | Requirement  | Supported | Config                              | Description                      |
+|--------|---------------------------------|--------------|-----------|-------------------------------------|----------------------------------|
+| north  | [north object](#north-object)   | **Optional** | v1.0.0    | See [north object](#north-object)   | Settings for the north indicator |
+| circle | [circle object](#circle-object) | **Optional** | v1.0.0    | See [circle object](#circle-object) | Settings for the compass circle  |
+
+### North object
+
+| Name          | Type                                          | Requirement  | Supported    | Config | Description                                                                        |
+|---------------|-----------------------------------------------|--------------|--------------|--------|------------------------------------------------------------------------------------|
+| offset        | string                                        | **Optional** | v1.0.0       | YAML   | Value to offset the indicator display with.<br />(E.g. to create a relative north) |
+| color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object                                                                    |
+| show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                                                                        |
+| dynamic_style | [dynamic style object](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values                                                      |
+
+### Circle object
+
+| Name          | Type                                          | Requirement  | Supported    | Config | Description                   |
+|---------------|-----------------------------------------------|--------------|--------------|--------|-------------------------------|
+| color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object               |
+| show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                   |
+| dynamic_style | [dynamic style object](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values |
+
+### Indicator Sensors object
+
+| Name               | Type                                    | Requirement  | Supported | Config                                    | Description                                                                                                   |
+|--------------------|-----------------------------------------|--------------|-----------|-------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| sensor             | string                                  | **Required** | v1.0.0    | First visual, others YAML                 | Entity to read state from                                                                                     |
+| attribute          | string                                  | **Optional** | v1.0.0    | YAML                                      | Attribute of sensor to read value from instead of entity state                                                |
+| units              | string                                  | **Optional** | v1.0.0    | YAML                                      | Units of measurement to display, default for entity, units of measurement of entity, default for attribute '' |
+| decimals           | number                                  | **Optional** | v1.0.0    | YAML                                      | Decimals to show the value in, default 0                                                                      |
+| indicator          | [indicator object](#indicator-object)   | **Optional** | v1.0.0    | See [indicator object](#indicator-object) | Settings for displaying the state as indicator                                                                |
+| state_abbreviation | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state abbreviation                                                                |
+| state_value        | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state value                                                                       |
+| state_units        | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                                      | Settings for displaying the state units                                                                       |
+
+### Value Sensors object
+
+| Name        | Type                                    | Requirement  | Supported | Config                    | Description                                                                                                   |
+|-------------|-----------------------------------------|--------------|-----------|---------------------------|---------------------------------------------------------------------------------------------------------------|
+| sensor      | string                                  | **Required** | v1.0.0    | First visual, others YAML | Entity to read state from                                                                                     |
+| attribute   | string                                  | **Optional** | v1.0.0    | YAML                      | Attribute of sensor to read value from instead of entity state                                                |
+| units       | string                                  | **Optional** | v1.0.0    | YAML                      | Units of measurement to display, default for entity, units of measurement of entity, default for attribute '' |
+| decimals    | number                                  | **Optional** | v1.0.0    | YAML                      | Decimals to show the value in, default 0                                                                      |
+| state_value | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state value                                                                       |
+| state_units | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state units                                                                       |
+
+### Properties object
+
+| Name          | Type                                                    | Requirement  | Supported | Config | Description                   |
+|---------------|---------------------------------------------------------|--------------|-----------|--------|-------------------------------|
+| color         | string                                                  | **Optional** | v1.0.0    | YAML   | Color of object               |
+| show          | boolean                                                 | **Optional** | v1.0.0    | YAML   | Show object                   |
+| dynamic_style | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0    | YAML   | Change style on entity values |
+
+### Dynamic Style object
+
+| Name      | Type                                              | Requirement  | Supported | Config | Description                                                                                                                                              |
+|-----------|---------------------------------------------------|--------------|-----------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| sensor    | string                                            | **Optional** | v1.0.0    | YAML   | Entity to listen to read value from style                                                                                                                |
+| attribute | string                                            | **Optional** | v1.0.0    | YAML   | Attribute of sensor to read value from to change style                                                                                                   |
+| bands     | Array of [style band objects](#style-band-object) | **Required** | v1.0.0    | YAML   | Styles to use from a certain value (values below the lowest configured value will display as the parent [properties object](#properties-object)settings) |
+
+### Style band object
+
+| Name       | Type    | Requirement  | Supported | Config | Description                                                                            |
+|------------|---------|--------------|-----------|--------|----------------------------------------------------------------------------------------|
+| from_value | string  | **Required** | v1.0.0    | YAML   | Value from which upward this bands settings are used to display the parent object with |
+| color      | string  | **Optional** | v1.0.0    | YAML   | Color of object                                                                        |
+| show       | boolean | **Optional** | v1.0.0    | YAML   | Show object                                                                            |
+
+#### Dynamic Style & Style band example
+
+For a card that
+
+- Displays indicator for the suns azimuth
+- Changes color of the icon, compass and north indicator depending on the current UV Index
+- Hide sun indicator when elevation is below horizon
+
+Use the following configuration
+
+```yaml
+type: 'custom:compass-card'
+header:
+  title:
+    value: Sun
+  icon:
+    color: green # default color (for state is less than the lowest dynamic_style.bands.from_value)
+    dynamic_style:
+      sensor: sensor.uvi
+      bands:
+        - from_value: 3
+          color: yellow
+        - from_value: 6
+          color: orange
+        - from_value: 8
+          color: red
+        - from_value: 11
+          color: purple
+indicator_sensors:
+  - sensor: sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+      color: orange
+      show: false # default visibility (for state is less than the lowest dynamic_style.bands.from_value)
+      dynamic_style:
+        sensor: sun.sun
+        attribute: elevation
+        bands:
+          - from_value: 0
+            show: true
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
+    decimals: 1
+compass:
+  north:
+    show: true
+    color: green # default color (for state is less than the lowest dynamic_style.bands.from_value)
+    dynamic_style:
+      sensor: sensor.uvi
+      bands:
+        - from_value: 3
+          color: yellow
+        - from_value: 6
+          color: orange
+        - from_value: 8
+          color: red
+        - from_value: 11
+          color: purple
+  circle:
+    color: green # default color (for state is less than the lowest dynamic_style.bands.from_value)
+    dynamic_style:
+      sensor: sensor.uvi
+      bands:
+        - from_value: 3
+          color: yellow
+        - from_value: 6
+          color: orange
+        - from_value: 8
+          color: red
+        - from_value: 11
+          color: purple
+```
+
+### Action Config object
 
 | Name            | Type                | Requirement                                  | Default                             | Supported | Config    | Description                                                                                                                                                                                         |
-| --------------- | ------------------- | -------------------------------------------- | ----------------------------------- | --------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-----------------|---------------------|----------------------------------------------|-------------------------------------|-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | action          | list item           | **Optional**                                 | `more-info`                         | v0.4.0    | YAML only | Type of action to launch when clicking/touching the card:<br />`more-info`<br />`navigate`<br />`url`<br/>`call-service`                                                                            |
 | entity          | string              | **Optional** for action `more-info`          | `entity` used for compass direction | v0.4.0    | YAML only | Entity to show the `more-info` of. When empty the compass direction `more-info` is shown                                                                                                            |
 | navigation_path | string              | **Required** for action `navigate`           |                                     | v0.4.0    | YAML only | Path to navigate to, has to be on the same host as the card is. E.g. `/logbook`, `/config/dashboard` or `lovelace/default_view`                                                                     |
@@ -146,8 +348,10 @@ Open the more info of a person entity when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-entity: sensor.friends_direction
-secondary_entity: sensor.friends_distance
+indicator_sensors:
+  - sensor: sensor.friends_direction
+value_sensors:
+  - sensor: sensor.friends_distance
 tap_action:
   entity: person.friend
 ```
@@ -158,8 +362,10 @@ Open the Home Assistant map page when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-entity: sensor.friends_direction
-secondary_entity: sensor.friends_distance
+indicator_sensors:
+  - sensor: sensor.friends_direction
+value_sensors:
+  - sensor: sensor.friends_distance
 tap_action:
   action: navigate
   navigation_path: /map
@@ -171,8 +377,10 @@ Open Google Maps when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-entity: sensor.friends_direction
-secondary_entity: sensor.friends_distance
+indicator_sensors:
+  - sensor: sensor.friends_direction
+value_sensors:
+  - sensor: sensor.friends_distance
 tap_action:
   action: url
   url: https://www.google.nl/maps
@@ -184,8 +392,10 @@ Send notification when clicking/touching the card
 
 ```yaml
 type: custom:compass-card
-entity: sensor.friends_direction
-secondary_entity: sensor.friends_distance
+indicator_sensors:
+  - sensor: sensor.friends_direction
+value_sensors:
+  - sensor: sensor.friends_distance
 tap_action:
   action: call-service
   service: notify.notify
@@ -197,12 +407,13 @@ tap_action:
 The following languages are supported:
 
 | Language  | Yaml value | Supported | Translated by                                                |
-| --------- | ---------- | --------- | ------------------------------------------------------------ |
+|-----------|------------|-----------|--------------------------------------------------------------|
 | Czech     | `cz`       | v0.4.0    | [@woodcat64](https://github.com/Woodcat64)                   |
 | Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
 | English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
 | French    | `fr`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 | German    | `de`       | v0.3.0    | [@rainer-geiger](https://github.com/rainer-geiger)           |
+| Hungarian | `hu`       | v1.0.0    | [@bboti86](https://github.com/bboti86)                       |
 | Italian   | `it`       | v0.3.0    | [@matteofranceschini](https://github.com/matteofranceschini) |
 | Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
 | Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
@@ -216,18 +427,69 @@ Example for Portugese abbreviations (regardless of Home Assistant language setti
 
 ```yaml
 type: custom:compass-card
-entity: sensor.friends_direction
-secondary_entity: sensor.friends_distance
+indicator_sensors:
+  - sensor: sensor.friends_direction
+value_sensors:
+  - sensor: sensor.friends_distance
 compass:
   language: pt
 ```
 
+## Upgrade from version v0.x.x to v1.0.0
+
+v1.0.0 has breaking changes, meaning the card wil not work as expected after updating.
+
+### Semi-automatic update procedure
+
+To upgrade your v0.x.x card, just open the card in the editor, and save it.
+No changes needed to the card.
+The configuration will update to the correct version, and your card is v1.0.0 ready.
+
+If the compass-card is inside another card (horizontal/vertical-stack), use the visual editor menu to navigate to the compass-card. It will update to the new config.
+
+### Manual update procedure
+
+See following YAML examples of a full v0.x.x config and its v1.0.0 equivalent
+_Note: the tap_action object does not change and you can keep the v0.x.x version._
+
+v0.x.x
+
+```yaml
+type: custom:compass-card
+name: title
+entity: sensor.friends_direction
+secondary_entity: sensor.friends_distance
+direction_offset: 15
+compass:
+  language: pt
+  indicator: arrow_outward
+  show_north: true
+```
+
+v1.0.0
+
+```yaml
+type: custom:compass-card
+header:
+  title:
+    value: title
+indicator_sensors:
+  - sensor:  sensor.friends_direction
+    indicator:
+      type: arrow_outward
+value_sensors:
+  - sensor: sensor.friends_distance
+compass:
+  north:
+    show: true
+    offset: 15
+language: pt
+```
+
 ## Wish/Todo list
 
-- Additional entities to show on circle
 - Background image ([#12](https://github.com/tomvanswam/compass-card/issues/12))
-- Hide indicator in certain directions (to use the card to display the sun or moon's movement) ([#12](https://github.com/tomvanswam/compass-card/issues/12))
-- Css options to change look & feel ([#12](https://github.com/tomvanswam/compass-card/issues/12)/[#14](https://github.com/tomvanswam/compass-card/issues/14))
+- Resizing compass on smaller cards ([#44](https://github.com/tomvanswam/compass-card/issues/44))
 
 ## Contact
 
@@ -236,9 +498,8 @@ And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](
 
 ## Thanks to
 
-- [@rsnodgrass](https://github.com/rsnodgrass) for [wind-compass-card](https://github.com/rsnodgrass/wind-compass-card), which gave me the idea to make this
+- [@rsnodgrass](https://github.com/rsnodgrass) for the idea to make this
 - [@iantrich](https://www.github.com/iantrich) for the [boiler-plate card](https://github.com/custom-cards/boilerplate-card), which got me started
-- [@xixao](https://codepen.io/xixao/) for [wind speed/direction css](https://codepen.io/xixao/pen/OPovyN)
 - [All the translators](#language)
 
 ## Support
@@ -249,21 +510,25 @@ Or clone, and create and a PR to help make the card even better.
 [![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://www.buymeacoffee.com/tomvanswam)
 
 [releases-shield]: https://img.shields.io/github/release/tomvanswam/compass-card.svg?style=flat-square
-[releases-link]: https://github.com/tomvanswam/compass-card/releases
+[releases-link]: https://github.com/tomvanswam/compass-card/releases/latest
 [release-date-shield]: https://img.shields.io/github/release-date/tomvanswam/compass-card?style=flat-square
-[latest-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/latest/total?style=flat-square&label=downloads%20latest
-[total-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/total?style=flat-square&label=downloads%20total
+[latest-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/latest/total?style=flat-square&label=downloads%20latest%20release
+[total-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/total?style=flat-square&label=total%20views
+[traffic-link]: https://github.com/tomvanswam/compass-card/graphs/traffic
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square
 [hacs-link]: https://github.com/custom-components/hacs
 [home-assistant-shield]: https://img.shields.io/badge/Home%20Assistant-visual%20editor/yaml-green?style=flat-square
+[home-assistant-link]: https://www.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=flat-square
 [license-link]: LICENSE.md
 [activity-shield]: https://img.shields.io/github/commit-activity/y/tomvanswam/compass-card.svg?style=flat-square
 [activity-link]: https://github.com/tomvanswam/compass-card/commits/master
 [bugs-shield]: https://img.shields.io/github/issues/tomvanswam/compass-card/bug?color=red&style=flat-square&label=bugs
+[bugs-link]: https://github.com/tomvanswam/compass-card/labels/bug
 [enhancements-shield]: https://img.shields.io/github/issues/tomvanswam/compass-card/enhancement?color=blue&style=flat-square&label=enhancements
+[enhancement-link]: https://github.com/tomvanswam/compass-card/labels/enhancement
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2020.svg?style=flat-square
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=flat-square
 [forum-link]: https://community.home-assistant.io/t/compass-card-points-you-in-the-right-direction/217909
-[coffee-shield]: https://img.shields.io/badge/Donate-buymeacoffe-tan?style=flat-square
+[coffee-shield]: https://img.shields.io/badge/donate-buymeacoffe-sienna?style=flat-square
 [coffee-link]: https://www.buymeacoffee.com/tomvanswam
