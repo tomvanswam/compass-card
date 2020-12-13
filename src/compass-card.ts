@@ -180,6 +180,7 @@ export class CompassCard extends LitElement {
   private renderDirections(): TemplateResult[] {
     const divs: TemplateResult[] = [];
     let index = 0;
+
     this.indicatorSensors.forEach((indicator) => {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         divs.push(html`<div class="sensor-${index}">
@@ -405,10 +406,10 @@ export class CompassCard extends LitElement {
   static getCompassAbbreviation(degrees: number, language: string | undefined): string {
     const index = Math.round(CompassCard.positiveDegrees(degrees) / 22.5);
     let string = 'N';
+    string = COMPASS_ABBREVIATIONS[index];
     if (index > 15) {
       string = COMPASS_ABBREVIATIONS[0];
     }
-    string = COMPASS_ABBREVIATIONS[index];
     return localize(`directions.${string}`, '', '', language);
   }
 
