@@ -182,7 +182,6 @@ export class CompassCard extends LitElement {
     let index = 0;
 
     this.indicatorSensors.forEach((indicator) => {
-      console.log(this.getVisibility(indicator.state_abbreviation), this.computeIndicator(indicator));
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         divs.push(html`<div class="sensor-${index}">
           <span class="abbr" style="color: ${this.getColor(indicator.state_abbreviation)};"
