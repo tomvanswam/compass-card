@@ -435,7 +435,7 @@ compass:
   language: pt
 ```
 
-## Upgrade from version v0.x.x to v1.0.0
+## Upgrade from version v0.x.x to v1.0.0 +
 
 v1.0.0 has breaking changes, meaning the card wil not work as expected after updating.
 
@@ -466,7 +466,7 @@ compass:
   show_north: true
 ```
 
-v1.0.0
+v1.0.0 +
 
 ```yaml
 type: custom:compass-card
