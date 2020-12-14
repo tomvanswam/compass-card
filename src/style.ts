@@ -34,8 +34,9 @@ const style: CSSResult = css`
   }
   .compass {
     display: block;
-    width: 152px;
+    width: 100%;
     height: 152px;
+    max-width: 152px;
     margin: 10px auto;
   }
   .content {

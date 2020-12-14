@@ -247,7 +247,7 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg height="152" width="152">
+    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin slice" style="width: 100%; padding-bottom: 92%; height: 1px; overflow: visible">
       ${this.getVisibility(this.compass.circle) ? this.svgCircle() : ''}
         <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
