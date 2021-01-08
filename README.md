@@ -527,7 +527,7 @@ Or clone, and create and a PR to help make the card even better.
 [bugs-link]: https://github.com/tomvanswam/compass-card/labels/bug
 [enhancements-shield]: https://img.shields.io/github/issues/tomvanswam/compass-card/enhancement?color=blue&style=flat-square&label=enhancements
 [enhancement-link]: https://github.com/tomvanswam/compass-card/labels/enhancement
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2020.svg?style=flat-square
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg?style=flat-square
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=flat-square
 [forum-link]: https://community.home-assistant.io/t/compass-card-points-you-in-the-right-direction/217909
 [coffee-shield]: https://img.shields.io/badge/donate-buymeacoffe-sienna?style=flat-square
