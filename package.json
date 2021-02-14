@@ -15,7 +15,7 @@
   "author": "Tom van Swam <tom@vanswam.com>",
   "license": "MIT",
   "dependencies": {
-    "custom-card-helpers": "^1.6.8",
+    "custom-card-helpers": "^1.6.9",
     "home-assistant-js-websocket": "^5.7.0",
     "lit-element": "^2.4.0",
     "lit-html": "^1.3.0"
