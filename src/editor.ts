@@ -162,14 +162,29 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           }
           break;
         case 'indicator_sensors[0].sensor':
-          const sensorsIndicatorSensor = [...this._config.indicator_sensors];
-          sensorsIndicatorSensor[0] = { ...this._config.indicator_sensors[0], sensor: target.value || '' };
-          this._config = { ...this._config, indicator_sensors: sensorsIndicatorSensor };
+          if (this._config.indicator_sensors[0].sensor !== target.value) {
+            const sensorsIndicatorSensor = [...this._config.indicator_sensors];
+            sensorsIndicatorSensor[0] = { ...this._config.indicator_sensors[0], sensor: target.value || '' };
+            if (sensorsIndicatorSensor[0].attribute) {
+              delete sensorsIndicatorSensor[0].attribute;
+            }
+            this._config = { ...this._config, indicator_sensors: sensorsIndicatorSensor };
+          }
           break;
         case 'value_sensors[0].sensor':
           const valuesSensorsSensor = this._config.value_sensors ? [...this._config.value_sensors] : [];
-          valuesSensorsSensor[0] = { ...valuesSensorsSensor[0], sensor: target.value || '' };
-          this._config = { ...this._config, value_sensors: valuesSensorsSensor };
+          if (valuesSensorsSensor[0] === undefined) {
+            valuesSensorsSensor[0] = { sensor: target.value || '' };
+            this._config = { ...this._config, value_sensors: valuesSensorsSensor };
+          } else {
+            if (valuesSensorsSensor[0].sensor !== target.value) {
+              valuesSensorsSensor[0] = { ...valuesSensorsSensor[0], sensor: target.value || '' };
+              if (valuesSensorsSensor[0].attribute) {
+                delete valuesSensorsSensor[0].attribute;
+              }
+              this._config = { ...this._config, value_sensors: valuesSensorsSensor };
+            }
+          }
           break;
         case 'indicator_sensors[0].indicator.type':
           const indicatorType: CCIndicatorConfig = { ...this._config.indicator_sensors[0]?.indicator, type: target.value };

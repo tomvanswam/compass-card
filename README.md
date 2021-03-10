@@ -435,6 +435,10 @@ compass:
   language: pt
 ```
 
+### More YAML examples
+
+See the [issues with the `config how-to` label](https://github.com/tomvanswam/compass-card/issues?q=label%3A%22config+how-to%22) for more configuration examples.
+
 ## Upgrade from version v0.x.x to v1.0.0 +
 
 v1.0.0 has breaking changes, meaning the card wil not work as expected after updating.

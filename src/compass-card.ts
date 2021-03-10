@@ -73,11 +73,11 @@ export class CompassCard extends LitElement {
     }
 
     this.colors = {
-      accent: getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim(),
-      primary: getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(),
-      stateIcon: getComputedStyle(document.documentElement).getPropertyValue('--state-icon-color').trim(),
-      secondaryText: getComputedStyle(document.documentElement).getPropertyValue('--secondary-text-color').trim(),
-      primaryText: getComputedStyle(document.documentElement).getPropertyValue('--primary-text-color').trim(),
+      accent: 'var(--accent-color)',
+      primary: 'var(--primary-color)',
+      stateIcon: 'var(--state-icon-color)',
+      secondaryText: 'var(--secondary-text-color)',
+      primaryText: 'var(--primary-text-color)',
     };
 
     this._config = {
