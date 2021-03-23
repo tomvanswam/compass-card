@@ -251,6 +251,9 @@ export class CompassCard extends LitElement {
       ${this.getVisibility(this.compass.circle) ? this.svgCircle() : ''}
         <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
+          ${this.compass.east.show ? this.svgIndicatorEast() : ''}
+          ${this.compass.south.show ? this.svgIndicatorSouth() : ''}
+          ${this.compass.west.show ? this.svgIndicatorWest() : ''}
           ${this.svgIndicators()}
         </g>
     </svg>
@@ -332,6 +335,36 @@ export class CompassCard extends LitElement {
       <g class="north">
         <text x="76" y="10.089" font-family="sans-serif" font-size="13.333" text-anchor="middle" fill="${this.getColor(this.compass.north)}">
           <tspan x="76" y="11">${localize('directions.N', '', '', this._config.language)}</tspan>
+        </text>
+      </g>
+    `;
+  }
+
+  private svgIndicatorEast(): SVGTemplateResult {
+    return svg`
+      <g class="east">
+        <text x="140" y="80.089" font-family="sans-serif" font-size="13.333" text-anchor="right" fill="${this.getColor(this.compass.east)}">
+          <tspan x="140" y="81">${localize('directions.E', '', '', this._config.language)}</tspan>
+        </text>
+      </g>
+    `;
+  }
+
+  private svgIndicatorSouth(): SVGTemplateResult {
+    return svg`
+      <g class="south">
+        <text x="76" y="150.089" font-family="sans-serif" font-size="13.333" text-anchor="middle" fill="${this.getColor(this.compass.south)}">
+          <tspan x="76" y="151">${localize('directions.S', '', '', this._config.language)}</tspan>
+        </text>
+      </g>
+    `;
+  }
+
+  private svgIndicatorWest(): SVGTemplateResult {
+    return svg`
+      <g class="west">
+        <text x="-2" y="80.089" font-family="sans-serif" font-size="13.333" text-anchor="left" fill="${this.getColor(this.compass.west)}">
+          <tspan x="-2" y="81">${localize('directions.W', '', '', this._config.language)}</tspan>
         </text>
       </g>
     `;

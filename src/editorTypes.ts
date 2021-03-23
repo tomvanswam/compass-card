@@ -44,6 +44,10 @@ export interface CCHeaderItemConfig extends CCPropertiesConfig {
 export interface CCCompassConfig {
   circle?: CCPropertiesConfig;
   north?: CCNorthConfig;
+  east?: CCPropertiesConfig;
+  south?: CCPropertiesConfig;
+  west?: CCPropertiesConfig;
+}
 }
 
 export interface CCNorthConfig extends CCPropertiesConfig {

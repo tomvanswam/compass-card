@@ -32,6 +32,10 @@ export interface CCHeaderItem extends CCProperties {
 export interface CCCompass {
   circle: CCProperties;
   north: CCNorth;
+  east: CCProperties;
+  south: CCProperties;
+  west: CCProperties;
+}
 }
 
 export interface CCNorth extends CCProperties {

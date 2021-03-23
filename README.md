@@ -183,10 +183,13 @@ compass:
 
 ### Compass object
 
-| Name   | Type                            | Requirement  | Supported | Config                              | Description                      |
-| ------ | ------------------------------- | ------------ | --------- | ----------------------------------- | -------------------------------- |
-| north  | [north object](#north-object)   | **Optional** | v1.0.0    | See [north object](#north-object)   | Settings for the north indicator |
-| circle | [circle object](#circle-object) | **Optional** | v1.0.0    | See [circle object](#circle-object) | Settings for the compass circle  |
+| Name   | Type                                    | Requirement  | Supported | Config                              | Description                                       |
+| ------ | --------------------------------------- | ------------ | --------- | ----------------------------------- | ------------------------------------------------- |
+| north  | [north object](#north-object)           | **Optional** | v1.0.0    | See [north object](#north-object)   | Settings for the north indicator (default hidden) |
+| east   | [properties object](#properties-object) | **Optional** | v1.2.0    | YAML                                | Settings for the east indicator (default hidden)  |
+| south  | [properties object](#properties-object) | **Optional** | v1.2.0    | YAML                                | Settings for the south indicator (default hidden) |
+| west   | [properties object](#properties-object) | **Optional** | v1.2.0    | YAML                                | Settings for the west indicator (default hidden)  |
+| circle | [circle object](#circle-object)         | **Optional** | v1.0.0    | See [circle object](#circle-object) | Settings for the compass circle                   |
 
 ### North object
 
