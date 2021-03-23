@@ -87,7 +87,7 @@ header:
   title:
     value: Sun
 indicator_sensors:
-  - sensor:  sun.sun
+  - sensor: sun.sun
     attribute: azimuth
     indicator:
       type: circle
@@ -108,7 +108,7 @@ header:
   title:
     value: Sun
 indicator_sensors:
-  - sensor:  sun.sun
+  - sensor: sun.sun
     attribute: azimuth
     indicator:
       type: circle
@@ -128,7 +128,7 @@ header:
   title:
     value: Sun
 indicator_sensors:
-  - sensor:  sun.sun
+  - sensor: sun.sun
     attribute: azimuth
     indicator:
       type: circle
@@ -146,7 +146,7 @@ compass:
 ## Options
 
 | Name              | Type                                                           | Requirement  | Supported | Config                                                    | Description                                                                                                |
-|-------------------|----------------------------------------------------------------|--------------|-----------|-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| ----------------- | -------------------------------------------------------------- | ------------ | --------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | type              | string                                                         | **Required** | v0.0.1    | N.a.                                                      |                                                                                                            |
 | header            | [header object](#header-object)                                | **Optional** | v1.0.0    | See [header object](#header-object)                       | Card header settings                                                                                       |
 | compass           | [compass object](#compass-object)                              | **Optional** | v1.0.0    | See [compass object](#compass-object)                     | Compass settings                                                                                           |
@@ -159,14 +159,14 @@ compass:
 ### Header object
 
 | Name  | Type                          | Requirement  | Supported | Config                            | Description                          |
-|-------|-------------------------------|--------------|-----------|-----------------------------------|--------------------------------------|
+| ----- | ----------------------------- | ------------ | --------- | --------------------------------- | ------------------------------------ |
 | title | [title object](#title-object) | **Optional** | v1.0.0    | See [title object](#title-object) | Settings for the title in the header |
 | icon  | [icon object](#icon-object)   | **Optional** | v1.0.0    | See [icon object](#icon-object)   | Settings for the icon in the header  |
 
 ### Title object
 
 | Name          | Type                                          | Requirement  | Supported    | Config | Description                      |
-|---------------|-----------------------------------------------|--------------|--------------|--------|----------------------------------|
+| ------------- | --------------------------------------------- | ------------ | ------------ | ------ | -------------------------------- |
 | value         | string                                        | **Optional** | v1.0.0       | YAML   | Title to show in the card header |
 | color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object                  |
 | show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                      |
@@ -175,7 +175,7 @@ compass:
 ### Icon object
 
 | Name          | Type                                          | Requirement  | Supported    | Config | Description                   |
-|---------------|-----------------------------------------------|--------------|--------------|--------|-------------------------------|
+| ------------- | --------------------------------------------- | ------------ | ------------ | ------ | ----------------------------- |
 | value         | string                                        | **Optional** | v1.0.0       | YAML   | Icon show in the card header  |
 | color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object               |
 | show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                   |
@@ -184,14 +184,14 @@ compass:
 ### Compass object
 
 | Name   | Type                            | Requirement  | Supported | Config                              | Description                      |
-|--------|---------------------------------|--------------|-----------|-------------------------------------|----------------------------------|
+| ------ | ------------------------------- | ------------ | --------- | ----------------------------------- | -------------------------------- |
 | north  | [north object](#north-object)   | **Optional** | v1.0.0    | See [north object](#north-object)   | Settings for the north indicator |
 | circle | [circle object](#circle-object) | **Optional** | v1.0.0    | See [circle object](#circle-object) | Settings for the compass circle  |
 
 ### North object
 
 | Name          | Type                                          | Requirement  | Supported    | Config | Description                                                                        |
-|---------------|-----------------------------------------------|--------------|--------------|--------|------------------------------------------------------------------------------------|
+| ------------- | --------------------------------------------- | ------------ | ------------ | ------ | ---------------------------------------------------------------------------------- |
 | offset        | string                                        | **Optional** | v1.0.0       | YAML   | Value to offset the indicator display with.<br />(E.g. to create a relative north) |
 | color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object                                                                    |
 | show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                                                                        |
@@ -200,7 +200,7 @@ compass:
 ### Circle object
 
 | Name          | Type                                          | Requirement  | Supported    | Config | Description                   |
-|---------------|-----------------------------------------------|--------------|--------------|--------|-------------------------------|
+| ------------- | --------------------------------------------- | ------------ | ------------ | ------ | ----------------------------- |
 | color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object               |
 | show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                   |
 | dynamic_style | [dynamic style object](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values |
@@ -208,7 +208,7 @@ compass:
 ### Indicator Sensors object
 
 | Name               | Type                                    | Requirement  | Supported | Config                                    | Description                                                                                                   |
-|--------------------|-----------------------------------------|--------------|-----------|-------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| ------------------ | --------------------------------------- | ------------ | --------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | sensor             | string                                  | **Required** | v1.0.0    | First visual, others YAML                 | Entity to read state from                                                                                     |
 | attribute          | string                                  | **Optional** | v1.0.0    | YAML                                      | Attribute of sensor to read value from instead of entity state                                                |
 | units              | string                                  | **Optional** | v1.0.0    | YAML                                      | Units of measurement to display, default for entity, units of measurement of entity, default for attribute '' |
@@ -221,7 +221,7 @@ compass:
 ### Value Sensors object
 
 | Name        | Type                                    | Requirement  | Supported | Config                    | Description                                                                                                   |
-|-------------|-----------------------------------------|--------------|-----------|---------------------------|---------------------------------------------------------------------------------------------------------------|
+| ----------- | --------------------------------------- | ------------ | --------- | ------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | sensor      | string                                  | **Required** | v1.0.0    | First visual, others YAML | Entity to read state from                                                                                     |
 | attribute   | string                                  | **Optional** | v1.0.0    | YAML                      | Attribute of sensor to read value from instead of entity state                                                |
 | units       | string                                  | **Optional** | v1.0.0    | YAML                      | Units of measurement to display, default for entity, units of measurement of entity, default for attribute '' |
@@ -229,26 +229,32 @@ compass:
 | state_value | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state value                                                                       |
 | state_units | [properties object](#properties-object) | **Optional** | v1.0.0    | YAML                      | Settings for displaying the state units                                                                       |
 
+### Indicator object
+
+| Name | Type   | Requirement  | Supported | Config                    | Description                                                                            |
+| ---- | ------ | ------------ | --------- | ------------------------- | -------------------------------------------------------------------------------------- |
+| type | string | **Optional** | v1.0.0    | First visual, others YAML | One of `arrow_outward` (default), `arrow_inward`, `circle`, the shape of the indicator |
+
 ### Properties object
 
 | Name          | Type                                                    | Requirement  | Supported | Config | Description                   |
-|---------------|---------------------------------------------------------|--------------|-----------|--------|-------------------------------|
+| ------------- | ------------------------------------------------------- | ------------ | --------- | ------ | ----------------------------- |
 | color         | string                                                  | **Optional** | v1.0.0    | YAML   | Color of object               |
 | show          | boolean                                                 | **Optional** | v1.0.0    | YAML   | Show object                   |
 | dynamic_style | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0    | YAML   | Change style on entity values |
 
 ### Dynamic Style object
 
-| Name      | Type                                              | Requirement  | Supported | Config | Description                                                                                                                                              |
-|-----------|---------------------------------------------------|--------------|-----------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| sensor    | string                                            | **Optional** | v1.0.0    | YAML   | Entity to listen to read value from style                                                                                                                |
-| attribute | string                                            | **Optional** | v1.0.0    | YAML   | Attribute of sensor to read value from to change style                                                                                                   |
-| bands     | Array of [style band objects](#style-band-object) | **Required** | v1.0.0    | YAML   | Styles to use from a certain value (values below the lowest configured value will display as the parent [properties object](#properties-object)settings) |
+| Name      | Type                                              | Requirement  | Supported | Config | Description                                                                                                                                               |
+| --------- | ------------------------------------------------- | ------------ | --------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| sensor    | string                                            | **Optional** | v1.0.0    | YAML   | Entity to listen to read value from style                                                                                                                 |
+| attribute | string                                            | **Optional** | v1.0.0    | YAML   | Attribute of sensor to read value from to change style                                                                                                    |
+| bands     | Array of [style band objects](#style-band-object) | **Required** | v1.0.0    | YAML   | Styles to use from a certain value (values below the lowest configured value will display as the parent [properties object](#properties-object) settings) |
 
 ### Style band object
 
 | Name       | Type    | Requirement  | Supported | Config | Description                                                                            |
-|------------|---------|--------------|-----------|--------|----------------------------------------------------------------------------------------|
+| ---------- | ------- | ------------ | --------- | ------ | -------------------------------------------------------------------------------------- |
 | from_value | string  | **Required** | v1.0.0    | YAML   | Value from which upward this bands settings are used to display the parent object with |
 | color      | string  | **Optional** | v1.0.0    | YAML   | Color of object                                                                        |
 | show       | boolean | **Optional** | v1.0.0    | YAML   | Show object                                                                            |
@@ -331,7 +337,7 @@ compass:
 ### Action Config object
 
 | Name            | Type                | Requirement                                  | Default                             | Supported | Config    | Description                                                                                                                                                                                         |
-|-----------------|---------------------|----------------------------------------------|-------------------------------------|-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------- | -------------------------------------------- | ----------------------------------- | --------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | action          | list item           | **Optional**                                 | `more-info`                         | v0.4.0    | YAML only | Type of action to launch when clicking/touching the card:<br />`more-info`<br />`navigate`<br />`url`<br/>`call-service`                                                                            |
 | entity          | string              | **Optional** for action `more-info`          | `entity` used for compass direction | v0.4.0    | YAML only | Entity to show the `more-info` of. When empty the compass direction `more-info` is shown                                                                                                            |
 | navigation_path | string              | **Required** for action `navigate`           |                                     | v0.4.0    | YAML only | Path to navigate to, has to be on the same host as the card is. E.g. `/logbook`, `/config/dashboard` or `lovelace/default_view`                                                                     |
@@ -407,7 +413,7 @@ tap_action:
 The following languages are supported:
 
 | Language  | Yaml value | Supported | Translated by                                                |
-|-----------|------------|-----------|--------------------------------------------------------------|
+| --------- | ---------- | --------- | ------------------------------------------------------------ |
 | Czech     | `cz`       | v0.4.0    | [@woodcat64](https://github.com/Woodcat64)                   |
 | Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
 | English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
@@ -478,7 +484,7 @@ header:
   title:
     value: title
 indicator_sensors:
-  - sensor:  sensor.friends_direction
+  - sensor: sensor.friends_direction
     indicator:
       type: arrow_outward
 value_sensors:
