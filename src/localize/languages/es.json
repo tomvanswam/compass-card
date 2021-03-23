@@ -1,10 +1,11 @@
 {
   "common": {
     "version": "Versión",
-    "description": "Mostrar una brújula con un indicador en la dirección del valor de la entidad",
+    "description": "Muestre una brújula con un indicador en la dirección del valor de la entidad",
     "invalid_configuration": "Configuración inválida",
+    "missing_direction_entity": "Falta entidad de dirección",
     "no_entity": "Entidad no configurada",
-    "offset_not_a_number": "El desplazamiento de dirección no es un número",
+    "offset_not_a_number": "El desfase de la dirección no es un número",
     "invalid": "inválido",
     "on": "Encendido",
     "off": "Apagado"
@@ -17,16 +18,16 @@
     "primary": "Primario",
     "secondary": "Secundario",
     "indicator": "Indicador",
-    "direction": "Dirección",
-    "offset": "Desplazamiento",
+    "direction": "Direccion",
+    "offset": "Desfase",
     "show": "Mostrar",
-    "abbreviations": "Abreviaturas",
-    "toggle": "Conmutar",
+    "abbreviations": "Abreviación",
+    "toggle": "Toggle",
     "language": "Idioma",
     "primary entity description": "Entidad primaria",
     "secondary entity description": "Entidad secundaria",
-    "language description": "Idioma abreviatura dirección",
-    "offset description": "Desplazamiento de la dirección"
+    "language description": "Idioma de la abreviatura de la dirección",
+    "offset description": "Desfase de la dirección"
   },
   "directions": {
     "north": "Norte",
