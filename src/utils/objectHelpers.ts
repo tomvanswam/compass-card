@@ -37,8 +37,14 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
   const southShow = getBoolean(config.compass?.north?.show, false);
   const westColor = config.compass?.north?.color || colors.primary;
   const westShow = getBoolean(config.compass?.north?.show, false);
+  const bgImage = config.compass?.circle?.background_image || '';
+  const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : config.compass?.circle?.background_image ? 1.0 : 0.0;
+  const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
   const compass: CCCompass = {
     circle: {
+      background_image: bgImage,
+      background_opacity: bgOpacity,
+      offset_background: bgOffset,
       color: circleColor,
       dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow),
       show: circleShow,

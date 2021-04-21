@@ -248,7 +248,12 @@ export class CompassCard extends LitElement {
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
     <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin slice" style="width: 100%; padding-bottom: 92%; height: 1px; overflow: visible">
-      ${this.getVisibility(this.compass.circle) ? this.svgCircle() : ''}
+      <defs>
+        <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
+          <image x="0" y="0" height="1" width="1" href="${this.compass.circle.background_image}" preserveAspectRatio="xMidYMid meet"></image>
+        </pattern>        
+      </defs>
+      ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
         <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
           ${this.compass.east.show ? this.svgIndicatorEast() : ''}
@@ -260,10 +265,14 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private svgCircle(): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(
-      this.compass.circle,
-    )}" stroke-width="2" fill="white" fill-opacity="0.0" stroke-opacity="1.0" />`;
+  private svgCircle(directionOffset: number): SVGTemplateResult {
+    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="2" fill="${this.circleFill()}" fill-opacity="${
+      this.compass.circle.background_opacity
+    }" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
+  }
+
+  private circleFill(): string {
+    return this.compass.circle.background_image === '' ? 'white' : 'url(#image)';
   }
 
   private svgIndicators(): SVGTemplateResult[] {
@@ -371,7 +380,7 @@ export class CompassCard extends LitElement {
   }
 
   private getSecondaryEntity(entity: HassEntity): TemplateResult {
-    return html` <span class="value">${entity.state}</span> <span class="measurement">${entity.attributes.unit_of_measurement}</span>`;
+    return html`<span class="value">${entity.state}</span> <span class="measurement">${entity.attributes.unit_of_measurement}</span>`;
   }
 
   private getValue(entity: CCEntity): CCValue {

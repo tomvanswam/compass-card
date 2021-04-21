@@ -30,12 +30,17 @@ export interface CCHeaderItem extends CCProperties {
 }
 
 export interface CCCompass {
-  circle: CCProperties;
+  circle: CCCircle;
   north: CCNorth;
   east: CCProperties;
   south: CCProperties;
   west: CCProperties;
 }
+
+export interface CCCircle extends CCProperties {
+  background_image: string;
+  background_opacity: number;
+  offset_background: boolean;
 }
 
 export interface CCNorth extends CCProperties {
