@@ -170,7 +170,7 @@ compass:
   west:
     show: true
   south:
-    show: true    
+    show: true
 ```
 
 Store the background image in your `config/www/` folder (this maps to `/local/`)
@@ -236,14 +236,14 @@ Store the background image in your `config/www/` folder (this maps to `/local/`)
 
 ### Circle object
 
-| Name               | Type                                                    | Requirement  | Supported | Config | Description                                                                                                                                                                                                        |
-| ------------------ | ------------------------------------------------------- | ------------ | --------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name               | Type                                                    | Requirement  | Supported | Config | Description                                                                                                                                                                                                                           |
+| ------------------ | ------------------------------------------------------- | ------------ | --------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | background_image   | string                                                  | **Optional** | v1.2.0    | YAML   | URL of image to show in the background of the circle (use square image of preferably 126px by 126px). See [Home Assistant documentation](https://www.home-assistant.io/integrations/http#hosting-files) for info about hosting files. |
-| background_opacity | number                                                  | **Optional** | v1.2.0    | YAML   | Opacity of the background image 1 = 100% visible, 0.5 = 50% half visible, 0 = fully hidden, anything between 0 and 1 will do.                                                                                      |
-| offset_background  | boolean                                                 | **Optional** | v1.2.0    | YAML   | If `true` then image rotates with north offset (default), if `false` then image does not rotate with north offset                                                                                                  |
-| color              | string                                                  | **Optional** | v1.0.0    | YAML   | Color of object                                                                                                                                                                                                    |
-| show               | boolean                                                 | **Optional** | v1.0.0    | YAML   | Show object                                                                                                                                                                                                        |
-| dynamic_style      | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0    | YAML   | Change style on entity values                                                                                                                                                                                      |
+| background_opacity | number                                                  | **Optional** | v1.2.0    | YAML   | Opacity of the background image 1 = 100% visible, 0.5 = 50% half visible, 0 = fully hidden, anything between 0 and 1 will do.                                                                                                         |
+| offset_background  | boolean                                                 | **Optional** | v1.2.0    | YAML   | If `true` then image rotates with north offset (default), if `false` then image does not rotate with north offset                                                                                                                     |
+| color              | string                                                  | **Optional** | v1.0.0    | YAML   | Color of object                                                                                                                                                                                                                       |
+| show               | boolean                                                 | **Optional** | v1.0.0    | YAML   | Show object                                                                                                                                                                                                                           |
+| dynamic_style      | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0    | YAML   | Change style on entity values                                                                                                                                                                                                         |
 
 ### Indicator Sensors object
 
@@ -464,6 +464,7 @@ The following languages are supported:
 | Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
 | Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 | Polish    | `pl`       | v0.3.2    | [@porebas](https://github.com/porebas)                       |
+| Slovenian | `sl`       | v1.2.0    | [@thehijacker](https://github.com/thehijacker)               |
 | Russian   | `ru`       | v0.4.0    | [@artemyevav](https://github.com/artemyevav)                 |
 | Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 
