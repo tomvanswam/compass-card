@@ -60,7 +60,7 @@ value_sensors:
 
 [Issue #41](https://github.com/tomvanswam/compass-card/issues/41) shows an example how to calculate the distance/direction of your friend.
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-outward.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-outward.png?raw=true)
 
 ### Compass indicator `arrow_inward`
 
@@ -77,7 +77,7 @@ value_sensors:
   - sensor: sensor.wind_speed
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-inward.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-inward.png?raw=true)
 
 ### Compass indicator `circle`
 
@@ -96,7 +96,7 @@ value_sensors:
     attribute: elevation
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-circle.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
 
 ### Compass `north indicator` and `direction offset`
 
@@ -141,7 +141,41 @@ compass:
     offset: 15
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-north.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-north.png?raw=true)
+
+### Compass `cardinal indicators` and `background`
+
+```yaml
+type: custom:compass-card
+header:
+  title:
+    value: Sun
+indicator_sensors:
+  - sensor: sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
+compass:
+  circle:
+    background_image: /local/compass-card/home.png
+    background_opacity: 0.5
+  north:
+    show: true
+    offset: 30
+  east:
+    show: true
+  west:
+    show: true
+  south:
+    show: true    
+```
+
+Store the background image in your `config/www/` folder (this maps to `/local/`)
+
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-cardinals-background.png?raw=true)
 
 ## Options
 
