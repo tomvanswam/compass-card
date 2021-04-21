@@ -42,8 +42,17 @@ export interface CCHeaderItemConfig extends CCPropertiesConfig {
 }
 
 export interface CCCompassConfig {
-  circle?: CCPropertiesConfig;
+  circle?: CCCircleConfig;
   north?: CCNorthConfig;
+  east?: CCPropertiesConfig;
+  south?: CCPropertiesConfig;
+  west?: CCPropertiesConfig;
+}
+
+export interface CCCircleConfig extends CCPropertiesConfig {
+  background_image?: string;
+  background_opacity?: number;
+  offset_background?: boolean;
 }
 
 export interface CCNorthConfig extends CCPropertiesConfig {

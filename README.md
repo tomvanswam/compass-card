@@ -60,7 +60,7 @@ value_sensors:
 
 [Issue #41](https://github.com/tomvanswam/compass-card/issues/41) shows an example how to calculate the distance/direction of your friend.
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-outward.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-outward.png?raw=true)
 
 ### Compass indicator `arrow_inward`
 
@@ -77,7 +77,7 @@ value_sensors:
   - sensor: sensor.wind_speed
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-inward.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-inward.png?raw=true)
 
 ### Compass indicator `circle`
 
@@ -96,7 +96,7 @@ value_sensors:
     attribute: elevation
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-circle.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-circle.png?raw=true)
 
 ### Compass `north indicator` and `direction offset`
 
@@ -141,7 +141,41 @@ compass:
     offset: 15
 ```
 
-![Default](https://github.com/tomvanswam/compass-card/blob/dev/docs/images/compass-card-north.png?raw=true)
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-north.png?raw=true)
+
+### Compass `cardinal indicators` and `background`
+
+```yaml
+type: custom:compass-card
+header:
+  title:
+    value: Sun
+indicator_sensors:
+  - sensor: sun.sun
+    attribute: azimuth
+    indicator:
+      type: circle
+value_sensors:
+  - sensor: sun.sun
+    attribute: elevation
+compass:
+  circle:
+    background_image: /local/compass-card/home.png
+    background_opacity: 0.5
+  north:
+    show: true
+    offset: 30
+  east:
+    show: true
+  west:
+    show: true
+  south:
+    show: true
+```
+
+Store the background image in your `config/www/` folder (this maps to `/local/`)
+
+![Default](https://github.com/tomvanswam/compass-card/blob/master/docs/images/compass-card-cardinals-background.png?raw=true)
 
 ## Options
 
@@ -183,10 +217,13 @@ compass:
 
 ### Compass object
 
-| Name   | Type                            | Requirement  | Supported | Config                              | Description                      |
-| ------ | ------------------------------- | ------------ | --------- | ----------------------------------- | -------------------------------- |
-| north  | [north object](#north-object)   | **Optional** | v1.0.0    | See [north object](#north-object)   | Settings for the north indicator |
-| circle | [circle object](#circle-object) | **Optional** | v1.0.0    | See [circle object](#circle-object) | Settings for the compass circle  |
+| Name   | Type                                    | Requirement  | Supported | Config                              | Description                                       |
+| ------ | --------------------------------------- | ------------ | --------- | ----------------------------------- | ------------------------------------------------- |
+| north  | [north object](#north-object)           | **Optional** | v1.0.0    | See [north object](#north-object)   | Settings for the north indicator (default hidden) |
+| east   | [properties object](#properties-object) | **Optional** | v1.2.0    | YAML                                | Settings for the east indicator (default hidden)  |
+| south  | [properties object](#properties-object) | **Optional** | v1.2.0    | YAML                                | Settings for the south indicator (default hidden) |
+| west   | [properties object](#properties-object) | **Optional** | v1.2.0    | YAML                                | Settings for the west indicator (default hidden)  |
+| circle | [circle object](#circle-object)         | **Optional** | v1.0.0    | See [circle object](#circle-object) | Settings for the compass circle                   |
 
 ### North object
 
@@ -199,11 +236,14 @@ compass:
 
 ### Circle object
 
-| Name          | Type                                          | Requirement  | Supported    | Config | Description                   |
-| ------------- | --------------------------------------------- | ------------ | ------------ | ------ | ----------------------------- |
-| color         | string                                        | **Optional** | v1.0.0       | YAML   | Color of object               |
-| show          | boolean                                       | **Optional** | v1.0.0       | YAML   | Show object                   |
-| dynamic_style | [dynamic style object](#dynamic-style-object) | **Optional** | v1.0.0 (WIP) | YAML   | Change style on entity values |
+| Name               | Type                                                    | Requirement  | Supported | Config | Description                                                                                                                                                                                                                           |
+| ------------------ | ------------------------------------------------------- | ------------ | --------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| background_image   | string                                                  | **Optional** | v1.2.0    | YAML   | URL of image to show in the background of the circle (use square image of preferably 126px by 126px). See [Home Assistant documentation](https://www.home-assistant.io/integrations/http#hosting-files) for info about hosting files. |
+| background_opacity | number                                                  | **Optional** | v1.2.0    | YAML   | Opacity of the background image 1 = 100% visible, 0.5 = 50% half visible, 0 = fully hidden, anything between 0 and 1 will do.                                                                                                         |
+| offset_background  | boolean                                                 | **Optional** | v1.2.0    | YAML   | If `true` then image rotates with north offset (default), if `false` then image does not rotate with north offset                                                                                                                     |
+| color              | string                                                  | **Optional** | v1.0.0    | YAML   | Color of object                                                                                                                                                                                                                       |
+| show               | boolean                                                 | **Optional** | v1.0.0    | YAML   | Show object                                                                                                                                                                                                                           |
+| dynamic_style      | Array of [dynamic style objects](#dynamic-style-object) | **Optional** | v1.0.0    | YAML   | Change style on entity values                                                                                                                                                                                                         |
 
 ### Indicator Sensors object
 
@@ -424,6 +464,7 @@ The following languages are supported:
 | Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                       |
 | Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 | Polish    | `pl`       | v0.3.2    | [@porebas](https://github.com/porebas)                       |
+| Slovenian | `sl`       | v1.2.0    | [@thehijacker](https://github.com/thehijacker)               |
 | Russian   | `ru`       | v0.4.0    | [@artemyevav](https://github.com/artemyevav)                 |
 | Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                       |
 

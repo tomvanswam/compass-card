@@ -31,8 +31,20 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
   const circleShow = getBoolean(config.compass?.circle?.show, true);
   const northColor = config.compass?.north?.color || colors.primary;
   const northShow = getBoolean(config.compass?.north?.show, false);
+  const eastColor = config.compass?.north?.color || colors.primary;
+  const eastShow = getBoolean(config.compass?.north?.show, false);
+  const southColor = config.compass?.north?.color || colors.primary;
+  const southShow = getBoolean(config.compass?.north?.show, false);
+  const westColor = config.compass?.north?.color || colors.primary;
+  const westShow = getBoolean(config.compass?.north?.show, false);
+  const bgImage = config.compass?.circle?.background_image || '';
+  const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : config.compass?.circle?.background_image ? 1.0 : 0.0;
+  const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
   const compass: CCCompass = {
     circle: {
+      background_image: bgImage,
+      background_opacity: bgOpacity,
+      offset_background: bgOffset,
       color: circleColor,
       dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow),
       show: circleShow,
@@ -42,6 +54,21 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
       color: northColor,
       dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, northColor, northShow),
       show: northShow,
+    },
+    east: {
+      color: eastColor,
+      dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, eastColor, eastShow),
+      show: eastShow,
+    },
+    south: {
+      color: southColor,
+      dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, southColor, southShow),
+      show: southShow,
+    },
+    west: {
+      color: westColor,
+      dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, westColor, westShow),
+      show: westShow,
     },
   };
   return compass;
