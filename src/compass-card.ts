@@ -425,12 +425,13 @@ export class CompassCard extends LitElement {
           degrees = 0;
         }
         abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.language);
+      } else {
+        abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.language);
       }
     } else {
       degrees = CompassCard.positiveDegrees(parseFloat(directionStr.value));
       abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.language);
     }
-
     return { abbreviation, degrees: Math.round(degrees) };
   }
 
