@@ -1,4 +1,5 @@
-import { LitElement, html, customElement, property, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult, internalProperty } from 'lit-element';
+import { LitElement, html, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './editorTypes';
@@ -52,12 +53,12 @@ export class CompassCard extends LitElement {
 
   @property({ attribute: false }) public _hass!: HomeAssistant;
   @property({ attribute: false }) protected _config!: CompassCardConfig;
-  @internalProperty() protected colors!: CCColors;
-  @internalProperty() protected header!: CCHeader;
-  @internalProperty() protected compass!: CCCompass;
-  @internalProperty() protected indicatorSensors!: CCIndicatorSensor[];
-  @internalProperty() protected entities: HassEntities = {};
-  @internalProperty() protected valueSensors!: CCValueSensor[];
+  @state() protected colors!: CCColors;
+  @state() protected header!: CCHeader;
+  @state() protected compass!: CCCompass;
+  @state() protected indicatorSensors!: CCIndicatorSensor[];
+  @state() protected entities: HassEntities = {};
+  @state() protected valueSensors!: CCValueSensor[];
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
