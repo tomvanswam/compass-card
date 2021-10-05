@@ -1,4 +1,5 @@
-import { LitElement, html, customElement, property, TemplateResult, CSSResult, css, internalProperty } from 'lit-element';
+import { LitElement, html, TemplateResult, CSSResult, css } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
 import { CompassCardConfigV0, isV0Config, configV0ToV1 } from './updateV0ToV1';
@@ -13,8 +14,8 @@ import { EditorTarget } from './utils/ha-types';
 @customElement('compass-card-editor')
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @internalProperty() private _helpers?;
-  @internalProperty() private _config?: CompassCardConfig;
+  @state() private _helpers?;
+  @state() private _config?: CompassCardConfig;
   private _initialized = false;
 
   public setConfig(config: CompassCardConfig | CompassCardConfigV0): void {
