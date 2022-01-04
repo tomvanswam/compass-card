@@ -1,0 +1,22 @@
+name: Merge Dependabot PRs
+on:
+    workflow_run:
+        types:
+            - completed
+        workflows:
+            - 'Validate Build'
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: minor
