@@ -2,10 +2,11 @@ name: Merge Dependabot PRs
 on:
   workflow_run:
       types:
-          - completed
+        - completed
       workflows:
-          - 'Validate Build'
-      branches:
+        - 'Validate Build'
+      branches-ignore:
+        - master
         - dev
 
 jobs:
