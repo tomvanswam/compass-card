@@ -455,6 +455,7 @@ The following languages are supported:
 | Language  | Yaml value | Supported | Translated by                                                |
 | --------- | ---------- | --------- | ------------------------------------------------------------ |
 | Bulgarian | `bg`       | v1.4.0    | [@Saentist](https://github.com/Saentist)                     |
+| Catalan   | `ca`       | v1.5.0    | [@woodcat64](https://github.com/joan-mb)                     |
 | Czech     | `cz`       | v0.4.0    | [@woodcat64](https://github.com/Woodcat64)                   |
 | Danish    | `da`       | v1.3.0    | [@DurgNomis-drol](https://github.com/DurgNomis-drol)         |
 | Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                 |
