@@ -1,20 +1,12 @@
-name: Merge Dependabot PRs
+name: Auto-merge dependabot updates
 on:
-  pull_request:
-
+  schedule:
+    - cron: '0 * * * *'
 jobs:
-  automerge:
+  test:
+    name: Auto-merge dependabot updates
     runs-on: ubuntu-latest
-
-    permissions:
-      pull-requests: write
-      contents: write
-
     steps:
-      - uses: actions/checkout@v2
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
-      - uses: ahmadnassri/action-dependabot-auto-merge@v2
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      - uses: akheron/dependabot-cron-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          target: minor
+          token: ${{ secrets.GITHUB_TOKEN }}
