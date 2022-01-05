@@ -1,9 +1,13 @@
 name: 'Validate HACS'
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
+    branches:
+      - master
+      - dev
 
 jobs:
   validate:
