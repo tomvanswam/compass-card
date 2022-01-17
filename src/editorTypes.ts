@@ -63,13 +63,13 @@ export interface CCPropertiesConfig {
   color?: string;
   dynamic_style?: CCDynamicStyleConfig;
   show?: boolean;
-  unknown?: CCStyleConfig;
 }
 
 export interface CCDynamicStyleConfig {
   sensor?: string;
   attribute?: string;
   bands: CCStyleBandConfig[];
+  unknown?: CCStyleConfig;
 }
 
 export interface CCStyleBandConfig extends CCStyleConfig {

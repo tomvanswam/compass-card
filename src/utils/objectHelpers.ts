@@ -15,20 +15,12 @@ export function getHeader(config: CompassCardConfig, colors: CCColors, indicator
       color: titleColor,
       dynamic_style: getDynamicStyle(config.header?.title?.dynamic_style, config, entities, titleColor, titleShow),
       show: titleShow,
-      unknown: {
-        color: config.header?.title?.unknown?.color || titleColor,
-        show: config.header?.title?.unknown?.show || titleShow,
-      },
     },
     icon: {
       value: config.header?.icon?.value || indicatorEntity?.attributes?.icon || ICONS.compass,
       color: iconColor,
       dynamic_style: getDynamicStyle(config.header?.icon?.dynamic_style, config, entities, iconColor, iconShow),
       show: iconShow,
-      unknown: {
-        color: config.header?.icon?.unknown?.color || iconColor,
-        show: config.header?.icon?.unknown?.show || iconShow,
-      },
     },
   };
   return header;
@@ -56,47 +48,27 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
       color: circleColor,
       dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow),
       show: circleShow,
-      unknown: {
-        color: config.circle?.unknown?.color || circleColor,
-        show: config.circle?.unknown?.show || circleShow,
-      },
     },
     north: {
       offset: config.compass?.north?.offset || 0,
       color: northColor,
       dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, northColor, northShow),
       show: northShow,
-      unknown: {
-        color: config.north?.unknown?.color || northColor,
-        show: config.north?.unknown?.show || northShow,
-      },
     },
     east: {
       color: eastColor,
       dynamic_style: getDynamicStyle(config.compass?.east?.dynamic_style, config, entities, eastColor, eastShow),
       show: eastShow,
-      unknown: {
-        color: config.east?.unknown?.color || eastColor,
-        show: config.east?.unknown?.show || eastShow,
-      },
     },
     south: {
       color: southColor,
       dynamic_style: getDynamicStyle(config.compass?.south?.dynamic_style, config, entities, southColor, southShow),
       show: southShow,
-      unknown: {
-        color: config.south?.unknown?.color || southColor,
-        show: config.south?.unknown?.show || southShow,
-      },
     },
     west: {
       color: westColor,
       dynamic_style: getDynamicStyle(config.compass?.west?.dynamic_style, config, entities, westColor, westShow),
       show: westShow,
-      unknown: {
-        color: config.west?.unknown?.color || westColor,
-        show: config.west?.unknown?.show || westShow,
-      },
     },
   };
   return compass;
@@ -134,37 +106,21 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
       dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
       color: indColor,
       show: indShow,
-      unknown: {
-        color: config.indicator?.unknown?.color || indColor,
-        show: config.indicator?.unknown?.show || indShow,
-      },
     },
     state_abbreviation: {
       color: abbrColor,
       dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow),
       show: abbrShow,
-      unknown: {
-        color: config.state_abbreviation?.unknown?.color || abbrColor,
-        show: config.state_abbreviation?.unknown?.show || abbrShow,
-      },
     },
     state_value: {
       color: valueColor,
       dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow),
       show: valueShow,
-      unknown: {
-        color: config.state_value?.unknown?.color || valueColor,
-        show: config.state_value?.unknown?.show || valueShow,
-      },
     },
     state_units: {
       color: unitsColor,
       dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow),
       show: unitsShow,
-      unknown: {
-        color: config.state_units?.unknown?.color || unitsColor,
-        show: config.state_units?.unknown?.show || unitsShow,
-      },
     },
   };
   return sensor;
@@ -203,37 +159,21 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
       color: minColor,
       dynamic_style: getDynamicStyle(valueSensor.state_min?.dynamic_style, config, entities, minColor, minShow),
       show: minShow,
-      unknown: {
-        color: config.state_min?.unknown?.color || minColor,
-        show: config.state_min?.unknown?.show || minShow,
-      },
     },
     state_max: {
       color: maxColor,
       dynamic_style: getDynamicStyle(valueSensor.state_max?.dynamic_style, config, entities, maxColor, maxShow),
       show: maxShow,
-      unknown: {
-        color: config.state_max?.unknown?.color || maxColor,
-        show: config.state_max?.unknown?.show || maxShow,
-      },
     },
     state_value: {
       color: valueColor,
       dynamic_style: getDynamicStyle(valueSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow),
       show: valueShow,
-      unknown: {
-        color: config.state_value?.unknown?.color || valueColor,
-        show: config.state_value?.unknown?.show || valueShow,
-      },
     },
     state_units: {
       color: unitsColor,
       dynamic_style: getDynamicStyle(valueSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow),
       show: unitsShow,
-      unknown: {
-        color: config.state_units?.unknown?.color || unitsColor,
-        show: config.state_units?.unknown?.show || unitsShow,
-      },
     },
   };
   return sensor;
@@ -277,6 +217,10 @@ function getDynamicStyle(
     bands: getBands(dynamicStyle?.bands, startColor, startVisibility),
     decimals: decimals,
     units: units,
+    unknown: {
+      color: dynamicStyle?.unknown?.color || startColor,
+      show: dynamicStyle?.unknown?.show || startVisibility,
+    },
   };
 }
 
