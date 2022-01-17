@@ -51,14 +51,18 @@ export interface CCProperties {
   color: string;
   dynamic_style: CCDynamicStyle;
   show: boolean;
+  unknown: CCStyle;
 }
 
 export interface CCDynamicStyle extends CCEntity {
   bands: CCStyleBand[];
 }
 
-export interface CCStyleBand {
+export interface CCStyleBand extends CCStyle {
   from_value: number;
+}
+
+export interface CCStyle {
   color: string;
   show: boolean;
 }

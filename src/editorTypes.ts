@@ -63,6 +63,7 @@ export interface CCPropertiesConfig {
   color?: string;
   dynamic_style?: CCDynamicStyleConfig;
   show?: boolean;
+  unknown?: CCStyleConfig;
 }
 
 export interface CCDynamicStyleConfig {
@@ -71,8 +72,11 @@ export interface CCDynamicStyleConfig {
   bands: CCStyleBandConfig[];
 }
 
-export interface CCStyleBandConfig {
+export interface CCStyleBandConfig extends CCStyleConfig {
   from_value: number;
+}
+
+export interface CCStyleConfig {
   color?: string;
   show?: boolean;
 }
