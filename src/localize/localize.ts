@@ -6,6 +6,7 @@ import * as en from './languages/en.json';
 import * as es from './languages/es.json';
 import * as fr from './languages/fr.json';
 import * as hu from './languages/hu.json';
+import * as is from './languages/is.json';
 import * as it from './languages/it.json';
 import * as nl from './languages/nl.json';
 import * as no from './languages/no.json';
@@ -25,6 +26,7 @@ export const languages: any = {
   es: es,
   fr: fr,
   hu: hu,
+  is: is,
   it: it,
   nl: nl,
   no: no,
