@@ -1,6 +1,6 @@
 import { localize } from './localize/localize';
 
-export const CARD_VERSION = '1.4.0';
+export const CARD_VERSION = '1.5.0';
 export const ICONS = {
   compass: 'mdi:compass',
 };
