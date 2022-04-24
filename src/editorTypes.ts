@@ -69,10 +69,14 @@ export interface CCDynamicStyleConfig {
   sensor?: string;
   attribute?: string;
   bands: CCStyleBandConfig[];
+  unknown?: CCStyleConfig;
 }
 
-export interface CCStyleBandConfig {
+export interface CCStyleBandConfig extends CCStyleConfig {
   from_value: number;
+}
+
+export interface CCStyleConfig {
   color?: string;
   show?: boolean;
 }

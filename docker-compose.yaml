@@ -16,7 +16,7 @@ services:
       - npm
   npm:
     container_name: ha-dev-npm
-    image: "node:current-alpine3.12"
+    image: "node:current-alpine3.14"
     working_dir: /home/node/app
     environment:
       - NODE_ENV=development
@@ -30,7 +30,7 @@ services:
       - install
   install:
     container_name: ha-install-npm
-    image: "node:current-alpine3.12"
+    image: "node:current-alpine3.14"
     working_dir: /home/node/app
     environment:
       - NODE_ENV=development

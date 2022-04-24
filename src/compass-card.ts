@@ -1,7 +1,7 @@
 import { LitElement, html, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
-import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
+import { HassEntities } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './editorTypes';
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties } from './cardTypes';
 import handleClick from './utils/handleClick';
@@ -378,10 +378,6 @@ export class CompassCard extends LitElement {
         </text>
       </g>
     `;
-  }
-
-  private getSecondaryEntity(entity: HassEntity): TemplateResult {
-    return html`<span class="value">${entity.state}</span> <span class="measurement">${entity.attributes.unit_of_measurement}</span>`;
   }
 
   private getValue(entity: CCEntity): CCValue {

@@ -217,6 +217,10 @@ function getDynamicStyle(
     bands: getBands(dynamicStyle?.bands, startColor, startVisibility),
     decimals: decimals,
     units: units,
+    unknown: {
+      color: dynamicStyle?.unknown?.color || startColor,
+      show: dynamicStyle?.unknown?.show || startVisibility,
+    },
   };
 }
 

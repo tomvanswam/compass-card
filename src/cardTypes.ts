@@ -55,10 +55,14 @@ export interface CCProperties {
 
 export interface CCDynamicStyle extends CCEntity {
   bands: CCStyleBand[];
+  unknown: CCStyle;
 }
 
-export interface CCStyleBand {
+export interface CCStyleBand extends CCStyle {
   from_value: number;
+}
+
+export interface CCStyle {
   color: string;
   show: boolean;
 }
