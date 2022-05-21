@@ -572,7 +572,7 @@ Or clone, and create and a PR to help make the card even better.
 [total-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/total?style=flat-square&label=total%20views
 [traffic-link]: https://github.com/tomvanswam/compass-card/graphs/traffic
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square
-[hacs-link]: https://github.com/custom-components/hacs
+[hacs-link]: https://github.com/hacs/integration
 [home-assistant-shield]: https://img.shields.io/badge/Home%20Assistant-visual%20editor/yaml-green?style=flat-square
 [home-assistant-link]: https://www.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=flat-square
