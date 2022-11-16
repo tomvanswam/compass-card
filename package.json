@@ -41,7 +41,7 @@
     "rollup-plugin-serve": "^2.0.1",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.32.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.3"
   },
   "scripts": {
     "start": "rollup -c --watch",
