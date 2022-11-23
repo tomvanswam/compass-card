@@ -1,3 +1,5 @@
+import { ActionConfig } from 'custom-card-helpers';
+
 export interface EditorTarget extends EventTarget {
   value?: string;
   index?: number;
