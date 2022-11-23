@@ -1,0 +1,23 @@
+{
+	"name": "Compass-Card",
+	"dockerComposeFile": "../docker-compose.yaml",
+	"service": "node",
+	"workspaceFolder": "/home/node/app",
+	"shutdownAction": "stopCompose",
+	"postCreateCommand": "npm install",
+	"postStartCommand": "npm run start",
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"github.vscode-pull-request-github",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"bierner.lit-html",
+				"runem.lit-plugin",
+				"davidanson.vscode-markdownlint",
+				"redhat.vscode-yaml"
+			  ]
+		  }				
+	}
+}
