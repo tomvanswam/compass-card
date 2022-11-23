@@ -1,6 +1,6 @@
 # Compass card
 
-A custom Lovelace card that displays an indicator in a circle for use with [Home Assistant](https://home-assistant.io/).
+A custom [Home Assistant](https://home-assistant.io/) dashboard card that displays an indicator in a circle.
 
 [![GitHub Release][releases-shield]][releases-link] [![GitHub Release Date][release-date-shield]][releases-link] [![GitHub Releases][latest-download-shield]][traffic-link] [![GitHub Releases][total-download-shield]][traffic-link]
 
