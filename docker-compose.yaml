@@ -1,40 +1,28 @@
 version: "3"
 services:
   homeassistant:
-    container_name: ha-dev-ha
+    container_name: cc-homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:dev"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./ha/config:/config
+      - ./ha/run:/etc/services.d/home-assistant/run
     restart: unless-stopped
-    image: homeassistant/home-assistant:dev
-    volumes:
-      - ./.ha-config:/config
-    privileged: true
+    network_mode: host
     environment:
-      - TZ=Europe/Amsterdam
-      - TERM="xterm-256color"
-    ports:
-      - "8123:8123"
+      - PUID=${UID}
+      - PGID=${GID}
+      - UMASK=007
+      - PACKAGES=iputils  
     depends_on:
-      - npm
-  npm:
-    container_name: ha-dev-npm
-    image: "node:current-alpine3.14"
+      - node       
+  node:
+    container_name: cc-node
+    image: mcr.microsoft.com/devcontainers/typescript-node:latest
+    command: /bin/sh -c "while sleep 1000; do :; done"
     working_dir: /home/node/app
     environment:
       - NODE_ENV=development
       - TERM="xterm-256color"
     volumes:
       - ./:/home/node/app
-    ports:
-      - "5000:5000"
-    command: "npm start"
-    depends_on:
-      - install
-  install:
-    container_name: ha-install-npm
-    image: "node:current-alpine3.14"
-    working_dir: /home/node/app
-    environment:
-      - NODE_ENV=development
-      - TERM="xterm-256color"
-    volumes:
-      - ./:/home/node/app
-    command: npm i
