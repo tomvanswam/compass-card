@@ -4,8 +4,6 @@
 	"service": "node",
 	"workspaceFolder": "/home/node/app",
 	"shutdownAction": "stopCompose",
-	"postCreateCommand": "npm install",
-	"postStartCommand": "npm run start",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
@@ -16,8 +14,17 @@
 				"bierner.lit-html",
 				"runem.lit-plugin",
 				"davidanson.vscode-markdownlint",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"mhutchie.git-graph"
 			  ]
-		  }				
-	}
+		  }
+	},
+	"settings": {
+		"files.eol": "\n",
+		"editor.tabSize": 4,
+		"editor.formatOnPaste": false,
+		"editor.formatOnSave": true,
+		"editor.formatOnType": true,
+		"files.trimTrailingWhitespace": true
+	  }
 }
