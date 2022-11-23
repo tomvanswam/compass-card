@@ -1,0 +1,8 @@
+# Minimal config to test compass-card
+
+input_number:
+input_text:
+sun:
+frontend:
+  extra_module_url: 
+    - http://0.0.0.0:5000/compass-card.js
