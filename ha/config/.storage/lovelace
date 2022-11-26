@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Home",
+          "cards": [
+            {
+              "type": "custom:compass-card",
+              "header": {
+                "title": {
+                  "value": "Wind"
+                }
+              },
+              "indicator_sensors": [
+                {
+                  "sensor": "input_number.wind_direction",
+                  "indicator": {
+                    "type": "arrow_inward"
+                  }
+                }
+              ],
+              "value_sensors": [
+                {
+                  "sensor": "input_number.wind_speed"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "input_number.moon_azimuth"
+                },
+                {
+                  "entity": "input_boolean.moon_new"
+                },
+                {
+                  "entity": "input_text.wind_direction"
+                },
+                {
+                  "entity": "input_number.wind_direction"
+                },
+                {
+                  "entity": "input_number.wind_speed"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

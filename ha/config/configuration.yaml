@@ -1,8 +1,45 @@
 # Minimal config to test compass-card
 
 input_number:
+  wind_direction:
+    name: Wind Direction
+    initial: 10
+    min: -360
+    max: 360
+    step: 1
+    mode: box
+    unit_of_measurement: °
+    icon: mdi:compass-rose
+  moon_azimuth:
+    name: Moon Azimuth
+    initial: 10
+    min: -360
+    max: 360
+    step: 1
+    mode: box
+    unit_of_measurement: °
+    icon: mdi:moon-waning-crescent
+  wind_speed:
+    name: Wind Speed
+    initial: 11
+    min: 0
+    max: 360
+    step: 0.1
+    mode: box
+    unit_of_measurement: m/s
+    icon: mdi:weather-windy
 input_text:
+  wind_direction:
+    name: Wind Direction
+    initial: ESE
+    icon: mdi:moon-waning-crescent
+input_boolean:
+  moon_new:
+    name: New Moon
+    initial: false
+    icon: mdi:moon-new
+
 sun:
 frontend:
-  extra_module_url: 
+  extra_module_url:
     - http://0.0.0.0:5000/compass-card.js
