@@ -12,7 +12,6 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false
+    "experimentalDecorators": true
   }
 }

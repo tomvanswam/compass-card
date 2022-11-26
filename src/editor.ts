@@ -11,12 +11,25 @@ import { localize, COMPASS_LANGUAGES } from './localize/localize';
 import { isNumeric } from './utils/objectHelpers';
 import { EditorTarget } from './utils/ha-types';
 
+import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
+import { formfieldDefinition } from '../elements/formfield';
+import { selectDefinition } from '../elements/select';
+import { switchDefinition } from '../elements/switch';
+import { textfieldDefinition } from '../elements/textfield';
+
 @customElement('compass-card-editor')
-export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
+export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _helpers?;
   @state() private _config?: CompassCardConfig;
   private _initialized = false;
+
+  static elementDefinitions = {
+    ...textfieldDefinition,
+    ...selectDefinition,
+    ...switchDefinition,
+    ...formfieldDefinition,
+  };
 
   public setConfig(config: CompassCardConfig | CompassCardConfigV0): void {
     if (isV0Config(config)) {
@@ -88,15 +101,13 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const optionalEntities = ['', ...entities];
 
     return html`
-      <div class="card-config">
-        ${this.getEditorInput('editor.name', 'editor.optional', 'header.title.value', this._name)}
-        ${this.getEditorDropDown('editor.primary entity description', 'editor.required', 'indicator_sensors[0].sensor', this._entity, entities)}
-        ${this.getEditorDropDown('editor.secondary entity description', 'editor.optional', 'value_sensors[0].sensor', this._secondary_entity, optionalEntities)}
-        ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.type', this._compass_indicator, INDICATORS)}
-        ${this.getEditorDropDown('editor.language description', 'editor.optional', 'language', this._compass_language, COMPASS_LANGUAGES)}
-        ${this.getEditorInput('editor.offset description', 'editor.optional', 'compass.north.offset', this._direction_offset)}
-        ${this.getEditorSwitch('directions.north', 'compass.north.show', this._compass_show_north)}
-      </div>
+      ${this.getEditorInput('editor.name', 'editor.optional', 'header.title.value', this._name)}
+      ${this.getEditorDropDown('editor.primary entity description', 'editor.required', 'indicator_sensors[0].sensor', this._entity, entities)}
+      ${this.getEditorDropDown('editor.secondary entity description', 'editor.optional', 'value_sensors[0].sensor', this._secondary_entity, optionalEntities)}
+      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.type', this._compass_indicator, INDICATORS)}
+      ${this.getEditorDropDown('editor.language description', 'editor.optional', 'language', this._compass_language, COMPASS_LANGUAGES)}
+      ${this.getEditorInput('editor.offset description', 'editor.optional', 'compass.north.offset', this._direction_offset)}
+      ${this.getEditorSwitch('directions.north', 'compass.north.show', this._compass_show_north)}
     `;
   }
 
@@ -208,13 +219,19 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   private getEditorDropDown(label: string, required: string, key: string, value: string, list): TemplateResult {
-    return html` <paper-dropdown-menu class="editor-entity-select" label="${localize(label)} (${localize(required)})" @value-changed=${this._valueChanged} .configValue=${key}>
-      <paper-listbox slot="dropdown-content" .selected=${list.indexOf(value)}>
-        ${list.map((listItem) => {
-          return html` <paper-item>${listItem}</paper-item> `;
-        })}
-      </paper-listbox>
-    </paper-dropdown-menu>`;
+    return html`<mwc-select
+      naturalMenuWidth
+      fixedMenuPosition
+      label="${localize(label)} (${localize(required)})"
+      .configValue=${key}
+      .value=${value}
+      @selected=${this._valueChanged}
+      @closed=${(ev) => ev.stopPropagation()}
+    >
+      ${list.map((entity) => {
+        return html`<mwc-list-item .value=${entity}>${entity}</mwc-list-item>`;
+      })}
+    </mwc-select>`;
   }
 
   private getEditorInput(label: string, required: string, key: string, value: string | number): TemplateResult {
