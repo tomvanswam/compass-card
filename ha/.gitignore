@@ -1,4 +1,6 @@
 config/*
+!config/packages
+!config/packages/*
 !config/.storage
 config/.storage/*
 !config/.storage/lovelace

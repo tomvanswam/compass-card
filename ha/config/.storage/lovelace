@@ -6,7 +6,10 @@
     "config": {
       "views": [
         {
-          "title": "Home",
+          "theme": "Backend-selected",
+          "title": "Test",
+          "icon": "mdi:compass-rose",
+          "badges": [],
           "cards": [
             {
               "type": "custom:compass-card",
