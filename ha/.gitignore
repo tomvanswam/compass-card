@@ -1,2 +1,5 @@
 config/*
+!config/.storage
+config/.storage/*
+!config/.storage/lovelace
 !config/configuration.yaml
