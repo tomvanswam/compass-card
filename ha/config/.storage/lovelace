@@ -20,15 +20,12 @@
               },
               "indicator_sensors": [
                 {
-                  "sensor": "input_number.wind_direction",
-                  "indicator": {
-                    "type": "arrow_inward"
-                  }
+                  "sensor": "input_text.wind_direction_2"
                 }
               ],
               "value_sensors": [
                 {
-                  "sensor": "input_number.wind_speed"
+                  "sensor": "input_number.wind_direction_1"
                 }
               ]
             },
@@ -36,19 +33,19 @@
               "type": "entities",
               "entities": [
                 {
-                  "entity": "input_number.moon_azimuth"
-                },
-                {
                   "entity": "input_boolean.moon_new"
                 },
                 {
-                  "entity": "input_text.wind_direction"
-                },
-                {
-                  "entity": "input_number.wind_direction"
+                  "entity": "input_number.moon_azimuth"
                 },
                 {
                   "entity": "input_number.wind_speed"
+                },
+                {
+                  "entity": "input_number.wind_direction_1"
+                },
+                {
+                  "entity": "input_text.wind_direction_2"
                 }
               ]
             }
