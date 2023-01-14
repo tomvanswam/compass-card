@@ -252,7 +252,7 @@ export class CompassCard extends LitElement {
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
           <image x="0" y="0" height="1" width="1" href="${this.compass.circle.background_image}" preserveAspectRatio="xMidYMid meet"></image>
-        </pattern>        
+        </pattern>
       </defs>
       ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
         <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
@@ -278,9 +278,9 @@ export class CompassCard extends LitElement {
 
   private svgIndicators(): SVGTemplateResult[] {
     const result: SVGTemplateResult[] = [];
-    this.indicatorSensors.forEach((indicatorSensor) => {
+    this.indicatorSensors.forEach((indicatorSensor, index) => {
       if (this.getVisibility(indicatorSensor.indicator)) {
-        result.push(this.svgSingleIndicator(indicatorSensor));
+        result.push(this.svgSingleIndicator(indicatorSensor, index));
       }
     });
     return result;
@@ -297,12 +297,12 @@ export class CompassCard extends LitElement {
     return this.svgIndicatorArrowInward(indicatorSensor);
   }
 
-  private svgSingleIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+  private svgSingleIndicator(indicatorSensor: CCIndicatorSensor, index = 0): SVGTemplateResult {
     const indicatorPath = this.svgIndicator(indicatorSensor);
     const { degrees } = this.computeIndicator(indicatorSensor);
 
     return svg`
-      <g class="indicator" transform="rotate(${degrees},76,76)">
+      <g class="indicator-${index}" transform="rotate(${degrees},76,76)">
         ${indicatorPath}
       </g>
     `;
