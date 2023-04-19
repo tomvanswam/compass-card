@@ -43,7 +43,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-lit": "^1.8.2",
+    "eslint-plugin-lit": "^1.8.3",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.7",
     "rollup": "^2.79.1",
