@@ -39,4 +39,17 @@ Explain what the issue is, and how things should look/behave. If possible provid
 
 ```
 
+**YAML config or the card with the bug:**
+
+```
+
+```
+
+**Screenshots of the Developer Tools page, State tab:**
+
+<!--
+Filter the table in the entity column on the name of your sensors in the compass-card config with the bug.
+Preferabbly take a screenshot at the time the compass-card shows the bugged behaviour
+-->
+
 **Additional information:**
