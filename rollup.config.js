@@ -29,6 +29,7 @@ const plugins = [
   json(),
   babel({
     exclude: 'node_modules/**',
+    babelHelpers: 'bundled',
   }),
   dev && serve(serveopts),
   !dev && terser(),
