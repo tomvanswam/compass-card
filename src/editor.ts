@@ -235,19 +235,19 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
   }
 
   private getEditorInput(label: string, required: string, key: string, value: string | number): TemplateResult {
-    return html`<paper-input label="${localize(label)} (${localize(required)})" .value=${value} .configValue=${key} @value-changed=${this._valueChanged}></paper-input>`;
+    return html`<mwc-textfield label="${localize(label)} (${localize(required)})" .value=${value} .configValue=${key} @input=${this._valueChanged}></mwc-textfield>`;
   }
 
   private getEditorSwitch(label: string, key: string, value: boolean): TemplateResult {
     return html`
-        <ha-formfield
+        <mwc-formfield
           .label=${`${localize('editor.toggle')} ${localize(label)}  ${localize('editor.indicator')} ${value ? localize('common.off') : localize('common.on')}`}>
-          <ha-switch
+          <mwc-switch
             .checked=${value !== false}
             .configValue=${key}
             @change=${this._valueChanged}
-            ></ha-switch>
-        </ha-formfield>
+            ></mwc-switch>
+        </mwc-formfield>
       </div>`;
   }
 
@@ -267,9 +267,16 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
       .editor-entity-select {
         width: 100%;
       }
-      ha-switch {
-      ha-formfield {
+      mwc-select,
+      mwc-textfield {
+        margin-bottom: 16px;
+        display: block;
+      }
+      mwc-formfield {
         padding-bottom: 8px;
+      }
+      mwc-switch {
+        --mdc-theme-secondary: var(--switch-checked-color);
       }
     `;
   }
