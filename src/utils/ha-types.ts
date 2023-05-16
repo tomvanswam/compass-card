@@ -1,3 +1,5 @@
+import { ActionConfig } from '../editorTypes';
+
 export interface EditorTarget extends EventTarget {
   value?: string;
   index?: number;
