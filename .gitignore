@@ -2,3 +2,5 @@
 /.rpt2_cache/
 /.ha-config/
 /dist/
+
+package-lock.json
