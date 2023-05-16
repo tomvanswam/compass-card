@@ -452,26 +452,27 @@ tap_action:
 
 The following languages are supported:
 
-| Language  | Yaml value | Supported | Translated by                                                                       |
-| --------- | ---------- | --------- | ----------------------------------------------------------------------------------- |
-| Bulgarian | `bg`       | v1.4.0    | [@Saentist](https://github.com/Saentist)                                            |
-| Catalan   | `ca`       | v1.6.0    | [@joan-mb](https://github.com/joan-mb)                                            |
-| Czech     | `cz`       | v0.4.0    | [@woodcat64](https://github.com/Woodcat64)                                          |
-| Danish    | `da`       | v1.3.0    | [@DurgNomis-drol](https://github.com/DurgNomis-drol)                                |
-| Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                                        |
-| English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                                        |
-| French    | `fr`       | v0.3.1    | [@andilge](https://github.com/andilge)                                              |
-| German    | `de`       | v0.3.0    | [@rainer-geiger](https://github.com/rainer-geiger)                                  |
-| Hungarian | `hu`       | v1.0.0    | [@bboti86](https://github.com/bboti86)                                              |
-| Icelandic | `is`       | v1.5.0    | [@halliiav](https://github.com/halliiav)                                            |
-| Italian   | `it`       | v0.3.0    | [@matteofranceschini](https://github.com/matteofranceschini)                        |
-| Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                                              |
-| Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                                              |
-| Polish    | `pl`       | v0.3.2    | [@porebas](https://github.com/porebas)                                              |
-| Slovenian | `sl`       | v1.2.0    | [@thehijacker](https://github.com/thehijacker)                                      |
-| Russian   | `ru`       | v0.4.0    | [@artemyevav](https://github.com/artemyevav)                                        |
-| Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                                              |
-| Swedish   | `se`       | v1.5.0    | [@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout) |
+| Language    | Yaml value | Supported  | Translated by                                                                           |
+| ----------- | ---------- | ---------- | --------------------------------------------------------------------------------------- |
+| Bulgarian   | `bg`       | v1.4.0     | [@Saentist](https://github.com/Saentist)                                                |
+| Catalan     | `ca`       | v1.6.0     | [@joan-mb](https://github.com/joan-mb)                                                  |
+| Czech       | `cz`       | v0.4.0     | [@woodcat64](https://github.com/Woodcat64)                                              |
+| Danish      | `da`       | v1.3.0     | [@DurgNomis-drol](https://github.com/DurgNomis-drol)                                    |
+| Dutch       | `nl`       | v0.3.0     | [@tomvanswam](https://github.com/tomvanswam)                                            |
+| English     | `en`       | v0.3.0     | [@tomvanswam](https://github.com/tomvanswam)                                            |
+| French      | `fr`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
+| German      | `de`       | v0.3.0     | [@rainer-geiger](https://github.com/rainer-geiger)                                      |
+| Hungarian   | `hu`       | v1.0.0     | [@bboti86](https://github.com/bboti86)                                                  |
+| Icelandic   | `is`       | v1.5.0     | [@halliiav](https://github.com/halliiav)                                                |
+| Italian     | `it`       | v0.3.0     | [@matteofranceschini](https://github.com/matteofranceschini)                            |
+| Norwegian   | `no`       | v0.3.1     | [@hwikene](https://github.com/hwikene)                                                  |
+| Portugese   | `pt`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
+| Polish      | `pl`       | v0.3.2     | [@porebas](https://github.com/porebas)                                                  |
+| Slovenian   | `sl`       | v1.2.0     | [@thehijacker](https://github.com/thehijacker)                                          |
+| Russian     | `ru`       | v0.4.0     | [@artemyevav](https://github.com/artemyevav)                                            |
+| Spanish     | `es`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
+| ~~Swedish~~ | ~~`se`~~   | ~~v1.5.0~~ | ~~[@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout)~~ |
+| Swedish     | `sv`       | v2.0.0     | [@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout)     |
 
 Pick the language in the visual editor, or add it to yaml config.
 
