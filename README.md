@@ -1,6 +1,6 @@
 # Compass card
 
-A custom Lovelace card that displays an indicator in a circle for use with [Home Assistant](https://home-assistant.io/).
+A custom [Home Assistant](https://home-assistant.io/) dashboard card that displays an indicator in a circle.
 
 [![GitHub Release][releases-shield]][releases-link] [![GitHub Release Date][release-date-shield]][releases-link] [![GitHub Releases][latest-download-shield]][traffic-link] [![GitHub Releases][total-download-shield]][traffic-link]
 
@@ -452,26 +452,27 @@ tap_action:
 
 The following languages are supported:
 
-| Language  | Yaml value | Supported | Translated by                                                                       |
-| --------- | ---------- | --------- | ----------------------------------------------------------------------------------- |
-| Bulgarian | `bg`       | v1.4.0    | [@Saentist](https://github.com/Saentist)                                            |
-| Catalan   | `ca`       | v1.6.0    | [@joan-mb](https://github.com/joan-mb)                                            |
-| Czech     | `cz`       | v0.4.0    | [@woodcat64](https://github.com/Woodcat64)                                          |
-| Danish    | `da`       | v1.3.0    | [@DurgNomis-drol](https://github.com/DurgNomis-drol)                                |
-| Dutch     | `nl`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                                        |
-| English   | `en`       | v0.3.0    | [@tomvanswam](https://github.com/tomvanswam)                                        |
-| French    | `fr`       | v0.3.1    | [@andilge](https://github.com/andilge)                                              |
-| German    | `de`       | v0.3.0    | [@rainer-geiger](https://github.com/rainer-geiger)                                  |
-| Hungarian | `hu`       | v1.0.0    | [@bboti86](https://github.com/bboti86)                                              |
-| Icelandic | `is`       | v1.5.0    | [@halliiav](https://github.com/halliiav)                                            |
-| Italian   | `it`       | v0.3.0    | [@matteofranceschini](https://github.com/matteofranceschini)                        |
-| Norwegian | `no`       | v0.3.1    | [@hwikene](https://github.com/hwikene)                                              |
-| Portugese | `pt`       | v0.3.1    | [@andilge](https://github.com/andilge)                                              |
-| Polish    | `pl`       | v0.3.2    | [@porebas](https://github.com/porebas)                                              |
-| Slovenian | `sl`       | v1.2.0    | [@thehijacker](https://github.com/thehijacker)                                      |
-| Russian   | `ru`       | v0.4.0    | [@artemyevav](https://github.com/artemyevav)                                        |
-| Spanish   | `es`       | v0.3.1    | [@andilge](https://github.com/andilge)                                              |
-| Swedish   | `se`       | v1.5.0    | [@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout) |
+| Language    | Yaml value | Supported  | Translated by                                                                           |
+| ----------- | ---------- | ---------- | --------------------------------------------------------------------------------------- |
+| Bulgarian   | `bg`       | v1.4.0     | [@Saentist](https://github.com/Saentist)                                                |
+| Catalan     | `ca`       | v1.6.0     | [@joan-mb](https://github.com/joan-mb)                                                  |
+| Czech       | `cz`       | v0.4.0     | [@woodcat64](https://github.com/Woodcat64)                                              |
+| Danish      | `da`       | v1.3.0     | [@DurgNomis-drol](https://github.com/DurgNomis-drol)                                    |
+| Dutch       | `nl`       | v0.3.0     | [@tomvanswam](https://github.com/tomvanswam)                                            |
+| English     | `en`       | v0.3.0     | [@tomvanswam](https://github.com/tomvanswam)                                            |
+| French      | `fr`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
+| German      | `de`       | v0.3.0     | [@rainer-geiger](https://github.com/rainer-geiger)                                      |
+| Hungarian   | `hu`       | v1.0.0     | [@bboti86](https://github.com/bboti86)                                                  |
+| Icelandic   | `is`       | v1.5.0     | [@halliiav](https://github.com/halliiav)                                                |
+| Italian     | `it`       | v0.3.0     | [@matteofranceschini](https://github.com/matteofranceschini)                            |
+| Norwegian   | `no`       | v0.3.1     | [@hwikene](https://github.com/hwikene)                                                  |
+| Portugese   | `pt`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
+| Polish      | `pl`       | v0.3.2     | [@porebas](https://github.com/porebas)                                                  |
+| Slovenian   | `sl`       | v1.2.0     | [@thehijacker](https://github.com/thehijacker)                                          |
+| Russian     | `ru`       | v0.4.0     | [@artemyevav](https://github.com/artemyevav)                                            |
+| Spanish     | `es`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
+| ~~Swedish~~ | ~~`se`~~   | ~~v1.5.0~~ | ~~[@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout)~~ |
+| Swedish     | `sv`       | v2.0.0     | [@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout)     |
 
 Pick the language in the visual editor, or add it to yaml config.
 
@@ -572,7 +573,7 @@ Or clone, and create and a PR to help make the card even better.
 [total-download-shield]: https://img.shields.io/github/downloads/tomvanswam/compass-card/total?style=flat-square&label=total%20views
 [traffic-link]: https://github.com/tomvanswam/compass-card/graphs/traffic
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=flat-square
-[hacs-link]: https://github.com/custom-components/hacs
+[hacs-link]: https://github.com/hacs/integration
 [home-assistant-shield]: https://img.shields.io/badge/Home%20Assistant-visual%20editor/yaml-green?style=flat-square
 [home-assistant-link]: https://www.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=flat-square

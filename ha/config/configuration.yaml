@@ -1,0 +1,13 @@
+default_config:
+
+homeassistant:
+  packages: !include_dir_named packages/
+
+logger:
+  default: warn
+
+sun:
+
+frontend:
+  extra_module_url:
+    - http://0.0.0.0:5000/compass-card.js

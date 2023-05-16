@@ -1,0 +1,30 @@
+{
+	"name": "Compass-Card",
+	"dockerComposeFile": "../docker-compose.yaml",
+	"service": "node",
+	"workspaceFolder": "/home/node/app",
+	"shutdownAction": "stopCompose",
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"github.vscode-pull-request-github",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"bierner.lit-html",
+				"runem.lit-plugin",
+				"davidanson.vscode-markdownlint",
+				"redhat.vscode-yaml",
+				"mhutchie.git-graph"
+			  ]
+		  }
+	},
+	"settings": {
+		"files.eol": "\n",
+		"editor.tabSize": 4,
+		"editor.formatOnPaste": false,
+		"editor.formatOnSave": true,
+		"editor.formatOnType": true,
+		"files.trimTrailingWhitespace": true
+	  }
+}
