@@ -7,7 +7,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./ha/config:/config
       - ./ha/run:/etc/services.d/home-assistant/run
-    restart: unless-stopped
     network_mode: host
     environment:
       - PUID=${UID}
