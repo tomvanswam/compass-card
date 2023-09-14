@@ -9,6 +9,7 @@ export interface CompassCardConfigV1 extends LovelaceCardConfig {
   value_sensors?: CCValueSensorConfig[];
 
   tap_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
   language?: string;
   debug?: boolean;
 }
