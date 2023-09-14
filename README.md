@@ -465,6 +465,7 @@ The following languages are supported:
 | Hungarian   | `hu`       | v1.0.0     | [@bboti86](https://github.com/bboti86)                                                  |
 | Icelandic   | `is`       | v1.5.0     | [@halliiav](https://github.com/halliiav)                                                |
 | Italian     | `it`       | v0.3.0     | [@matteofranceschini](https://github.com/matteofranceschini)                            |
+| Korean      | `ko`       | v2.1.0     | [@mmxdog](https://github.com/mmxdog)                                                    |
 | Norwegian   | `no`       | v0.3.1     | [@hwikene](https://github.com/hwikene)                                                  |
 | Portugese   | `pt`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
 | Polish      | `pl`       | v0.3.2     | [@porebas](https://github.com/porebas)                                                  |
