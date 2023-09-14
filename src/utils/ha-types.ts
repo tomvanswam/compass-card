@@ -1,4 +1,4 @@
-import { ActionConfig } from '../editorTypes';
+import { CCActionConfig } from '../editorTypes';
 
 export interface EditorTarget extends EventTarget {
   value?: string;
@@ -6,5 +6,5 @@ export interface EditorTarget extends EventTarget {
   checked?: boolean;
   configValue?: string;
   type?: HTMLInputElement['type'];
-  config: ActionConfig;
+  config: CCActionConfig;
 }

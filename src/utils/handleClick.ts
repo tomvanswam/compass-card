@@ -1,8 +1,8 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { CompassCard } from '../compass-card';
-import { ActionConfig, CompassCardConfig } from '../editorTypes';
+import { CCActionConfig, CompassCardConfig } from '../editorTypes';
 
-export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: ActionConfig): void => {
+export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: CCActionConfig): void => {
   let e;
   switch (actionConfig.action || 'more-info') {
     case 'more-info': {

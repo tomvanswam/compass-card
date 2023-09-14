@@ -8,8 +8,8 @@ export interface CompassCardConfigV1 extends LovelaceCardConfig {
   indicator_sensors: CCIndicatorSensorConfig[];
   value_sensors?: CCValueSensorConfig[];
 
-  tap_action?: ActionConfig;
-  double_tap_action?: ActionConfig;
+  tap_action?: CCActionConfig;
+  double_tap_action?: CCActionConfig;
   language?: string;
   debug?: boolean;
 }
@@ -89,7 +89,7 @@ export interface CCEntityConfig {
   decimals?: number;
 }
 
-export interface ActionConfig {
+export interface CCActionConfig {
   action?: string;
   entity?: string;
   service?: string;
