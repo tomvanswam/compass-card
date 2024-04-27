@@ -577,7 +577,7 @@ Or clone, and create and a PR to help make the card even better.
 [home-assistant-shield]: https://img.shields.io/badge/Home%20Assistant-visual%20editor/yaml-green?style=flat-square
 [home-assistant-link]: https://www.home-assistant.io/
 [license-shield]: https://img.shields.io/github/license/custom-cards/boilerplate-card.svg?style=flat-square
-[license-link]: LICENSE.md
+[license-link]: LICENSE
 [activity-shield]: https://img.shields.io/github/commit-activity/y/tomvanswam/compass-card.svg?style=flat-square
 [activity-link]: https://github.com/tomvanswam/compass-card/commits/master
 [bugs-shield]: https://img.shields.io/github/issues/tomvanswam/compass-card/bug?color=red&style=flat-square&label=bugs
