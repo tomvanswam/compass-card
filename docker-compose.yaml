@@ -8,6 +8,8 @@ services:
       - ./ha/config:/config
       - ./ha/run:/etc/services.d/home-assistant/run
     network_mode: host
+    ports:
+      - 8123:8123
     environment:
       - PUID=${UID}
       - PGID=${GID}
@@ -20,6 +22,8 @@ services:
     image: mcr.microsoft.com/devcontainers/typescript-node:latest
     command: /bin/sh -c "while sleep 1000; do :; done"
     working_dir: /home/node/app
+    ports:
+      - 5000:5000
     environment:
       - NODE_ENV=development
       - TERM="xterm-256color"
