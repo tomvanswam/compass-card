@@ -267,9 +267,8 @@ export class CompassCard extends LitElement {
   }
 
   private svgCircle(directionOffset: number): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="2" fill="${this.circleFill()}" fill-opacity="${
-      this.compass.circle.background_opacity
-    }" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
+    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="2" fill="${this.circleFill()}" fill-opacity="${this.compass.circle.background_opacity
+      }" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
   }
 
   private circleFill(): string {
@@ -332,8 +331,8 @@ export class CompassCard extends LitElement {
     return svg`
       <g class="circle">
         <path d="m76 5.8262a9.1809 9.1809 0 0 0-0.0244 0 9.1809 9.1809 0 0 0-9.1813 9.18 9.1809 9.1809 0 0 0 9.1813 9.1813 9.1809 9.1809 0 0 0 0.0244 0z" fill="${this.getColor(
-          indicatorSensor.indicator,
-        )}"/>
+      indicatorSensor.indicator,
+    )}"/>
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="${this.getColor(indicatorSensor.indicator)}"/>
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="white" opacity="0.5"/>
       </g>
@@ -437,8 +436,8 @@ export class CompassCard extends LitElement {
   }
 
   static getDegrees(abbrevation: string): number {
-    if (COMPASS_POINTS[abbrevation]) {
-      return COMPASS_POINTS[abbrevation];
+    if (COMPASS_POINTS[abbrevation.toUpperCase()]) {
+      return COMPASS_POINTS[abbrevation.toUpperCase()];
     }
     return -1;
   }
