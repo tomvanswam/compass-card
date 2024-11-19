@@ -1,4 +1,4 @@
-import { localize } from './localize/localize';
+import { localize } from './localize';
 
 export const CARD_VERSION = '2.0.0';
 export const ICONS = {

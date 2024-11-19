@@ -7,7 +7,7 @@ import { CCCompassConfig, CCHeaderConfig, CCIndicatorConfig, CCNorthConfig, CCHe
 
 import { INDICATORS, DEFAULT_INDICATOR } from './const';
 
-import { localize, COMPASS_LANGUAGES } from './localize/localize';
+import { localize, COMPASS_LANGUAGES } from './localize';
 import { isNumeric } from './utils/objectHelpers';
 import { EditorTarget } from './utils/ha-types';
 

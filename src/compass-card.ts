@@ -18,7 +18,7 @@ import style from './style';
 
 import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from './const';
 
-import { localize } from './localize/localize';
+import { localize } from './localize';
 import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
 
 declare global {
@@ -402,12 +402,12 @@ export class CompassCard extends LitElement {
     return { value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value, units: entity.units };
   }
 
-  private handlePopup(e) {
-    e.stopPropagation();
-    if (this._config.tap_action) {
-      handleClick(this, this._hass, this._config, this._config.tap_action);
-    }
-  }
+  // private handlePopup(e) {
+  //   e.stopPropagation();
+  //   if (this._config.tap_action) {
+  //     handleClick(this, this._hass, this._config, this._config.tap_action);
+  //   }
+  // }
 
   private computeIndicator(entity: CCEntity): CCDirectionInfo {
     // default to North
