@@ -11,25 +11,19 @@ import { localize, COMPASS_LANGUAGES } from './localize/localize';
 import { isNumeric } from './utils/objectHelpers';
 import { EditorTarget } from './utils/ha-types';
 
-import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
-import { formfieldDefinition } from '../elements/formfield';
-import { selectDefinition } from '../elements/select';
-import { switchDefinition } from '../elements/switch';
-import { textfieldDefinition } from '../elements/textfield';
-
 @customElement('compass-card-editor')
-export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements LovelaceCardEditor {
+export class CompassCardEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _helpers?;
   @state() private _config?: CompassCardConfig;
   private _initialized = false;
 
-  static elementDefinitions = {
-    ...textfieldDefinition,
-    ...selectDefinition,
-    ...switchDefinition,
-    ...formfieldDefinition,
-  };
+  // static elementDefinitions = {
+  //   ...textfieldDefinition,
+  //   ...selectDefinition,
+  //   ...switchDefinition,
+  //   ...formfieldDefinition,
+  // };
 
   public setConfig(config: CompassCardConfig | CompassCardConfigV0): void {
     if (isV0Config(config)) {

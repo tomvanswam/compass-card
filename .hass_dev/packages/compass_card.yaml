@@ -1,0 +1,55 @@
+input_number:
+  wind_direction_1:
+    name: wind_direction_1
+    initial: 10
+    min: -360
+    max: 360
+    step: 1
+    mode: box
+    icon: mdi:compass-rose
+  moon_azimuth:
+    name: moon_azimuth
+    initial: 10
+    min: -360
+    max: 360
+    step: 1
+    mode: box
+    unit_of_measurement: °
+    icon: mdi:moon-waning-crescent
+  wind_speed:
+    name: wind_speed
+    initial: 11
+    min: 0
+    max: 360
+    step: 0.1
+    mode: box
+    unit_of_measurement: m/s
+    icon: mdi:weather-windy
+
+input_text:
+  wind_direction_2:
+    name: wind_direction_2
+    initial: ESE
+    icon: mdi:moon-waning-crescent
+
+input_boolean:
+  moon_new:
+    name: moon_new
+    initial: false
+    icon: mdi:moon-new
+
+homeassistant:
+  customize:
+    input_number.wind_direction_1:
+      friendly_name: Wind Direction
+      unit_of_measurement: °
+    input_number.moon_azimuth:
+      friendly_name: Moon Azimuth
+      unit_of_measurement: °
+    input_number.wind_speed:
+      friendly_name: Wind Speed
+      unit_of_measurement: m/s
+    input_text.wind_direction_2:
+      friendly_name: Wind Direction
+    input_boolean.moon_new:
+      friendly_name: New Moon
