@@ -147,9 +147,10 @@ export class CompassCard extends LitElement {
     if (!this._config || !this._hass) {
       return html``;
     }
-
+    //  @click=${(e) => this.handlePopup(e)}
     return html`
-      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
+      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" >
+      
         ${this.getVisibility(this.header.title) || this.getVisibility(this.header.icon) ? this.renderHeader() : ''}
         <div class="content">
           <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
