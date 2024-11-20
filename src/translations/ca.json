@@ -1,5 +1,5 @@
 {
-   "common": {
+  "common": {
     "version": "Versió",
     "description": "Mostra una brúixola amb un indicador en la direcció del valor de l'entitat",
     "invalid_configuration": "Configuració invalida",

@@ -1,4 +1,6 @@
-import { LovelaceCardConfig } from 'custom-card-helpers';
+import {
+  LovelaceCardConfig
+} from "../../ha";
 
 export type CompassCardConfig = CompassCardConfigV1;
 

@@ -202,7 +202,7 @@ export const computeStateDisplayFromEntityAttributes = (
     // When update available, show the version
     // When the latest version is skipped, show the latest version
     // When update is not available, show "Up-to-date"
-    // When update is not available and there is no latest_version show "Unavailable"
+    // When update is not available and there is no latest_version show "unavailable"
     return state === "on"
       ? updateIsInstallingFromAttributes(attributes)
         ? supportsFeatureFromAttributes(attributes, UPDATE_SUPPORT_PROGRESS) &&
@@ -213,7 +213,7 @@ export const computeStateDisplayFromEntityAttributes = (
           : localize("ui.card.update.installing")
         : attributes.latest_version
       : attributes.skipped_version === attributes.latest_version
-        ? attributes.latest_version ?? localize("state.default.unavailable")
+        ? (attributes.latest_version ?? localize("state.default.unavailable"))
         : localize("ui.card.update.up_to_date");
   }
 

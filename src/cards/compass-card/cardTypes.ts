@@ -1,4 +1,4 @@
-import { HassEntity } from 'home-assistant-js-websocket';
+import { HassEntity } from "home-assistant-js-websocket";
 
 export interface CCSensor extends CCEntity {
   state_value: CCProperties;

@@ -1,4 +1,4 @@
-import { CSSResult, css } from 'lit';
+import { CSSResult, css } from "lit";
 
 const style: CSSResult = css`
   :host ::slotted(.card-content:not(:first-child)),

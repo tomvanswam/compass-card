@@ -310,7 +310,7 @@ For a card that
 Use the following configuration
 
 ```yaml
-type: 'custom:compass-card'
+type: "custom:compass-card"
 header:
   title:
     value: Sun

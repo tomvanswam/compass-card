@@ -66,6 +66,7 @@ export default [
       dir: "dist",
       format: "es",
       inlineDynamicImports: true,
+      sourcemap: true,
     },
     plugins,
     moduleContext: (id) => {
