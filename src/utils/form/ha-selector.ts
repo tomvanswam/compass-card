@@ -1,16 +1,16 @@
 import { ActionConfig } from "../../ha";
-import { MushAlignementSelector } from "./custom/ha-selector-cc-alignment";
-import { MushColorSelector } from "./custom/ha-selector-cc-color";
-import { MushIconTypeSelector } from "./custom/ha-selector-cc-icon-type";
-import { MushInfoSelector } from "./custom/ha-selector-cc-info";
-import { MushLayoutSelector } from "./custom/ha-selector-cc-layout";
+import { CcAlignementSelector } from "./custom/ha-selector-cc-alignment";
+import { CcColorSelector } from "./custom/ha-selector-cc-color";
+import { CcIconTypeSelector } from "./custom/ha-selector-cc-icon-type";
+import { CcInfoSelector } from "./custom/ha-selector-cc-info";
+import { CcLayoutSelector } from "./custom/ha-selector-cc-layout";
 
-type MushSelector =
-  | MushColorSelector
-  | MushLayoutSelector
-  | MushInfoSelector
-  | MushIconTypeSelector
-  | MushAlignementSelector;
+type CcSelector =
+  | CcColorSelector
+  | CcLayoutSelector
+  | CcInfoSelector
+  | CcIconTypeSelector
+  | CcAlignementSelector;
 
 export type Selector =
   | ActionSelector
@@ -37,7 +37,7 @@ export type Selector =
   | ThemeSelector
   | TimeSelector
   | UiActionSelector
-  | MushSelector;
+  | CcSelector;
 
 export interface ActionSelector {
   // eslint-disable-next-line @typescript-eslint/ban-types

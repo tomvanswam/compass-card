@@ -16,7 +16,6 @@ import { LovelaceCardConfig } from "../../ha";
 
 export type CompassCardConfig = LovelaceCardConfig &
   EntitySharedConfig &
-  AppearanceSharedConfig &
   ActionsSharedConfig & {
     icon_color?: string;
   };

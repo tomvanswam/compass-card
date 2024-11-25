@@ -3,15 +3,15 @@ import { customElement, property } from "lit/decorators.js";
 import { fireEvent, HomeAssistant } from "../../../ha";
 import "../../../shared/editor/layout-picker";
 
-export type MushLayoutSelector = {
+export type CcLayoutSelector = {
   cc_layout: {};
 };
 
 @customElement("ha-selector-cc_layout")
-export class HaMushLayoutSelector extends LitElement {
+export class HaCcLayoutSelector extends LitElement {
   @property() public hass!: HomeAssistant;
 
-  @property() public selector!: MushLayoutSelector;
+  @property() public selector!: CcLayoutSelector;
 
   @property() public value?: string;
 

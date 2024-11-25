@@ -4,17 +4,17 @@ import { fireEvent, HomeAssistant } from "../../../ha";
 import "../../../shared/editor/info-picker";
 import { Info } from "../../info";
 
-export type MushInfoSelector = {
+export type CcInfoSelector = {
   cc_info: {
     infos?: Info[];
   };
 };
 
 @customElement("ha-selector-cc_info")
-export class HaMushInfoSelector extends LitElement {
+export class HaCcInfoSelector extends LitElement {
   @property() public hass!: HomeAssistant;
 
-  @property() public selector!: MushInfoSelector;
+  @property() public selector!: CcInfoSelector;
 
   @property() public value?: string;
 

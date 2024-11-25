@@ -3,15 +3,15 @@ import { customElement, property } from "lit/decorators.js";
 import { fireEvent, HomeAssistant } from "../../../ha";
 import "../../../shared/editor/color-picker";
 
-export type MushColorSelector = {
+export type CcColorSelector = {
   cc_color: {};
 };
 
 @customElement("ha-selector-cc_color")
-export class HaMushColorSelector extends LitElement {
+export class HaCcColorSelector extends LitElement {
   @property() public hass!: HomeAssistant;
 
-  @property() public selector!: MushColorSelector;
+  @property() public selector!: CcColorSelector;
 
   @property() public value?: string;
 

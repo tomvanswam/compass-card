@@ -3,15 +3,15 @@ import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "../../../shared/editor/icon-type-picker";
 
-export type MushIconTypeSelector = {
+export type CcIconTypeSelector = {
   cc_icon_type: {};
 };
 
 @customElement("ha-selector-cc_icon_type")
-export class HaMushIconTypeSelector extends LitElement {
+export class HaCcIconTypeSelector extends LitElement {
   @property() public hass!: HomeAssistant;
 
-  @property() public selector!: MushIconTypeSelector;
+  @property() public selector!: CcIconTypeSelector;
 
   @property() public value?: string;
 

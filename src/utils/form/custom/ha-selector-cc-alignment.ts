@@ -3,15 +3,15 @@ import { customElement, property } from "lit/decorators.js";
 import { fireEvent, HomeAssistant } from "../../../ha";
 import "../../../shared/editor/alignment-picker";
 
-export type MushAlignementSelector = {
+export type CcAlignementSelector = {
   cc_alignment: {};
 };
 
 @customElement("ha-selector-cc_alignment")
-export class HaMushAlignmentSelector extends LitElement {
+export class HaCcAlignmentSelector extends LitElement {
   @property() public hass!: HomeAssistant;
 
-  @property() public selector!: MushAlignementSelector;
+  @property() public selector!: CcAlignementSelector;
 
   @property() public value?: string;
 
