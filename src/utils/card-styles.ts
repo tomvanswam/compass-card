@@ -40,7 +40,7 @@ export const cardStyle = css`
   .not-found {
     --main-color: rgb(var(--rgb-danger));
   }
-  cc-state-item[disabled] {
+  Cc-state-item[disabled] {
     cursor: initial;
   }
 `;

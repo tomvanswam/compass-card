@@ -51,10 +51,10 @@ export class CcBaseElement extends LitElement {
           ${themeVariables}
         }
         :host([pre-2024-8]) {
-          --spacing: var(--mush-spacing, 12px);
-          --control-height: var(--mush-control-height, 40px);
-          --control-spacing: var(--mush-spacing, 12px);
-          --icon-size: var(--mush-icon-size, 40px);
+          --spacing: var(--cc-spacing, 12px);
+          --control-height: var(--cc-control-height, 40px);
+          --control-spacing: var(--cc-spacing, 12px);
+          --icon-size: var(--cc-icon-size, 40px);
         }
       `,
     ];

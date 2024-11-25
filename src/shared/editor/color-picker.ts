@@ -76,7 +76,7 @@ export class ColorPicker extends LitElement {
 
   static get styles(): CSSResultGroup {
     return css`
-      cc-select {
+      Cc-select {
         width: 100%;
       }
       .circle-color {

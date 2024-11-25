@@ -1,29 +1,27 @@
 import { HassEntities, HassEntity } from "home-assistant-js-websocket";
 import { DEFAULT_INDICATOR, ICONS, INDICATORS } from "../const";
 import {
-  CCColors,
-  CCCompass,
-  CCHeader,
-  CCIndicatorSensor,
-  CCValueSensor,
-  CCSensorAttrib,
-  CCStyleBand,
-  CCDynamicStyle,
-} from "../cards/compass-card/cardTypes";
-import {
-  CCDynamicStyleConfig,
-  CCIndicatorSensorConfig,
-  CCStyleBandConfig,
-  CCValueSensorConfig,
+  CcColors,
+  CcCompass,
+  CcHeader,
+  CcIndicatorSensor,
+  CcValueSensor,
+  CcSensorAttrib,
+  CcStyleBand,
+  CcDynamicStyle,
+  CcDynamicStyleConfig,
+  CcIndicatorSensorConfig,
+  CcStyleBandConfig,
+  CcValueSensorConfig,
   CompassCardConfig,
-} from "../cards/compass-card/editorTypes";
+} from "../cards/compass-card/compass-card-config";
 
 export function getHeader(
   config: CompassCardConfig,
-  colors: CCColors,
+  colors: CcColors,
   indicatorEntity: HassEntity,
   entities: HassEntities
-): CCHeader {
+): CcHeader {
   const titleColor = config.header?.title?.color || colors.secondaryText;
   const titleShow = getBoolean(
     config.header?.title?.show,
@@ -35,7 +33,7 @@ export function getHeader(
     getBoolean(config.header?.icon?.value, false) ||
       getBoolean(config.header?.title?.value, false)
   );
-  const header: CCHeader = {
+  const header: CcHeader = {
     label:
       config.header?.title?.value ||
       indicatorEntity?.attributes?.friendly_name ||
@@ -73,9 +71,9 @@ export function getHeader(
 
 export function getCompass(
   config: CompassCardConfig,
-  colors: CCColors,
+  colors: CcColors,
   entities: HassEntities
-): CCCompass {
+): CcCompass {
   const circleColor = config.compass?.circle?.color || colors.primary;
   const circleShow = getBoolean(config.compass?.circle?.show, true);
   const northColor = config.compass?.north?.color || colors.primary;
@@ -93,7 +91,7 @@ export function getCompass(
       ? 1.0
       : 0.0;
   const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
-  const compass: CCCompass = {
+  const compass: CcCompass = {
     circle: {
       background_image: bgImage,
       background_opacity: bgOpacity,
@@ -159,10 +157,10 @@ export function getCompass(
 
 export function getIndicatorSensors(
   config: CompassCardConfig,
-  colors: CCColors,
+  colors: CcColors,
   entities: HassEntities
-): CCIndicatorSensor[] {
-  const sensors: CCIndicatorSensor[] = [];
+): CcIndicatorSensor[] {
+  const sensors: CcIndicatorSensor[] = [];
   config.indicator_sensors.forEach((indicatorSensor) => {
     if (indicatorSensor.sensor && entities[indicatorSensor.sensor]) {
       sensors.push(
@@ -181,11 +179,11 @@ export function getIndicatorSensors(
 
 function getIndicatorSensor(
   config: CompassCardConfig,
-  colors: CCColors,
-  indicatorSensor: CCIndicatorSensorConfig,
+  colors: CcColors,
+  indicatorSensor: CcIndicatorSensorConfig,
   validIndex: number,
   entities: HassEntities
-): CCIndicatorSensor {
+): CcIndicatorSensor {
   const sens = indicatorSensor.sensor || "";
   const attrib = indicatorSensor.attribute || "";
   const indColor = indicatorSensor.indicator?.color || colors.accent;
@@ -200,7 +198,7 @@ function getIndicatorSensor(
   const valueShow = getBoolean(indicatorSensor.state_value?.show, false);
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
-  const sensor: CCIndicatorSensor = {
+  const sensor: CcIndicatorSensor = {
     sensor: attrib === "" ? sens : sens + "." + attrib,
     is_attribute: attrib !== "",
     entity: entities[sens],
@@ -262,10 +260,10 @@ function getIndicatorSensor(
 
 export function getValueSensors(
   config: CompassCardConfig,
-  colors: CCColors,
+  colors: CcColors,
   entities: HassEntities
-): CCValueSensor[] {
-  const sensors: CCValueSensor[] = [];
+): CcValueSensor[] {
+  const sensors: CcValueSensor[] = [];
   if (config.value_sensors && config.value_sensors.length > 0) {
     config.value_sensors.forEach((valueSensor) => {
       if (valueSensor.sensor && entities[valueSensor.sensor]) {
@@ -278,10 +276,10 @@ export function getValueSensors(
 
 function getValueSensor(
   config: CompassCardConfig,
-  colors: CCColors,
-  valueSensor: CCValueSensorConfig,
+  colors: CcColors,
+  valueSensor: CcValueSensorConfig,
   entities: HassEntities
-): CCValueSensor {
+): CcValueSensor {
   const sens = valueSensor.sensor || "";
   const attrib = valueSensor.attribute || "";
   const minColor = valueSensor.state_min?.color || colors.secondaryText;
@@ -292,7 +290,7 @@ function getValueSensor(
   const valueShow = getBoolean(valueSensor.state_value?.show, true);
   const unitsColor = valueSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(valueSensor.state_units?.show, true);
-  const sensor: CCValueSensor = {
+  const sensor: CcValueSensor = {
     sensor: attrib === "" ? sens : sens + "." + attrib,
     entity: entities[sens],
     decimals: valueSensor.decimals || 0,
@@ -352,11 +350,11 @@ function getValueSensor(
 }
 
 function getBands(
-  bands: CCStyleBandConfig[] | undefined,
+  bands: CcStyleBandConfig[] | undefined,
   startColor: string,
   startVisibility: boolean
-): CCStyleBand[] {
-  const styleBands: CCStyleBand[] = [];
+): CcStyleBand[] {
+  const styleBands: CcStyleBand[] = [];
   const newBands = [...(bands || [])];
   if (newBands && newBands.length > 0) {
     newBands.sort((a, b) => {
@@ -383,12 +381,12 @@ function getBands(
 }
 
 function getDynamicStyle(
-  dynamicStyle: CCDynamicStyleConfig | undefined,
+  dynamicStyle: CcDynamicStyleConfig | undefined,
   config: CompassCardConfig,
   entities: HassEntities,
   startColor: string,
   startVisibility: boolean
-): CCDynamicStyle {
+): CcDynamicStyle {
   const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
   const attrib = dynamicStyle?.attribute || sensorAttributes.attribute;
@@ -412,10 +410,10 @@ function getDynamicStyle(
 
 function getSensorAttrib(
   config: CompassCardConfig,
-  dynStyle: CCDynamicStyleConfig | undefined,
+  dynStyle: CcDynamicStyleConfig | undefined,
   entities: HassEntities
-): CCSensorAttrib {
-  const sa: CCSensorAttrib = {
+): CcSensorAttrib {
+  const sa: CcSensorAttrib = {
     entity: entities[config.indicator_sensors[0]?.sensor],
     sensor: config.indicator_sensors[0]?.sensor || "",
     attribute: config.indicator_sensors[0]?.attribute || "",

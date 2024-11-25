@@ -21,25 +21,28 @@ import {
   isActive,
   LovelaceCard,
   LovelaceCardEditor,
+  LovelaceGridOptions,
+  LovelaceLayoutOptions,  
 } from "../../ha";
 import { HassEntities, HassEntity } from "home-assistant-js-websocket";
 // import { CompassCardConfig } from './editorTypes';
 import {
-  CCColors,
-  CCCompass,
-  CCDirectionInfo,
-  CCEntity,
-  CCHeader,
-  CCIndicatorSensor,
-  CCValueSensor,
-  CCValue,
-  CCProperties,
-} from "./cardTypes";
+  CcColors,
+  CcCompass,
+  CcDirectionInfo,
+  CcEntity,
+  CcHeader,
+  CcIndicatorSensor,
+  CcValueSensor,
+  CcValue,
+  CcProperties,
+} from "./compass-card-config";
 // import handleClick from '../../utils/handleClick';
 import { registerCustomCard } from "../../utils/custom-cards";
 import { COMPASS_CARD_EDITOR_NAME, COMPASS_CARD_NAME } from "./const";
 import { CompassCardConfig } from "./compass-card-config";
 import { CcBaseCard } from "../../utils/base-card";
+import { CcBaseElement } from "../../utils/base-element";
 import { computeEntityPicture } from "../../utils/info";
 import { computeRgbColor } from "../../utils/colors";
 import { computeAppearance } from "../../utils/appearance";
@@ -72,7 +75,7 @@ registerCustomCard({
 
 @customElement(COMPASS_CARD_NAME)
 export class CompassCard
-  extends CcBaseCard<CompassCardConfig>
+  extends CcBaseElement
   implements LovelaceCard
 {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
@@ -92,18 +95,85 @@ export class CompassCard
     };
   }
 
+  @state() private _config?: CompassCardConfig;  
+
+  @property({ reflect: true, type: String })
+  public layout: string | undefined;  
+
   private _handleAction(ev: ActionHandlerEvent) {
     handleAction(this, this.hass!, this._config!, ev.detail.action!);
   }
 
+  setConfig(config: CompassCardConfig): void {
+    this._config = {
+      tap_action: {
+        action: "toggle",
+      },
+      hold_action: {
+        action: "more-info",
+      },
+      ...config,
+    };
+  }
+
+  public getCardSize(): number | Promise<number> {
+    let height = 1;
+    if (!this._config) return height;
+    const appearance = computeAppearance(this._config);
+    if (appearance.layout === "vertical") {
+      height += 1;
+    }
+    return height;
+  }
+
+  public getLayoutOptions(): LovelaceLayoutOptions {
+    const options: LovelaceLayoutOptions = {
+      grid_columns: 2,
+      grid_rows: 1,
+    };
+    if (!this._config) return options;
+    const appearance = computeAppearance(this._config);
+    if (appearance.layout === "vertical") {
+      options.grid_rows! += 1;
+    }
+    if (appearance.layout === "horizontal") {
+      options.grid_columns = 4;
+    }
+    if (this._config?.multiline_secondary) {
+      options.grid_rows = undefined;
+    }
+    return options;
+  }
+
+  // For HA < 2024.11
+  public getGridOptions(): LovelaceGridOptions {
+    // No min and max because the content can be dynamic
+    const options: LovelaceGridOptions = {
+      columns: 6,
+      rows: 1,
+    };
+    if (!this._config) return options;
+    const appearance = computeAppearance(this._config);
+    if (appearance.layout === "vertical") {
+      options.rows! += 1;
+    }
+    if (appearance.layout === "horizontal") {
+      options.columns = 12;
+    }
+    if (this._config?.multiline_secondary) {
+      options.rows = undefined;
+    }
+    return options;
+  } 
+
   // @property({ attribute: false }) public _hass!: HomeAssistant;
   // @property({ attribute: false }) protected _config!: CompassCardConfig;
-  @state() protected colors!: CCColors;
-  @state() protected header!: CCHeader;
-  @state() protected compass!: CCCompass;
-  @state() protected indicatorSensors!: CCIndicatorSensor[];
+  @state() protected colors!: CcColors;
+  @state() protected header!: CcHeader;
+  @state() protected compass!: CcCompass;
+  @state() protected indicatorSensors!: CcIndicatorSensor[];
   @state() protected entities: HassEntities = {};
-  @state() protected valueSensors!: CCValueSensor[];
+  @state() protected valueSensors!: CcValueSensor[];
 
   // public setConfig(config: CompassCardConfig): void {
   //   const customLocalize = setupCustomlocalize(this.hass!);
@@ -183,23 +253,17 @@ export class CompassCard
   // }
 
   protected render() {
-    if (!this._config || !this.hass || !this._config.entity) {
+    if (!this._config || !this.hass) {
       return nothing;
     }
 
-    const stateObj = this._stateObj;
+    const rtl = computeRTL(this.hass);
 
-    if (!stateObj) {
-      return this.renderNotFound(this._config);
-    }
-
-    const name = this._config.name || stateObj.attributes.friendly_name || "";
+    const name = this._config.name || ""; //this._config.entity.attributes.friendly_name || 
     const icon = this._config.icon;
     const appearance = computeAppearance(this._config);
 
-    const picture = computeEntityPicture(stateObj, appearance.icon_type);
-
-    const rtl = computeRTL(this.hass);
+    const picture = computeEntityPicture(this._config.entity, appearance.icon_type);
 
     //  @click=${(e) => this.handlePopup(e)}
 
@@ -217,11 +281,6 @@ export class CompassCard
               hasDoubleClick: hasAction(this._config.double_tap_action),
             })}
           >
-            ${picture
-              ? this.renderPicture(picture)
-              : this.renderIcon(stateObj, icon)}
-            ${this.renderBadge(stateObj)}
-            ${this.renderStateInfo(stateObj, appearance, name)};
             <div class="content">
               <div class="compass">
                 ${this.svgCompass(this.compass.north.offset)}
@@ -340,7 +399,7 @@ export class CompassCard
     return divs;
   }
 
-  private getVisibility(properties: CCProperties): boolean {
+  private getVisibility(properties: CcProperties): boolean {
     if (properties.dynamic_style.bands.length === 0) {
       return properties.show;
     }
@@ -357,7 +416,7 @@ export class CompassCard
     return properties.show;
   }
 
-  private getColor(properties: CCProperties): string {
+  private getColor(properties: CcProperties): string {
     if (properties.dynamic_style.bands.length === 0) {
       return properties.color;
     }
@@ -417,7 +476,7 @@ export class CompassCard
     return result;
   }
 
-  private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+  private svgIndicator(indicatorSensor: CcIndicatorSensor): SVGTemplateResult {
     switch (indicatorSensor.indicator.type) {
       case "arrow_outward":
         return this.svgIndicatorArrowOutward(indicatorSensor);
@@ -429,7 +488,7 @@ export class CompassCard
   }
 
   private svgSingleIndicator(
-    indicatorSensor: CCIndicatorSensor,
+    indicatorSensor: CcIndicatorSensor,
     index = 0
   ): SVGTemplateResult {
     const indicatorPath = this.svgIndicator(indicatorSensor);
@@ -443,7 +502,7 @@ export class CompassCard
   }
 
   private svgIndicatorArrowOutward(
-    indicatorSensor: CCIndicatorSensor
+    indicatorSensor: CcIndicatorSensor
   ): SVGTemplateResult {
     return svg`
       <g class="arrow-outward">
@@ -455,7 +514,7 @@ export class CompassCard
   }
 
   private svgIndicatorArrowInward(
-    indicatorSensor: CCIndicatorSensor
+    indicatorSensor: CcIndicatorSensor
   ): SVGTemplateResult {
     return svg`
       <g class="arrow-inward">
@@ -467,7 +526,7 @@ export class CompassCard
   }
 
   private svgIndicatorCircle(
-    indicatorSensor: CCIndicatorSensor
+    indicatorSensor: CcIndicatorSensor
   ): SVGTemplateResult {
     return svg`
       <g class="circle">
@@ -524,7 +583,7 @@ export class CompassCard
     `;
   }
 
-  private getValue(entity: CCEntity): CCValue {
+  private getValue(entity: CcEntity): CcValue {
     const customLocalize = setupCustomlocalize(this.hass!);
     if (entity.is_attribute) {
       const entityStr = entity.sensor.slice(0, entity.sensor.lastIndexOf("."));
@@ -562,12 +621,12 @@ export class CompassCard
   renderIcon(stateObj: HassEntity, icon?: string): TemplateResult {
     const active = isActive(stateObj);
     const iconStyle = {};
-    const iconColor = this._config?.icon_color;
-    if (iconColor) {
-      const iconRgbColor = computeRgbColor(iconColor);
-      iconStyle["--icon-color"] = `rgb(${iconRgbColor})`;
-      iconStyle["--shape-color"] = `rgba(${iconRgbColor}, 0.2)`;
-    }
+    // const iconColor = this._config?.icon_color;
+    // if (iconColor) {
+    //   const iconRgbColor = computeRgbColor(iconColor);
+    //   iconStyle["--icon-color"] = `rgb(${iconRgbColor})`;
+    //   iconStyle["--shape-color"] = `rgba(${iconRgbColor}, 0.2)`;
+    // }
     return html`
       <cc-shape-icon
         slot="icon"
@@ -583,7 +642,7 @@ export class CompassCard
     `;
   }
 
-  private computeIndicator(entity: CCEntity): CCDirectionInfo {
+  private computeIndicator(entity: CcEntity): CcDirectionInfo {
     const customLocalize = setupCustomlocalize(this.hass!);
     // default to North
     let degrees = 0;

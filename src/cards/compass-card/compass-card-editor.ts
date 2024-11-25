@@ -4,6 +4,7 @@ import { assert } from "superstruct";
 import { LovelaceCardEditor, fireEvent } from "../../ha";
 import setupCustomlocalize from "../../localize";
 import { computeActionsFormSchema } from "../../shared/config/actions-config";
+import { APPEARANCE_FORM_SCHEMA } from "../../shared/config/appearance-config";
 import { CcBaseElement } from "../../utils/base-element";
 import { GENERIC_LABELS } from "../../utils/form/generic-fields";
 import { HaFormSchema } from "../../utils/form/ha-form";
@@ -19,7 +20,7 @@ import {
 // import { HomeAssistant, fireEvent, LovelaceCardEditor } from "../../ha";
 
 // import { CompassCardConfigV0, isV0Config, configV0ToV1 } from './updateV0ToV1';
-// import { CCCompassConfig, CCHeaderConfig, CCIndicatorConfig, CCNorthConfig, CCHeaderItemConfig, CompassCardConfig } from './editorTypes';
+// import {CcCompassConfig,CcHeaderConfig,CcIndicatorConfig,CcNorthConfig,CcHeaderItemConfig, CompassCardConfig } from './editorTypes';
 
 // import { INDICATORS, DEFAULT_INDICATOR } from '../../const';
 
@@ -28,11 +29,19 @@ import {
 // import { EditorTarget } from '../../utils/ha-types';
 
 const SCHEMA: HaFormSchema[] = [
-  { name: "header.title.value", selector: { text: {} } },
-  { name: "indicator_sensors[0].sensor", selector: { entity: {} } },
-  { name: "value_sensors[0].sensor", selector: { entity: {} } },
-  { name: "compass.north.show", selector: { boolean: {} } },
-  { name: "indicator_sensors[0].indicator.type", selector: { boolean: {} } },
+  { name: "name", selector: { text: {} } },
+  { name: "indicator_sensors.sensor", selector: { entity: {} } },
+  {
+    type: "grid",
+    name: "",
+    schema: [
+      {
+        name: "icon",
+        selector: { icon: {} },
+        context: { icon_entity: "entity" },
+      },
+    ],
+  },
   ...computeActionsFormSchema(),
 ];
 
