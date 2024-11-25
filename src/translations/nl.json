@@ -1,0 +1,53 @@
+{
+  "common": {
+    "version": "Versie",
+    "description": "Toon een kompas met een pijl wijzend naar de waarde van de entity",
+    "invalid_configuration": "Foutieve configuratie",
+    "no_entity": "Entity niet geconfigureerd",
+    "offset_not_a_number": "Direction offset is geen nummer",
+    "invalid": "ongeldig",
+    "on": "Aan",
+    "off": "Uit"
+  },
+  "editor": {
+    "name": "Naam",
+    "optional": "Optioneel",
+    "entity": "Entiteit",
+    "required": "Noodzakelijk",
+    "primary": "Richting",
+    "secondary": "Secundaire",
+    "indicator": "Wijzer",
+    "direction": "Richting",
+    "offset": "Afwijking",
+    "show": "Toon",
+    "abbreviations": "Afkorting",
+    "toggle": "Wissel",
+    "language": "Taal",
+    "primary entity description": "Richtings entiteit",
+    "secondary entity description": "Secundaire entiteit",
+    "language description": "Richting afkortings taal",
+    "offset description": "Richtingsafwijking"
+  },
+  "directions": {
+    "north": "Noorden",
+    "east": "Oosten",
+    "south": "Zuiden",
+    "west": "Westen",
+    "N": "N",
+    "NNE": "NNO",
+    "NE": "NO",
+    "ENE": "ONO",
+    "E": "O",
+    "ESE": "OZO",
+    "SE": "ZO",
+    "SSE": "ZZO",
+    "S": "Z",
+    "SSW": "ZZW",
+    "SW": "ZW",
+    "WSW": "WZW",
+    "W": "W",
+    "WNW": "WNW",
+    "NW": "NW",
+    "NNW": "NNW"
+  }
+}

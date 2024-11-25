@@ -1,9 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: ""
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
 <!-- READ THIS FIRST:
@@ -47,6 +47,7 @@ Explain what the issue is, and how things should look/behave. If possible provid
 
 **Screenshots of the Developer Tools page, State tab:**
 Get it here: [![Open your Home Assistant instance and show your state developer tools.](https://my.home-assistant.io/badges/developer_states.svg)](https://my.home-assistant.io/redirect/developer_states/)
+
 <!--
 Filter the table in the entity column on the name of your sensors in the compass-card config with the bug.
 Preferabbly take a screenshot at the time the compass-card shows the bugged behaviour

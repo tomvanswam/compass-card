@@ -1,9 +1,7 @@
-import { localize } from './localize/localize';
-
-export const CARD_VERSION = '2.0.0';
 export const ICONS = {
-  compass: 'mdi:compass',
+  compass: "mdi:compass",
 };
+
 export const COMPASS_POINTS = {
   N: 0,
   NNE: 22.5,
@@ -23,8 +21,6 @@ export const COMPASS_POINTS = {
   NNW: 337.5,
 };
 export const COMPASS_ABBREVIATIONS = [...Object.keys(COMPASS_POINTS)];
-
-export const UNAVAILABLE = localize('common.invalid');
-
-export const INDICATORS = ['arrow_inward', 'arrow_outward', 'circle'].sort();
+export const INDICATORS = ["arrow_inward", "arrow_outward", "circle"].sort();
 export const DEFAULT_INDICATOR = 1; // Arrow outward
+export const PREFIX_NAME = "compass-card";

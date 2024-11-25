@@ -1,0 +1,8 @@
+  mode: storage
+  dashboards:
+    lovelace-compass-card-showcase:
+      mode: yaml
+      title: Showcase
+      icon: mdi:compass-rose
+      show_in_sidebar: true
+      filename: lovelace-compass-card-showcase.yaml

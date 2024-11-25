@@ -1,6 +1,6 @@
 {
   "name": "compass-card",
-  "version": "2.0.0'",
+  "version": "2.0.0",
   "description": "Lovelace compass-card",
   "keywords": [
     "home-assistant",
@@ -10,58 +10,56 @@
     "lovelace",
     "custom-cards"
   ],
-  "module": "compass-card.js",
-  "repository": "git@github.com:custom_cards/compass-card.git",
+  "source": "src/index.ts",
+  "module": "dist/compass-card.js",
+  "main": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomvanswam/compass-card.git"
+  },
   "author": "Tom van Swam <tom@vanswam.com>",
   "license": "MIT",
-  "dependencies": {
-    "@lit-labs/scoped-registry-mixin": "^1.0.1",
-    "@material/mwc-formfield": "^0.27.0",
-    "@material/mwc-list": "^0.27.0",
-    "@material/mwc-menu": "^0.27.0",
-    "@material/mwc-notched-outline": "^0.27.0",
-    "@material/mwc-ripple": "^0.27.0",
-    "@material/mwc-select": "^0.27.0",
-    "@material/mwc-switch": "^0.27.0",
-    "@material/mwc-textfield": "^0.27.0",
-    "custom-card-helpers": "^1.9.0",
-    "home-assistant-js-websocket": "^8.0.1",
-    "lit": "^2.7.4"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.21.8",
-    "@babel/eslint-parser": "^7.21.8",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-proposal-decorators": "^7.21.0",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^25.0.0",
-    "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
-    "@typescript-eslint/eslint-plugin": "^5.59.6",
-    "@typescript-eslint/parser": "^5.59.6",
-    "eslint": "^8.40.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-lit": "^1.8.3",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.8",
-    "rollup": "^2.70.2",
-    "rollup-plugin-serve": "^2.0.2",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.34.1",
-    "typescript": "^5.0.4"
-  },
-  "resolutions": {
-    "lit": "^2.1.2",
-    "lit-html": "2.1.2",
-    "lit-element": "3.1.2",
-    "@lit/reactive-element": "1.2.1"
+  "targets": {
+    "module": {
+      "includeNodeModules": true
+    }
   },
   "scripts": {
-    "start": "rollup -c --watch",
-    "build": "npm run lint && npm run rollup",
-    "lint": "eslint src/*.ts",
-    "rollup": "rollup -c"
+    "start": "rollup -c --watch --bundleConfigAsCjs",
+    "build": "rollup -c --bundleConfigAsCjs",
+    "format": "prettier --write .",
+    "start:hass-stable": "podman run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:stable",
+    "start:hass": "podman run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:beta",
+    "start:hass-dev": "podman run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:dev"
+  },
+  "dependencies": {
+    "@material/mwc-select": "^0.27.0",
+    "@material/mwc-textfield": "^0.27.0",
+    "color": "^4.2.3",
+    "hammerjs": "^2.0.8",
+    "home-assistant-js-websocket": "^9.4.0",
+    "lit": "^3.2.1",
+    "memoize-one": "^6.0.0",
+    "sortablejs": "^1.15.3",
+    "superstruct": "^2.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@material/mwc-ripple": "^0.27.0",
+    "@material/tab-bar": "^14.0.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/color": "^4.2.0",
+    "@types/hammerjs": "^2.0.46",
+    "eslint": "^9.14.0",
+    "prettier": "^3.3.3",
+    "rollup": "^4.18.0",
+    "rollup-plugin-serve": "^1.1.1",
+    "typescript": "^5.6.3"
   }
 }

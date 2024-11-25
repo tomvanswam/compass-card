@@ -1,4 +1,0 @@
-config/*
-!config/packages
-!config/packages/*
-!config/configuration.yaml
