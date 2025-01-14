@@ -470,6 +470,7 @@ The following languages are supported:
 | Polish      | `pl`       | v0.3.2     | [@porebas](https://github.com/porebas)                                                  |
 | Slovenian   | `sl`       | v1.2.0     | [@thehijacker](https://github.com/thehijacker)                                          |
 | Russian     | `ru`       | v0.4.0     | [@artemyevav](https://github.com/artemyevav)                                            |
+| Slovak      | `sk`       | v2.0.2     | [@misa1515 ](https://github.com/misa1515)                                               |
 | Spanish     | `es`       | v0.3.1     | [@andilge](https://github.com/andilge)                                                  |
 | ~~Swedish~~ | ~~`se`~~   | ~~v1.5.0~~ | ~~[@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout)~~ |
 | Swedish     | `sv`       | v2.0.0     | [@Boris65](https://github.com/Boris65) and [@nickrout](https://github.com/nickrout)     |
