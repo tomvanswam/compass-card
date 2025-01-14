@@ -1,0 +1,24 @@
+title: Compass-Card
+icon: mdi:compass-rose
+cards:
+  - type: entities
+    entities:
+      - input_number.moon_azimuth
+      - input_boolean.moon_new
+      - input_text.wind_direction_2
+      - input_number.wind_direction_1
+      - input_number.wind_speed
+    title: Helpers
+  - type: custom:compass-card
+    indicator_sensors:
+      - sensor: input_text.wind_direction_2
+        indicator:
+          type: arrow_inward
+    value_sensors:
+      - sensor: input_number.wind_speed
+    compass:
+      north:
+        show: true
+    header:
+      title:
+        value: Test
