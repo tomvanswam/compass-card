@@ -6,7 +6,7 @@ updates:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 50
-  target-branch: dev
+  target-branch: master
   assignees:
   - tomvanswam
   labels:
