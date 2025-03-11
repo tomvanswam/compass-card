@@ -92,6 +92,15 @@ export class CompassCard extends LitElement {
     return 5;
   }
 
+  public getLayoutOptions() {
+    return {
+      grid_rows: 4,
+      grid_columns: 4,
+      grid_min_rows: 3,
+      grid_min_columns: 2,
+    };
+  }
+
   set hass(hass: HomeAssistant) {
     this._hass = hass;
     this.updateConfig(this._hass, this._config);
