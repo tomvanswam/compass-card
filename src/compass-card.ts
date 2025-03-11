@@ -52,13 +52,13 @@ export class CompassCard extends LitElement {
   }
 
   @property({ attribute: false }) public _hass!: HomeAssistant;
-  @property({ attribute: false }) protected _config!: CompassCardConfig;
-  @state() protected colors!: CCColors;
-  @state() protected header!: CCHeader;
-  @state() protected compass!: CCCompass;
-  @state() protected indicatorSensors!: CCIndicatorSensor[];
-  @state() protected entities: HassEntities = {};
-  @state() protected valueSensors!: CCValueSensor[];
+  @state() private _config!: CompassCardConfig;
+  @state() private colors!: CCColors;
+  @state() private header!: CCHeader;
+  @state() private compass!: CCCompass;
+  @state() private indicatorSensors!: CCIndicatorSensor[];
+  @state() private entities: HassEntities = {};
+  @state() private valueSensors!: CCValueSensor[];
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
