@@ -74,6 +74,12 @@ const style: CSSResult = css`
   .value-sensors .value {
     font-size: 28px;
   }
+  .compass-svg {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 92%;
+    overflow: visible;
+  }
 `;
 
 export default style;

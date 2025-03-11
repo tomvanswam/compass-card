@@ -252,7 +252,7 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin slice" style="width: 100%; padding-bottom: 92%; height: 1px; overflow: visible">
+    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin meet" class="compass-svg">
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
           <image x="0" y="0" height="1" width="1" href="${this.compass.circle.background_image}" preserveAspectRatio="xMidYMid meet"></image>
