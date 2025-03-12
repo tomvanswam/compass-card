@@ -89,7 +89,7 @@ export class CompassCard extends LitElement {
   }
 
   public getCardSize(): number {
-    return 5;
+    return 4 + +this.showHeader();
   }
 
   public getLayoutOptions() {
@@ -152,7 +152,7 @@ export class CompassCard extends LitElement {
 
     return html`
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
-        ${this.getVisibility(this.header.title) || this.getVisibility(this.header.icon) ? this.renderHeader() : ''}
+        ${this.showHeader() ? this.renderHeader() : ''}
         <div class="content">
           <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
           <div class="indicator-sensors">${this.renderDirections()}</div>
@@ -160,6 +160,10 @@ export class CompassCard extends LitElement {
         </div>
       </ha-card>
     `;
+  }
+
+  private showHeader(): boolean {
+    return this.getVisibility(this.header.title) || this.getVisibility(this.header.icon);
   }
 
   /**

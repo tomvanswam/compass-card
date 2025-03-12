@@ -21,7 +21,7 @@ const style: CSSResult = css`
     padding: 8px 16px 0px;
   }
   .header > .name {
-    line-height: 40px;
+    line-height: 50px;
     font-weight: 500;
     font-size: 16px;
     white-space: nowrap;
@@ -35,12 +35,11 @@ const style: CSSResult = css`
   .compass {
     display: block;
     width: 100%;
-    height: 152px;
-    max-width: 152px;
+    height: 100%;
     margin: 10px auto;
   }
   .content {
-    height: 162px;
+    height: 152px;
     position: relative;
     width: 100%;
     font-weight: normal;
