@@ -49,7 +49,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
     "prettier-eslint": "^16.4.2",
-    "rollup": "^4.46.2",
+    "rollup": "^4.46.3",
     "rollup-plugin-ignore": "^1.0.10",
     "rollup-plugin-serve": "^3.0.0",
     "rollup-plugin-server": "^0.7.0",
