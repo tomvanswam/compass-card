@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './editorTypes';
-import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties } from './cardTypes';
+import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties, CCCircle } from './cardTypes';
 import handleClick from './utils/handleClick';
 
 import './editor';
@@ -89,7 +89,16 @@ export class CompassCard extends LitElement {
   }
 
   public getCardSize(): number {
-    return 5;
+    return 4 + +this.showHeader();
+  }
+
+  public getLayoutOptions() {
+    return {
+      grid_rows: 4,
+      grid_columns: 4,
+      grid_min_rows: 3,
+      grid_min_columns: 2,
+    };
   }
 
   set hass(hass: HomeAssistant) {
@@ -143,7 +152,8 @@ export class CompassCard extends LitElement {
 
     return html`
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
-        ${this.getVisibility(this.header.title) || this.getVisibility(this.header.icon) ? this.renderHeader() : ''}
+        ${this.showHeader() ? this.renderHeader() : ''}
+
         <div class="content">
           <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
           <div class="indicator-sensors">${this.renderDirections()}</div>
@@ -151,6 +161,10 @@ export class CompassCard extends LitElement {
         </div>
       </ha-card>
     `;
+  }
+
+  private showHeader(): boolean {
+    return this.getVisibility(this.header.title) || this.getVisibility(this.header.icon);
   }
 
   /**
@@ -246,16 +260,27 @@ export class CompassCard extends LitElement {
     return properties.color;
   }
 
+  private getBackgroundImage(properties: CCCircle): string {
+    if (properties.dynamic_style.bands.length === 0) {
+      return properties.background_image;
+    }
+    const value = this.getValue(properties.dynamic_style);
+    if (isNumeric(value.value)) {
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      return usableBands[usableBands.length - 1]?.background_image || properties.background_image;
+    }
+    return properties.background_image;
+  }
   /**
    * Draw compass with indicators
    */
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin slice" style="width: 100%; padding-bottom: 92%; height: 1px; overflow: visible">
+    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin meet" class="compass-svg">
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
-          <image x="0" y="0" height="1" width="1" href="${this.compass.circle.background_image}" preserveAspectRatio="xMidYMid meet"></image>
+          <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
         </pattern>
       </defs>
       ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
@@ -276,7 +301,7 @@ export class CompassCard extends LitElement {
   }
 
   private circleFill(): string {
-    return this.compass.circle.background_image === '' ? 'white' : 'url(#image)';
+    return this.getBackgroundImage(this.compass.circle) === '' ? 'white' : 'url(#image)';
   }
 
   private svgIndicators(): SVGTemplateResult[] {
