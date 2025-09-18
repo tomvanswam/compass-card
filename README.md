@@ -293,11 +293,12 @@ Store the background image in your `config/www/` folder (this maps to `/local/`)
 
 ### Style band object
 
-| Name       | Type    | Requirement  | Supported | Config | Description                                                                            |
-| ---------- | ------- | ------------ | --------- | ------ | -------------------------------------------------------------------------------------- |
-| from_value | string  | **Required** | v1.0.0    | YAML   | Value from which upward this bands settings are used to display the parent object with |
-| color      | string  | **Optional** | v1.0.0    | YAML   | Color of object                                                                        |
-| show       | boolean | **Optional** | v1.0.0    | YAML   | Show object                                                                            |
+| Name             | Type    | Requirement  | Supported | Config | Description                                                                                                                                                                                                                           |
+| ---------------- | ------- | ------------ | --------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| from_value       | string  | **Required** | v1.0.0    | YAML   | Value from which upward this bands settings are used to display the parent object with                                                                                                                                                |
+| color            | string  | **Optional** | v1.0.0    | YAML   | Color of object                                                                                                                                                                                                                       |
+| show             | boolean | **Optional** | v1.0.0    | YAML   | Show object                                                                                                                                                                                                                           |
+| background_image | string  | **Optional** | v2.1.0    | YAML   | URL of image to show in the background of the circle (use square image of preferably 126px by 126px). See [Home Assistant documentation](https://www.home-assistant.io/integrations/http#hosting-files) for info about hosting files. |
 
 #### Dynamic Style & Style band example
 
@@ -558,6 +559,7 @@ And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](
 
 - [@rsnodgrass](https://github.com/rsnodgrass) for the idea to make this
 - [@iantrich](https://www.github.com/iantrich) for the [boiler-plate card](https://github.com/custom-cards/boilerplate-card), which got me started
+- [@vingerha]https://github.com/vingerha for creating the dynamic background image
 - [All the translators](#language)
 
 ## Support
