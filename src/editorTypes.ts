@@ -74,6 +74,7 @@ export interface CCDynamicStyleConfig {
 
 export interface CCStyleBandConfig extends CCStyleConfig {
   from_value: number;
+  background_image: string;
 }
 
 export interface CCStyleConfig {
