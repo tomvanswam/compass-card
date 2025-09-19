@@ -30,6 +30,8 @@ export interface CCIndicatorSensorConfig extends CCSensorConfig {
 
 export interface CCIndicatorConfig extends CCPropertiesConfig {
   type?: string;
+  size?: number;
+  radius: number;
 }
 
 export interface CCHeaderConfig {

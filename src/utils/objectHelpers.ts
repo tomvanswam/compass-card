@@ -106,6 +106,8 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
       dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
       color: indColor,
       show: indShow,
+      size: indicatorSensor.indicator?.size || 16,
+      radius: indicatorSensor.indicator?.radius || 60,
     },
     state_abbreviation: {
       color: abbrColor,
