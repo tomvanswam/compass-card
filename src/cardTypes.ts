@@ -17,6 +17,8 @@ export interface CCIndicatorSensor extends CCSensor {
 
 export interface CCIndicator extends CCProperties {
   type: string;
+  size: number;
+  radius: number;
 }
 
 export interface CCHeader {

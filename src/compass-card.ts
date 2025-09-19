@@ -277,7 +277,7 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin meet" class="compass-svg">
+    <svg viewBox="0 0 152 152" preserveAspectRatio="xMidYMin meet" class="compass-svg">
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
           <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
@@ -321,6 +321,9 @@ export class CompassCard extends LitElement {
       case 'circle':
         return this.svgIndicatorCircle(indicatorSensor);
       default:
+        if (indicatorSensor.indicator.type?.startsWith('mdi:')) {
+          return this.svgIndicatorMdi(indicatorSensor);
+        }
     }
     return this.svgIndicatorArrowInward(indicatorSensor);
   }
@@ -364,6 +367,32 @@ export class CompassCard extends LitElement {
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="${this.getColor(indicatorSensor.indicator)}"/>
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="white" opacity="0.5"/>
       </g>
+    `;
+  }
+
+  private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const icon = indicatorSensor.indicator.type as string;
+    const size = indicatorSensor?.indicator.size;
+    const r = indicatorSensor.indicator.radius;
+
+    // Compass center and place at top
+    const cx = 76;
+    const cy = 76;
+    const x = cx - size / 2;
+    const y = cy - r - size / 2;
+
+    return svg`
+      <foreignObject x=${x} y=${y} width=${size} height=${size}>
+        <ha-icon
+          .icon=${icon}
+          style="
+            --mdc-icon-size:${size}px;
+            width:${size}px; height:${size}px;
+            display:block; margin:0; padding:0;
+            pointer-events:none;
+          "
+        ></ha-icon>
+      </foreignObject>
     `;
   }
 
