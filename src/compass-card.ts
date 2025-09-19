@@ -3,6 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { CompassCardConfig } from './editorTypes';
+
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties, CCCircle } from './cardTypes';
 import handleClick from './utils/handleClick';
 
@@ -149,13 +150,16 @@ export class CompassCard extends LitElement {
     if (!this._config || !this._hass) {
       return html``;
     }
-
+    const rawSize = this._config.size ?? '100%';
+    const width = typeof rawSize === 'number' ? `${rawSize}px` : String(rawSize);
     return html`
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
 
         <div class="content">
-          <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
+          <!-- Square, responsive box using aspect-ratio -->
+          <div class="compass" style="width:${width};">${this.svgCompass(this.compass.north.offset)}</div>
+
           <div class="indicator-sensors">${this.renderDirections()}</div>
           <div class="value-sensors">${this.renderValues()}</div>
         </div>
