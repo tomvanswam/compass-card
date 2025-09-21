@@ -10,10 +10,12 @@ const style: CSSResult = css`
     padding: 16px;
   }
   ha-card {
-    flex-direction: column;
-    flex: 1;
     position: relative;
     overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex: stretch;
+    flex-direction: column;
   }
   .header {
     display: flex;
@@ -33,51 +35,65 @@ const style: CSSResult = css`
     float: right;
   }
   .compass {
-    display: block;
-    width: 100%;
-    height: 100%;
-    margin: 10px auto;
+    flex: 1;
+    padding: 16px;
+    z-index: 1;
   }
-  .content {
-    height: 152px;
-    position: relative;
-    width: 100%;
-    font-weight: normal;
-    line-height: 28px;
+  .header ~ .compass {
+    padding-top: 0px;
   }
-  .value-sensors {
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .sensors {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: calc(100% - 32px);
+    height: calc(100% - 32px);
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    text-align: center;
-    top: 62px;
-    left: 50%;
-    transform: translateX(-50%);
+    z-index: 2;
   }
-  .indicator-sensors {
-    line-height: 18px;
-    font-weight: 500;
-    font-size: 16px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
-    overflow: hidden;
-    position: absolute;
-    top: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .value-sensors .measurement {
-    font-size: 18px;
-  }
-  .value-sensors .value {
-    font-size: 28px;
+  .header ~ .sensors {
+    padding-top: 0px;
+    top: 58px;
+    height: calc(100% - 74px);
   }
   .compass-svg {
     width: 100%;
     height: 100%;
-    padding-bottom: 92%;
     overflow: visible;
+  }
+  .indicator-sensors,
+  .value-sensors {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .indicator-sensors .abbr {
+    font-size: 1rem;
+  }
+  .indicator-sensors .measurement {
+    font-size: 1rem;
+  }
+  .indicator-sensors .value {
+    font-size: 1rem;
+  }
+  .value-sensors .measurement {
+    font-size: 1rem;
+  }
+  .value-sensors .value {
+    font-size: 1rem;
+  }
+  [class^='sensor-'] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
   }
 `;
 
