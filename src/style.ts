@@ -80,7 +80,9 @@ const style: CSSResult = css`
     align-items: center;
   }
   .indicator-sensors .abbr {
-    font-size: 1rem;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2rem;
   }
   .indicator-sensors .measurement {
     font-size: 1rem;
@@ -92,7 +94,7 @@ const style: CSSResult = css`
     font-size: 1rem;
   }
   .value-sensors .value {
-    font-size: 1rem;
+    font-size: 2rem;
   }
   [class^='sensor-'] {
     display: flex;
