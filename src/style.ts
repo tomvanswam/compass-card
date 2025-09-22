@@ -82,16 +82,18 @@ const style: CSSResult = css`
   .indicator-sensors .abbr {
     font-size: 2rem;
     font-weight: 600;
-    line-height: 1.2rem;
   }
   .indicator-sensors .measurement {
+    padding-left: 0.2rem;
     font-size: 1rem;
   }
   .indicator-sensors .value {
+    padding-left: 0.2rem;
     font-size: 1rem;
   }
   .value-sensors .measurement {
     font-size: 1rem;
+    padding-left: 0.2rem;
   }
   .value-sensors .value {
     font-size: 2rem;
@@ -101,6 +103,9 @@ const style: CSSResult = css`
     flex-direction: row;
     justify-content: center;
     align-items: baseline;
+  }
+  .value-sensors [class^='sensor-']:not(:first-child) {
+    margin-top: -0.8rem;
   }
 `;
 
