@@ -35,33 +35,34 @@ const style: CSSResult = css`
     float: right;
   }
   .compass {
-    flex: 1;
-    padding: 16px;
     z-index: 1;
   }
-  .header ~ .compass {
-    padding-top: 0px;
-  }
   .sensors {
-    padding: 16px;
+    z-index: 2;
+  }
+  .sensors,
+  .compass {
+    align-items: center;
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: calc(100% - 32px);
     height: calc(100% - 32px);
-    align-items: center;
     justify-content: center;
+    padding: 16px;
     position: absolute;
-    z-index: 2;
+    width: calc(100% - 32px);
   }
-  .header ~ .sensors {
+  .header ~ .sensors,
+  .header ~ .compass {
     padding-top: 0px;
     top: 58px;
     height: calc(100% - 74px);
   }
   .compass-svg {
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    display: block;
     overflow: visible;
   }
   .indicator-sensors,
