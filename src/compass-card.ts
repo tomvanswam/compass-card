@@ -94,7 +94,7 @@ export class CompassCard extends LitElement {
 
   public getLayoutOptions() {
     return {
-      grid_rows: 4,
+      grid_rows: 3 + +this.showHeader(),
       grid_columns: 12,
       grid_min_rows: 1,
       grid_min_columns: 1,
