@@ -9,14 +9,14 @@ const style: CSSResult = css`
   :host ::slotted(.card-content) {
     padding: 16px;
   }
+
   ha-card {
+    flex-direction: column;
+    flex: 1;
     position: relative;
     overflow: hidden;
-    height: 100%;
-    display: flex;
-    flex: stretch;
-    flex-direction: column;
   }
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -35,65 +35,54 @@ const style: CSSResult = css`
     float: right;
   }
   .compass {
-    flex: 1;
-    padding: 16px;
-    z-index: 1;
-  }
-  .header ~ .compass {
-    padding-top: 0px;
-  }
-  .sensors {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: calc(100% - 32px);
-    height: calc(100% - 32px);
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    z-index: 2;
-  }
-  .header ~ .sensors {
-    padding-top: 0px;
-    top: 58px;
-    height: calc(100% - 74px);
-  }
-  .compass-svg {
+    position: relative;
+    display: block;
     width: 100%;
-    height: 100%;
-    overflow: visible;
+    aspect-ratio: 1 / 1;
+    margin: 10px auto;
+    height: auto;
+    max-width: 100%;
+  }
+  .content {
+    position: relative;
+    width: 100%;
+    font-weight: normal;
+    line-height: 28px;
+    height: auto;
   }
   .indicator-sensors,
   .value-sensors {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
+    pointer-events: none;
   }
-  .indicator-sensors .abbr {
-    font-size: 1rem;
+  .indicator-sensors {
+    top: 20%;
+    line-height: 18px;
+    font-weight: 500;
+    font-size: 16px;
   }
-  .indicator-sensors .measurement {
-    font-size: 1rem;
-  }
-  .indicator-sensors .value {
-    font-size: 1rem;
+  .value-sensors {
+    top: 42%;
   }
   .value-sensors .measurement {
     font-size: 1rem;
   }
   .value-sensors .value {
-    font-size: 1rem;
+    font-size: 1.75rem;
   }
-  [class^='sensor-'] {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: baseline;
+  .compass-svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
   }
 `;
 export default style;
