@@ -88,18 +88,18 @@ export class CompassCard extends LitElement {
     this.updateConfig(this._hass, this._config);
   }
 
-  // public getCardSize(): number {
-  //   return 4 + +this.showHeader();
-  // }
+  public getCardSize(): number {
+    return 4 + +this.showHeader();
+  }
 
-  // public getLayoutOptions() {
-  //   return {
-  //     grid_rows: 4,
-  //     grid_columns: 4,
-  //     grid_min_rows: 1,
-  //     grid_min_columns: 1,
-  //   };
-  // }
+  public getLayoutOptions() {
+    return {
+      grid_rows: 4,
+      grid_columns: 4,
+      grid_min_rows: 1,
+      grid_min_columns: 1,
+    };
+  }
 
   set hass(hass: HomeAssistant) {
     this._hass = hass;
