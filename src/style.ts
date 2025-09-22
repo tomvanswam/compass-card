@@ -10,7 +10,7 @@ const style: CSSResult = css`
     padding: 16px;
   }
   ha-card {
-    min-height: var(--row-size, 200px);
+    min-height: var(--row-size, var(--grid-card-column-count, 200px));
     position: relative;
     overflow: hidden;
     height: 100%;
@@ -19,7 +19,7 @@ const style: CSSResult = css`
     flex-direction: column;
   }
   ha-card:has(.header) {
-    min-height: var(--row-size, 250px);
+    min-height: var(--row-size, var(--grid-card-column-count, 250px));
   }
   .header {
     display: flex;
