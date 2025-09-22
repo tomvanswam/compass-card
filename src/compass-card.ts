@@ -89,19 +89,6 @@ export class CompassCard extends LitElement {
     this.updateConfig(this._hass, this._config);
   }
 
-  public getCardSize(): number {
-    return 4 + +this.showHeader();
-  }
-
-  public getLayoutOptions() {
-    return {
-      grid_rows: 4,
-      grid_columns: 4,
-      grid_min_rows: 3,
-      grid_min_columns: 2,
-    };
-  }
-
   set hass(hass: HomeAssistant) {
     this._hass = hass;
     this.updateConfig(this._hass, this._config);
@@ -150,18 +137,17 @@ export class CompassCard extends LitElement {
     if (!this._config || !this._hass) {
       return html``;
     }
-    const rawSize = this._config.size ?? '100%';
-    const width = typeof rawSize === 'number' ? `${rawSize}px` : String(rawSize);
+
     return html`
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
 
         <div class="content">
-          <!-- Square, responsive box using aspect-ratio -->
-          <div class="compass" style="width:${width};">${this.svgCompass(this.compass.north.offset)}</div>
-
-          <div class="indicator-sensors">${this.renderDirections()}</div>
-          <div class="value-sensors">${this.renderValues()}</div>
+          <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
+          <div class="sensors">
+            <div class="indicator-sensors">${this.renderDirections()}</div>
+            <div class="value-sensors">${this.renderValues()}</div>
+          </div>
         </div>
       </ha-card>
     `;
@@ -281,7 +267,7 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin meet" class="compass-svg">
+    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg">
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
           <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
