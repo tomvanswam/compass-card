@@ -4,6 +4,8 @@ const style: CSSResult = css`
   :host {
     --compass-card-masonry-height-without-header: 200px;
     --compass-card-masonry-height-with-header: calc(var(--compass-card-masonry-height-without-header, 200) + 50px);
+    --compass-card-compass-padding: 16px;
+    --compass-card-svg-scale: 1;
   }
 
   :host ::slotted(.card-content:not(:first-child)),
@@ -55,11 +57,11 @@ const style: CSSResult = css`
     display: flex;
     flex-direction: column;
     flex: 1;
-    height: calc(100% - 32px);
+    height: calc(100% - (2 * var(--compass-card-compass-padding, 16px)));
     justify-content: center;
-    padding: 16px;
+    padding: var(--compass-card-compass-padding, 16px);
     position: absolute;
-    width: calc(100% - 32px);
+    width: calc(100% - (2 * var(--compass-card-compass-padding, 16px)));
   }
   .header ~ .sensors,
   .header ~ .compass {
@@ -73,6 +75,7 @@ const style: CSSResult = css`
     max-height: 100%;
     display: block;
     overflow: visible;
+    transform: scale(var(--compass-card-svg-scale, 1));
   }
   .indicator-sensors,
   .value-sensors {
