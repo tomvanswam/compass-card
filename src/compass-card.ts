@@ -149,11 +149,11 @@ export class CompassCard extends LitElement {
     if (!this._config || !this._hass) {
       return html``;
     }
+    const svgScale = this._config.compass?.scale ?? '100%';
 
     return html`
-      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
+      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" style="--compass-card-svg-scale:${svgScale}" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
-
         <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
         <div class="sensors">
           <div class="indicator-sensors">${this.renderDirections()}</div>
@@ -296,7 +296,7 @@ export class CompassCard extends LitElement {
   }
 
   private svgCircle(directionOffset: number): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="2" fill="${this.circleFill()}" fill-opacity="
+    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${this.circleFill()}" fill-opacity="
       ${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
   }
 
@@ -321,6 +321,9 @@ export class CompassCard extends LitElement {
       case 'circle':
         return this.svgIndicatorCircle(indicatorSensor);
       default:
+        if (indicatorSensor.indicator.type?.startsWith('mdi:')) {
+          return this.svgIndicatorMdi(indicatorSensor);
+        }
     }
     return this.svgIndicatorArrowInward(indicatorSensor);
   }
@@ -364,6 +367,32 @@ export class CompassCard extends LitElement {
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="${this.getColor(indicatorSensor.indicator)}"/>
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="white" opacity="0.5"/>
       </g>
+    `;
+  }
+
+  private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const icon = indicatorSensor.indicator.type as string;
+    const size = indicatorSensor?.indicator.size;
+    const r = indicatorSensor.indicator.radius;
+
+    // Compass center and place at top
+    const cx = 76;
+    const cy = 76;
+    const x = cx - size / 2;
+    const y = cy - r - size / 2;
+
+    return svg`
+      <foreignObject x=${x} y=${y} width=${size} height=${size}>
+        <ha-icon
+          .icon=${icon}
+          style="
+            --mdc-icon-size:${size}px;
+            width:${size}px; height:${size}px;
+            display:block; margin:0; padding:0;
+            pointer-events:none;
+          "
+        ></ha-icon>
+      </foreignObject>
     `;
   }
 
