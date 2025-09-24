@@ -40,11 +40,14 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
   const bgImage = config.compass?.circle?.background_image || '';
   const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : config.compass?.circle?.background_image ? 1.0 : 0.0;
   const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
+  const circleStrokeWidth = config.compass?.circle?.stroke_width || 2;  
   const compass: CCCompass = {
+    scale: config.compass?.scale || 1,
     circle: {
       background_image: bgImage,
       background_opacity: bgOpacity,
       offset_background: bgOffset,
+      stroke_width: circleStrokeWidth,
       color: circleColor,
       dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow),
       show: circleShow,
@@ -106,6 +109,8 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
       dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
       color: indColor,
       show: indShow,
+      size: indicatorSensor.indicator?.size || 16,
+      radius: indicatorSensor.indicator?.radius || 60,
     },
     state_abbreviation: {
       color: abbrColor,
