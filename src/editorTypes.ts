@@ -30,6 +30,8 @@ export interface CCIndicatorSensorConfig extends CCSensorConfig {
 
 export interface CCIndicatorConfig extends CCPropertiesConfig {
   type?: string;
+  size?: number;
+  radius?: number;
 }
 
 export interface CCHeaderConfig {
@@ -47,12 +49,14 @@ export interface CCCompassConfig {
   east?: CCPropertiesConfig;
   south?: CCPropertiesConfig;
   west?: CCPropertiesConfig;
+  scale?: number;
 }
 
 export interface CCCircleConfig extends CCPropertiesConfig {
   background_image?: string;
   background_opacity?: number;
   offset_background?: boolean;
+  stroke_width?: number;
 }
 
 export interface CCNorthConfig extends CCPropertiesConfig {
