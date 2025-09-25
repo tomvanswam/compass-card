@@ -372,24 +372,26 @@ export class CompassCard extends LitElement {
 
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const icon = indicatorSensor.indicator.type as string;
-    const size = indicatorSensor?.indicator.size;
-    const r = indicatorSensor.indicator.radius;
+    const size = indicatorSensor?.indicator.size ?? 16;
+    const r = indicatorSensor.indicator.radius ?? 0;
 
     // Compass center and place at top
     const cx = 76;
     const cy = 76;
-    const x = cx - size / 2;
-    const y = cy - r - size / 2;
+
+    // Ensure the container is ≥ 24px to avoid clipping at small sizes
+    const box = Math.max(size, 24);
+    const x = cx - box / 2;
+    const y = cy - r - box / 2;
 
     return svg`
-      <foreignObject x=${x} y=${y} width=${size} height=${size}>
+      <foreignObject x=${x} y=${y} width=${box} height=${box}>
         <ha-icon
           .icon=${icon}
           style="
-            --mdc-icon-size:${size}px;
-            width:${size}px; height:${size}px;
-            display:block; margin:0; padding:0;
-            pointer-events:none;
+            --mdc-icon-size:${size}px;  /* visual size you want */
+            width:${box}px; height:${box}px; /* container ≥ 24px prevents clip */
+            display:block; margin:0; padding:0; pointer-events:none;
           "
         ></ha-icon>
       </foreignObject>
