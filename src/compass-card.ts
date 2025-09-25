@@ -59,6 +59,7 @@ export class CompassCard extends LitElement {
   @state() protected indicatorSensors!: CCIndicatorSensor[];
   @state() protected entities: HassEntities = {};
   @state() protected valueSensors!: CCValueSensor[];
+  @property({ attribute: false }) protected svgScale!: number;
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
@@ -136,12 +137,14 @@ export class CompassCard extends LitElement {
     this.compass = getCompass(this._config, this.colors, this.entities);
     this.indicatorSensors = getIndicatorSensors(this._config, this.colors, this.entities);
     this.valueSensors = getValueSensors(this._config, this.colors, this.entities);
+    this.svgScale = this.compass.scale === 0 ? Math.min(...this.indicatorSensors.map((is) => (is.indicator.scale === 0 ? 100 : is.indicator.scale))) : this.compass.scale;
     if (getBoolean(this._config.debug, false)) {
       console.info('Compass-Card inflated configuration: header', this.header); // eslint-disable-line
       console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line
       console.info('Compass-Card inflated configuration: indicator sensors', this.indicatorSensors); //eslint-disable-line
       console.info('Compass-Card inflated configuration: value sensors', this.valueSensors); //eslint-disable-line
       console.info('Compass-Card configuration: listening to entities', this.entities); // eslint-disable-line
+      console.info('Compass-Card configuration: svgScale', this.svgScale); // eslint-disable-line
     }
   }
 
@@ -149,10 +152,11 @@ export class CompassCard extends LitElement {
     if (!this._config || !this._hass) {
       return html``;
     }
-    const svgScale = this._config.compass?.scale ?? '100%';
+
+
 
     return html`
-      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" style="--compass-card-svg-scale:${svgScale}" @click=${(e) => this.handlePopup(e)}>
+      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
         <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
         <div class="sensors">
@@ -277,7 +281,7 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg">
+    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg" style="--compass-card-svg-scale:${this.svgScale}%">
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
           <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
