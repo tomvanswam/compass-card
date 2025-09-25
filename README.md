@@ -35,7 +35,7 @@ A custom [Home Assistant](https://home-assistant.io/) dashboard card that displa
 ## Using the card
 
 - Add the card with the visual editor
-- Or add the card manually and [configure it with YAML](https://github.com/tomvanswam/compass-card/wiki/YAML-configuration):
+- Or add the card manually and [configure it with YAML](https://github.com/tomvanswam/compass-card/wiki/YAML-configuration)
 
 ## Wish/Todo list
 
