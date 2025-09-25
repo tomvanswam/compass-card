@@ -394,6 +394,7 @@ export class CompassCard extends LitElement {
           .icon=${icon}
           style="
             --mdc-icon-size:${size}px;  /* visual size you want */
+            --icon-primary-color: ${this.getColor(indicatorSensor.indicator)} !important;
             width:${box}px; height:${box}px; /* container ≥ 24px prevents clip */
             display:block; margin:0; padding:0; pointer-events:none;
           "
