@@ -5,7 +5,7 @@ const style: CSSResult = css`
     --compass-card-masonry-height-without-header: 200px;
     --compass-card-masonry-height-with-header: calc(var(--compass-card-masonry-height-without-header, 200) + 50px);
     --compass-card-compass-padding: 16px;
-    --compass-card-svg-scale: 1;
+    --compass-card-svg-scale: 100%;
   }
 
   :host ::slotted(.card-content:not(:first-child)),
