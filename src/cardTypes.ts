@@ -19,6 +19,7 @@ export interface CCIndicator extends CCProperties {
   type: string;
   size: number;
   radius: number;
+  scale: number;
 }
 
 export interface CCHeader {
