@@ -153,8 +153,6 @@ export class CompassCard extends LitElement {
       return html``;
     }
 
-
-
     return html`
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
@@ -319,15 +317,21 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    switch (indicatorSensor.indicator.type) {
-      case 'arrow_outward':
-        return this.svgIndicatorArrowOutward(indicatorSensor);
-      case 'circle':
-        return this.svgIndicatorCircle(indicatorSensor);
-      default:
-        if (indicatorSensor.indicator.type?.startsWith('mdi:')) {
-          return this.svgIndicatorMdi(indicatorSensor);
+    switch (indicatorSensor.indicator.icon_type) {
+      case 'internal_img':
+        switch (indicatorSensor.indicator.icon_value) {
+          case 'arrow_outward':
+            return this.svgIndicatorArrowOutward(indicatorSensor);
+          case 'circle':
+            return this.svgIndicatorCircle(indicatorSensor);
+          default:
         }
+        return this.svgIndicatorArrowOutward(indicatorSensor);
+      case 'external_img':
+        return this.svgIndicatorImg(indicatorSensor);
+      case 'mdi':
+        return this.svgIndicatorMdi(indicatorSensor);
+      default:
     }
     return this.svgIndicatorArrowInward(indicatorSensor);
   }
@@ -375,7 +379,7 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    const icon = indicatorSensor.indicator.type as string;
+    const icon_v = indicatorSensor.indicator.icon_value as string;
     const size = indicatorSensor?.indicator.size ?? 16;
     const r = indicatorSensor.indicator.radius ?? 0;
 
@@ -391,7 +395,7 @@ export class CompassCard extends LitElement {
     return svg`
       <foreignObject x=${x} y=${y} width=${box} height=${box}>
         <ha-icon
-          .icon=${icon}
+          .icon=${icon_v}
           style="
             --mdc-icon-size:${size}px;  /* visual size you want */
             --icon-primary-color: ${this.getColor(indicatorSensor.indicator)} !important;
@@ -404,6 +408,30 @@ export class CompassCard extends LitElement {
           "
         ></ha-icon>
       </foreignObject>
+    `;
+  }
+
+  private svgIndicatorImg(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const icon_v = indicatorSensor.indicator.icon_value as string;
+    const size = indicatorSensor?.indicator.size ?? 16;
+    const r = indicatorSensor.indicator.radius ?? 0;
+
+    const cx = 76;
+    const cy = 76;
+
+    const box = Math.max(size, 24);
+    const x = cx - box / 2;
+    const y = cy - r - box / 2;
+
+    return svg`
+      <image 
+        href=${icon_v} 
+        x=${x} 
+        y=${y} 
+        width=${box} 
+        height=${box} 
+        preserveAspectRatio="xMidYMid meet"
+      />
     `;
   }
 
