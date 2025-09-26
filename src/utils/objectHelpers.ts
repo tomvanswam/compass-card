@@ -1,5 +1,5 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
-import { DEFAULT_INDICATOR, ICONS, INDICATORS } from '../const';
+import { DEFAULT_INDICATOR, ICONS, INDICATORS, INDICATOR_TYPES, DEFAULT_INDICATOR_TYPE } from '../const';
 import { CCColors, CCCompass, CCHeader, CCIndicatorSensor, CCValueSensor, CCSensorAttrib, CCStyleBand, CCDynamicStyle } from '../cardTypes';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes';
 
@@ -92,7 +92,8 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const attrib = indicatorSensor.attribute || '';
   const indColor = indicatorSensor.indicator?.color || colors.accent;
   const indShow = getBoolean(indicatorSensor.indicator?.show, true);
-  const indType = indicatorSensor.indicator?.type || INDICATORS[DEFAULT_INDICATOR];
+  const indIconType = indicatorSensor.indicator?.icon_type || INDICATOR_TYPES[DEFAULT_INDICATOR_TYPE];
+  const indIconValue = indicatorSensor.indicator?.icon_value || INDICATORS[DEFAULT_INDICATOR];
   const abbrColor = indicatorSensor.state_abbreviation?.color || colors.secondaryText;
   const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, validIndex === 0);
   const valueColor = indicatorSensor.state_value?.color || colors.secondaryText;
@@ -101,7 +102,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
   const size = indicatorSensor.indicator?.size || 19;
   const radius = indicatorSensor.indicator?.radius || 70;
-  const scale = indType.startsWith('mdi:') ? 70 / Math.max(radius, 70) : 0;
+  const scale = indIconValue.startsWith('mdi:') ? 70 / Math.max(radius, 70) : 0;
   const sensor: CCIndicatorSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: attrib !== '',
@@ -109,7 +110,8 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     decimals: indicatorSensor.decimals || 0,
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
     indicator: {
-      type: indType,
+      icon_type: indIconType,
+      icon_value: indIconValue,
       dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
       color: indColor,
       show: indShow,
