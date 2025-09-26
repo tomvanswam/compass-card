@@ -3,7 +3,7 @@ import { DEFAULT_INDICATOR, INDICATORS } from './const';
 import { CompassCardConfigV1 } from './editorTypes';
 
 export interface CompassCardConfigV0 extends LovelaceCardConfig {
-  type: string;
+  icon_value: string;
   name: string;
   direction_offset: string;
   entity: string;
@@ -37,7 +37,7 @@ export function configV0ToV1(dep: CompassCardConfigV0): CompassCardConfigV1 {
   const conf: CompassCardConfigV1 = { type: 'custom:compass-card', indicator_sensors: [{ sensor: dep.entity }] };
 
   if (dep.compass?.indicator && INDICATORS.indexOf(dep.compass?.indicator) !== DEFAULT_INDICATOR) {
-    conf.indicator_sensors[0] = { ...conf.indicator_sensors[0], indicator: { type: dep.compass.indicator } };
+    conf.indicator_sensors[0] = { ...conf.indicator_sensors[0], indicator: { icon_value: dep.compass.indicator } };
   }
   if (dep.secondary_entity && dep.secondary_entity !== '') {
     conf.value_sensors = [{ sensor: dep.secondary_entity }];

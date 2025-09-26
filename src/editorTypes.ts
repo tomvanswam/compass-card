@@ -29,7 +29,8 @@ export interface CCIndicatorSensorConfig extends CCSensorConfig {
 }
 
 export interface CCIndicatorConfig extends CCPropertiesConfig {
-  type?: string;
+  icon_value?: string;
+  icon_type?: string;
   size?: number;
   radius?: number;
 }
