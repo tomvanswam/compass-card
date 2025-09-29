@@ -2,10 +2,10 @@ import { LitElement, html, CSSResult, TemplateResult, PropertyValues, svg, SVGTe
 import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities } from 'home-assistant-js-websocket';
-import { CompassCardConfig } from './editorTypes';
+import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes';
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties, CCCircle } from './cardTypes';
 import handleClick from './utils/handleClick';
-
+import { assert, StructError } from 'superstruct';
 import './editor';
 import style from './style';
 
@@ -44,13 +44,6 @@ export class CompassCard extends LitElement {
     return document.createElement('compass-card-editor');
   }
 
-  public static getStubConfig(): CompassCardConfig {
-    return {
-      type: 'custom:compass-card',
-      indicator_sensors: [{ sensor: 'sun.sun', attribute: 'azimuth' }],
-    };
-  }
-
   @property({ attribute: false }) public _hass!: HomeAssistant;
   @property({ attribute: false }) protected _config!: CompassCardConfig;
   @state() protected colors!: CCColors;
@@ -72,6 +65,13 @@ export class CompassCard extends LitElement {
 
     if (config.test_gui) {
       getLovelace().setEditMode(true);
+    }
+    try {
+      assert(config, CompassCardConfigStruct);
+    } catch (e) {
+      const err = e as StructError;
+      const path = err.path.length ? err.path.join('.') : 'indicator';
+      throw new Error(`Compass Card: invalid ${path}: ${err.message}`);
     }
 
     this.colors = {
@@ -380,8 +380,8 @@ export class CompassCard extends LitElement {
 
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const icon_v = indicatorSensor.indicator.icon_value as string;
-    const size = indicatorSensor.indicator.size;
-    const r = indicatorSensor.indicator.radius;
+    const size = indicatorSensor?.indicator.size ?? 16;
+    const r = indicatorSensor.indicator.radius ?? 0;
 
     // Compass center and place at top
     const cx = 76;
@@ -413,13 +413,13 @@ export class CompassCard extends LitElement {
 
   private svgIndicatorImg(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const icon_v = indicatorSensor.indicator.icon_value as string;
-    const size = indicatorSensor.indicator.size;
-    const r = indicatorSensor.indicator.radius;
+    const size = indicatorSensor?.indicator.size ?? 16;
+    const r = indicatorSensor.indicator.radius ?? 0;
 
     const cx = 76;
     const cy = 76;
 
-    const box = Math.max(size, 0);
+    const box = Math.max(size, 24);
     const x = cx - box / 2;
     const y = cy - r - box / 2;
 

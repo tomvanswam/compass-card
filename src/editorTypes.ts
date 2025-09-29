@@ -1,105 +1,175 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
+import { object, any, optional, assign, array, refine, boolean, string, enums, number, type Infer } from 'superstruct';
+import { ICON_TYPES } from './const';
 
-export type CompassCardConfig = CompassCardConfigV1;
-
+/* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
 export interface CompassCardConfigV1 extends LovelaceCardConfig {
   header?: CCHeaderConfig;
   compass?: CCCompassConfig;
   indicator_sensors: CCIndicatorSensorConfig[];
   value_sensors?: CCValueSensorConfig[];
-
   tap_action?: ActionConfig;
   language?: string;
   debug?: boolean;
 }
 
-export interface CCSensorConfig extends CCEntityConfig {
-  state_value?: CCPropertiesConfig;
-  state_units?: CCPropertiesConfig;
-}
+/* part modified for superstruct */
+export const numberBetween = (min: number, max: number) =>
+  refine(number(), `numberBetween(${min}-${max})`, (value) => (value >= min && value <= max ? true : `Expected a number between ${min} and ${max}, got ${value}`));
 
-export interface CCValueSensorConfig extends CCSensorConfig {
-  state_min?: CCPropertiesConfig;
-  state_max?: CCPropertiesConfig;
-}
+export const percentage = () => refine(number(), 'percentage', (value) => (value >= 0 && value <= 100 ? true : `Expected a percentage between 0 and 100, got ${value}`));
 
-export interface CCIndicatorSensorConfig extends CCSensorConfig {
-  indicator?: CCIndicatorConfig;
-  state_abbreviation?: CCPropertiesConfig;
-}
+export const ActionConfigStruct = object({
+  action: string(),
+  entity: optional(string()),
+  service: optional(string()),
+  service_data: optional(string()),
+  navigation_path: optional(string()),
+  url: optional(string()),
+  new_tab: optional(boolean()),
+});
+export type ActionConfig = Infer<typeof ActionConfigStruct>;
 
-export interface CCIndicatorConfig extends CCPropertiesConfig {
-  icon_value?: string;
-  icon_type?: string;
-  size?: number;
-  radius?: number;
-}
+export const CCStyleConfigStruct = object({
+  color: optional(string()),
+  show: optional(boolean()),
+});
 
-export interface CCHeaderConfig {
-  icon?: CCHeaderItemConfig;
-  title?: CCHeaderItemConfig;
-}
+export const CCStyleBandConfigStruct = assign(
+  CCStyleConfigStruct,
+  object({
+    from_value: number(),
+    background_image: optional(string()),
+  }),
+);
+export type CCStyleBandConfig = Infer<typeof CCStyleBandConfigStruct>;
 
-export interface CCHeaderItemConfig extends CCPropertiesConfig {
-  value?: string;
-}
+export const CCDynamicStyleConfigStruct = object({
+  sensor: string(),
+  attribute: optional(string()),
+  bands: array(CCStyleBandConfigStruct),
+  unknown: optional(CCStyleConfigStruct),
+});
+export type CCDynamicStyleConfig = Infer<typeof CCDynamicStyleConfigStruct>;
 
-export interface CCCompassConfig {
-  circle?: CCCircleConfig;
-  north?: CCNorthConfig;
-  east?: CCPropertiesConfig;
-  south?: CCPropertiesConfig;
-  west?: CCPropertiesConfig;
-  scale?: number;
-}
+export const CCPropertiesConfigStruct = object({
+  color: optional(string()),
+  dynamic_style: optional(CCDynamicStyleConfigStruct),
+  show: optional(boolean()),
+});
+export type CCPropertiesConfig = Infer<typeof CCPropertiesConfigStruct>;
 
-export interface CCCircleConfig extends CCPropertiesConfig {
-  background_image?: string;
-  background_opacity?: number;
-  offset_background?: boolean;
-  stroke_width?: number;
-}
+export const IconTypeConfigStruct = enums([...ICON_TYPES]);
 
-export interface CCNorthConfig extends CCPropertiesConfig {
-  offset?: number;
-}
+export const CCIndicatorConfigStruct = assign(
+  CCPropertiesConfigStruct,
+  object({
+    icon_type: optional(IconTypeConfigStruct),
+    icon_value: optional(string()),
+    size: optional(number()),
+    radius: optional(numberBetween(0, 90)),
+  }),
+);
+export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
 
-export interface CCPropertiesConfig {
-  color?: string;
-  dynamic_style?: CCDynamicStyleConfig;
-  show?: boolean;
-}
+export const CCNorthConfigStruct = assign(
+  CCPropertiesConfigStruct,
+  object({
+    offset: optional(numberBetween(0, 359)),
+  }),
+);
+export type CCNorthConfig = Infer<typeof CCNorthConfigStruct>;
 
-export interface CCDynamicStyleConfig {
-  sensor?: string;
-  attribute?: string;
-  bands: CCStyleBandConfig[];
-  unknown?: CCStyleConfig;
-}
+export const CCEntityConfigStruct = object({
+  sensor: string(),
+  attribute: optional(string()),
+  units: optional(string()),
+  decimals: optional(number()),
+});
 
-export interface CCStyleBandConfig extends CCStyleConfig {
-  from_value: number;
-  background_image: string;
-}
+export const CCSensorConfigStruct = assign(
+  CCEntityConfigStruct,
+  object({
+    state_value: optional(CCPropertiesConfigStruct),
+    state_units: optional(CCPropertiesConfigStruct),
+  }),
+);
 
-export interface CCStyleConfig {
-  color?: string;
-  show?: boolean;
-}
+export const CCIndicatorSensorConfigStruct = assign(
+  CCSensorConfigStruct,
+  object({
+    indicator: optional(CCIndicatorConfigStruct),
+    state_abbreviation: optional(CCPropertiesConfigStruct),
+  }),
+);
+export type CCIndicatorSensorConfig = Infer<typeof CCIndicatorSensorConfigStruct>;
 
-export interface CCEntityConfig {
-  sensor: string;
-  attribute?: string;
-  units?: string;
-  decimals?: number;
-}
+export const CCValueSensorConfigStruct = assign(
+  CCSensorConfigStruct,
+  object({
+    state_min: optional(CCPropertiesConfigStruct),
+    state_max: optional(CCPropertiesConfigStruct),
+  }),
+);
+export type CCValueSensorConfig = Infer<typeof CCValueSensorConfigStruct>;
 
-export interface ActionConfig {
-  action?: string;
-  entity?: string;
-  service?: string;
-  service_data?: string;
-  navigation_path?: string;
-  url?: string;
-  new_tab?: boolean;
-}
+export const CCHeaderItemConfigStruct = assign(
+  CCPropertiesConfigStruct,
+  object({
+    value: optional(string()),
+  }),
+);
+export type CCHeaderItemConfig = Infer<typeof CCHeaderItemConfigStruct>;
+
+export const CCHeaderConfigStruct = object({
+  icon: optional(CCHeaderItemConfigStruct),
+  title: optional(CCHeaderItemConfigStruct),
+});
+export type CCHeaderConfig = Infer<typeof CCHeaderConfigStruct>;
+
+export const CCCircleConfigStruct = assign(
+  CCPropertiesConfigStruct,
+  object({
+    background_image: optional(string()),
+    background_opacity: optional(number()),
+    offset_background: optional(boolean()),
+    stroke_width: optional(number()),
+  }),
+);
+
+export const CCCompassConfigStruct = object({
+  circle: optional(CCCircleConfigStruct),
+  north: optional(CCNorthConfigStruct),
+  east: optional(CCPropertiesConfigStruct),
+  south: optional(CCPropertiesConfigStruct),
+  west: optional(CCPropertiesConfigStruct),
+  scale: optional(number()),
+});
+export type CCCompassConfig = Infer<typeof CCCompassConfigStruct>;
+
+export const LovelaceCardBaseStruct = object({
+  // keep optional or delete entirely if you don't want it validated
+  // type: optional(string()),
+  view_layout: optional(object({ 'grid-area': optional(string()) })),
+});
+
+export const CompassCardConfigStruct = assign(
+  LovelaceCardBaseStruct,
+  object({
+    type: string(),
+    header: optional(CCHeaderConfigStruct),
+    compass: optional(CCCompassConfigStruct),
+    indicator_sensors: array(CCIndicatorSensorConfigStruct),
+    value_sensors: optional(array(CCValueSensorConfigStruct)),
+    tap_action: optional(ActionConfigStruct),
+    language: optional(string()),
+    debug: optional(boolean()),
+    test_gui: optional(boolean()),
+    grid_options: optional(any()),
+    card_mod: optional(any()),
+  }),
+);
+
+export type CompassCardExtras = Infer<typeof CompassCardConfigStruct>;
+
+export type CompassCardConfig = LovelaceCardConfig & CompassCardExtras;
