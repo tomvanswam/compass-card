@@ -419,7 +419,7 @@ export class CompassCard extends LitElement {
     const cx = 76;
     const cy = 76;
 
-    const box = Math.max(size, 24);
+    const box = Math.max(size, 0);
     const x = cx - box / 2;
     const y = cy - r - box / 2;
 
