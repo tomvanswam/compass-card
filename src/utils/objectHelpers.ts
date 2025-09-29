@@ -1,8 +1,7 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
-import { ICONS, DEFAULT_ICON_VALUE, ICON_VALUES, ICON_TYPES, DEFAULT_ICON_TYPE } from '../const';
+import { ICONS, DEFAULT_ICON_VALUE, ICON_VALUES } from '../const';
 import { CCColors, CCCompass, CCHeader, CCIndicatorSensor, CCValueSensor, CCSensorAttrib, CCStyleBand, CCDynamicStyle } from '../cardTypes';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes';
-import { create, enums } from 'superstruct';
 
 export function getHeader(config: CompassCardConfig, colors: CCColors, indicatorEntity: HassEntity, entities: HassEntities): CCHeader {
   const titleColor = config.header?.title?.color || colors.secondaryText;
@@ -93,11 +92,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const attrib = indicatorSensor.attribute || '';
   const indColor = indicatorSensor.indicator?.color || colors.accent;
   const indShow = getBoolean(indicatorSensor.indicator?.show, true);
-  const indIconType = create(
-    indicatorSensor.indicator?.icon_type ?? DEFAULT_ICON_TYPE,
-    enums([...ICON_TYPES])
-  );
-  const indIconValue = indicatorSensor.indicator?.icon_value || ICON_VALUES[DEFAULT_ICON_VALUE];
+  const indIconImage = indicatorSensor.indicator?.image || ICON_VALUES[DEFAULT_ICON_VALUE];
   const abbrColor = indicatorSensor.state_abbreviation?.color || colors.secondaryText;
   const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, validIndex === 0);
   const valueColor = indicatorSensor.state_value?.color || colors.secondaryText;
@@ -106,7 +101,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
   const size = indicatorSensor.indicator?.size || 19;
   const radius = indicatorSensor.indicator?.radius || 70;
-  const scale = indIconValue.startsWith('mdi:') ? 70 / Math.max(radius, 70) : 0;
+  const scale = 70 / Math.max(radius, 70);
   const sensor: CCIndicatorSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: attrib !== '',
@@ -114,8 +109,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     decimals: indicatorSensor.decimals || 0,
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
     indicator: {
-      icon_type: indIconType,
-      icon_value: indIconValue,
+      image: indIconImage,
       dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
       color: indColor,
       show: indShow,

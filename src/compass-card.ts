@@ -70,8 +70,7 @@ export class CompassCard extends LitElement {
       assert(config, CompassCardConfigStruct);
     } catch (e) {
       const err = e as StructError;
-      const path = err.path.length ? err.path.join('.') : 'indicator';
-      throw new Error(`Compass Card: invalid ${path}: ${err.message}`);
+      throw new Error(`Compass Card: invalid yaml configuration. \n\n ${err.message}`);
     }
 
     this.colors = {
@@ -317,23 +316,20 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    switch (indicatorSensor.indicator.icon_type) {
-      case 'internal_img':
-        switch (indicatorSensor.indicator.icon_value) {
-          case 'arrow_outward':
-            return this.svgIndicatorArrowOutward(indicatorSensor);
-          case 'circle':
-            return this.svgIndicatorCircle(indicatorSensor);
-          default:
-        }
+    switch (indicatorSensor.indicator.image) {
+      case 'arrow_outward':
         return this.svgIndicatorArrowOutward(indicatorSensor);
-      case 'external_img':
-        return this.svgIndicatorImg(indicatorSensor);
-      case 'mdi':
-        return this.svgIndicatorMdi(indicatorSensor);
+      case 'arrow_inward':
+        return this.svgIndicatorArrowInward(indicatorSensor);
+      case 'circle':
+        return this.svgIndicatorCircle(indicatorSensor);
       default:
+        if (indicatorSensor.indicator.image.startsWith('mdi:')) {
+          return this.svgIndicatorMdi(indicatorSensor);
+        }
+        // else its an external image
+        return this.svgIndicatorImg(indicatorSensor);
     }
-    return this.svgIndicatorArrowInward(indicatorSensor);
   }
 
   private svgSingleIndicator(indicatorSensor: CCIndicatorSensor, index = 0): SVGTemplateResult {
@@ -379,7 +375,7 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    const icon_v = indicatorSensor.indicator.icon_value as string;
+    const icon_v = indicatorSensor.indicator.image as string;
     const size = indicatorSensor?.indicator.size ?? 16;
     const r = indicatorSensor.indicator.radius ?? 0;
 
@@ -412,14 +408,14 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicatorImg(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    const icon_v = indicatorSensor.indicator.icon_value as string;
+    const icon_v = indicatorSensor.indicator.image as string;
     const size = indicatorSensor?.indicator.size ?? 16;
     const r = indicatorSensor.indicator.radius ?? 0;
 
     const cx = 76;
     const cy = 76;
 
-    const box = Math.max(size, 24);
+    const box = size;
     const x = cx - box / 2;
     const y = cy - r - box / 2;
 

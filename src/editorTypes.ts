@@ -1,6 +1,6 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
-import { object, any, optional, assign, array, refine, boolean, string, enums, number, type Infer } from 'superstruct';
-import { ICON_TYPES } from './const';
+import { object, any, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, deprecated, never, type Infer } from 'superstruct';
+import { ICON_VALUES } from './const';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
 export interface CompassCardConfigV1 extends LovelaceCardConfig {
@@ -59,15 +59,18 @@ export const CCPropertiesConfigStruct = object({
 });
 export type CCPropertiesConfig = Infer<typeof CCPropertiesConfigStruct>;
 
-export const IconTypeConfigStruct = enums([...ICON_TYPES]);
-
 export const CCIndicatorConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
-    icon_type: optional(IconTypeConfigStruct),
-    icon_value: optional(string()),
+    image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
     size: optional(number()),
     radius: optional(numberBetween(0, 90)),
+    type: optional(
+      deprecated(never(), (value, ctx) => {
+        // eslint-disable-next-line no-console
+        console.error(`${ctx.path} is not used in v3.0.0+, but value was '${value}'. Please use 'image' instead.`);
+      }),
+    ),
   }),
 );
 export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
@@ -98,7 +101,7 @@ export const CCSensorConfigStruct = assign(
 export const CCIndicatorSensorConfigStruct = assign(
   CCSensorConfigStruct,
   object({
-    indicator: optional(CCIndicatorConfigStruct),
+    indicator: CCIndicatorConfigStruct,
     state_abbreviation: optional(CCPropertiesConfigStruct),
   }),
 );
@@ -159,7 +162,7 @@ export const CompassCardConfigStruct = assign(
     type: string(),
     header: optional(CCHeaderConfigStruct),
     compass: optional(CCCompassConfigStruct),
-    indicator_sensors: array(CCIndicatorSensorConfigStruct),
+    indicator_sensors: size(array(CCIndicatorSensorConfigStruct), 1, 10),
     value_sensors: optional(array(CCValueSensorConfigStruct)),
     tap_action: optional(ActionConfigStruct),
     language: optional(string()),
