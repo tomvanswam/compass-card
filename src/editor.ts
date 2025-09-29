@@ -5,7 +5,7 @@ import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helper
 import { CompassCardConfigV0, isV0Config, configV0ToV1 } from './updateV0ToV1';
 import { CCCompassConfig, CCHeaderConfig, CCIndicatorConfig, CCNorthConfig, CCHeaderItemConfig, CompassCardConfig } from './editorTypes';
 
-import { INDICATORS, DEFAULT_INDICATOR } from './const';
+import { ICON_VALUES, DEFAULT_ICON_VALUE, type IconValue } from './const';
 
 import { localize, COMPASS_LANGUAGES } from './localize/localize';
 import { isNumeric } from './utils/objectHelpers';
@@ -73,9 +73,9 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
 
   get _compass_indicator(): string {
     if (this._config?.indicator_sensors && this._config?.indicator_sensors.length > 0) {
-      return this._config?.indicator_sensors[0].indicator?.icon_value || INDICATORS[DEFAULT_INDICATOR];
+      return this._config?.indicator_sensors[0].indicator?.icon_value || DEFAULT_ICON_VALUE;
     }
-    return INDICATORS[DEFAULT_INDICATOR];
+    return DEFAULT_ICON_VALUE;
   }
 
   get _compass_show_north(): boolean {
@@ -104,7 +104,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
       ${this.getEditorInput('editor.name', 'editor.optional', 'header.title.value', this._name)}
       ${this.getEditorDropDown('editor.primary entity description', 'editor.required', 'indicator_sensors[0].sensor', this._entity, entities)}
       ${this.getEditorDropDown('editor.secondary entity description', 'editor.optional', 'value_sensors[0].sensor', this._secondary_entity, optionalEntities)}
-      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.icon_value', this._compass_indicator, INDICATORS)}
+      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.icon_value', this._compass_indicator, ICON_VALUES)}
       ${this.getEditorDropDown('editor.language description', 'editor.optional', 'language', this._compass_language, COMPASS_LANGUAGES)}
       ${this.getEditorInput('editor.offset description', 'editor.optional', 'compass.north.offset', this._direction_offset)}
       ${this.getEditorSwitch('directions.north', 'compass.north.show', this._compass_show_north)}
@@ -205,7 +205,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
           this._config = { ...this._config, indicator_sensors: sensorsIndicatorType };
           if (
             this._config.indicator_sensors[0]?.indicator?.icon_value &&
-            INDICATORS.indexOf(this._config.indicator_sensors[0]?.indicator?.icon_value) === DEFAULT_INDICATOR &&
+            ICON_VALUES.indexOf(this._config.indicator_sensors[0]?.indicator?.icon_value as IconValue) === ICON_VALUES.indexOf(DEFAULT_ICON_VALUE) &&
             Object.keys(this._config.indicator_sensors[0]?.indicator).length === 1
           ) {
             delete this._config.indicator_sensors[0].indicator;
