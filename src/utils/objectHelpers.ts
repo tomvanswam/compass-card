@@ -1,5 +1,5 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
-import { DEFAULT_INDICATOR, ICONS, INDICATORS, INDICATOR_TYPES, DEFAULT_INDICATOR_TYPE } from '../const';
+import { DEFAULT_INDICATOR, ICONS, INDICATORS, INDICATOR_TYPES, DEFAULT_INDICATOR_TYPE, DEFAULT_RADIUS, DEFAULT_SIZE } from '../const';
 import { CCColors, CCCompass, CCHeader, CCIndicatorSensor, CCValueSensor, CCSensorAttrib, CCStyleBand, CCDynamicStyle } from '../cardTypes';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes';
 
@@ -100,9 +100,9 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const valueShow = getBoolean(indicatorSensor.state_value?.show, false);
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
-  const size = indicatorSensor.indicator?.size || 19;
-  const radius = indicatorSensor.indicator?.radius || 70;
-  const scale = indIconValue.startsWith('mdi:') ? 70 / Math.max(radius, 70) : 0;
+  const size = indicatorSensor.indicator?.size || DEFAULT_SIZE;
+  const radius = indicatorSensor.indicator?.radius || DEFAULT_RADIUS;
+  const scale = DEFAULT_RADIUS / Math.max(radius, DEFAULT_RADIUS);
   const sensor: CCIndicatorSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: attrib !== '',
