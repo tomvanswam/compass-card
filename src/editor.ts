@@ -73,7 +73,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
 
   get _compass_indicator(): string {
     if (this._config?.indicator_sensors && this._config?.indicator_sensors.length > 0) {
-      return this._config?.indicator_sensors[0].indicator?.type || INDICATORS[DEFAULT_INDICATOR];
+      return this._config?.indicator_sensors[0].indicator?.icon_value || INDICATORS[DEFAULT_INDICATOR];
     }
     return INDICATORS[DEFAULT_INDICATOR];
   }
@@ -104,7 +104,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
       ${this.getEditorInput('editor.name', 'editor.optional', 'header.title.value', this._name)}
       ${this.getEditorDropDown('editor.primary entity description', 'editor.required', 'indicator_sensors[0].sensor', this._entity, entities)}
       ${this.getEditorDropDown('editor.secondary entity description', 'editor.optional', 'value_sensors[0].sensor', this._secondary_entity, optionalEntities)}
-      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.type', this._compass_indicator, INDICATORS)}
+      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.icon_value', this._compass_indicator, INDICATORS)}
       ${this.getEditorDropDown('editor.language description', 'editor.optional', 'language', this._compass_language, COMPASS_LANGUAGES)}
       ${this.getEditorInput('editor.offset description', 'editor.optional', 'compass.north.offset', this._direction_offset)}
       ${this.getEditorSwitch('directions.north', 'compass.north.show', this._compass_show_north)}
@@ -198,14 +198,14 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
             }
           }
           break;
-        case 'indicator_sensors[0].indicator.type':
-          const indicatorType: CCIndicatorConfig = { ...this._config.indicator_sensors[0]?.indicator, type: target.value };
+        case 'indicator_sensors[0].indicator.icon_value':
+          const indicatorType: CCIndicatorConfig = { ...this._config.indicator_sensors[0]?.indicator, icon_value: target.value };
           const sensorsIndicatorType = [...this._config.indicator_sensors];
           sensorsIndicatorType[0] = { ...this._config.indicator_sensors[0], indicator: indicatorType };
           this._config = { ...this._config, indicator_sensors: sensorsIndicatorType };
           if (
-            this._config.indicator_sensors[0]?.indicator?.type &&
-            INDICATORS.indexOf(this._config.indicator_sensors[0]?.indicator?.type) === DEFAULT_INDICATOR &&
+            this._config.indicator_sensors[0]?.indicator?.icon_value &&
+            INDICATORS.indexOf(this._config.indicator_sensors[0]?.indicator?.icon_value) === DEFAULT_INDICATOR &&
             Object.keys(this._config.indicator_sensors[0]?.indicator).length === 1
           ) {
             delete this._config.indicator_sensors[0].indicator;
