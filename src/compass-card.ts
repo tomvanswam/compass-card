@@ -380,8 +380,8 @@ export class CompassCard extends LitElement {
 
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const icon_v = indicatorSensor.indicator.icon_value as string;
-    const size = indicatorSensor?.indicator.size ?? 16;
-    const r = indicatorSensor.indicator.radius ?? 0;
+    const size = indicatorSensor.indicator.size;
+    const r = indicatorSensor.indicator.radius;
 
     // Compass center and place at top
     const cx = 76;
@@ -413,8 +413,8 @@ export class CompassCard extends LitElement {
 
   private svgIndicatorImg(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const icon_v = indicatorSensor.indicator.icon_value as string;
-    const size = indicatorSensor?.indicator.size ?? 16;
-    const r = indicatorSensor.indicator.radius ?? 0;
+    const size = indicatorSensor.indicator.size;
+    const r = indicatorSensor.indicator.radius;
 
     const cx = 76;
     const cy = 76;
