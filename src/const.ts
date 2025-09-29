@@ -30,3 +30,6 @@ export const INDICATORS = ['arrow_inward', 'arrow_outward', 'circle'].sort();
 export const DEFAULT_INDICATOR = 1; // Arrow outward
 export const INDICATOR_TYPES = ['internal_img', 'external_img', 'mdi'];
 export const DEFAULT_INDICATOR_TYPE = 0; // internal_img
+export const DEFAULT_RADIUS = 70;
+export const DEFAULT_SIZE = 19;
+
