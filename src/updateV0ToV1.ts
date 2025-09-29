@@ -1,5 +1,5 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
-import { DEFAULT_INDICATOR, INDICATORS } from './const';
+import { DEFAULT_ICON_VALUE } from './const';
 import { CompassCardConfigV1 } from './editorTypes';
 
 export interface CompassCardConfigV0 extends LovelaceCardConfig {
@@ -19,7 +19,7 @@ export interface CCCompassV0 {
 }
 
 export interface ActionConfigV0 {
-  action?: string;
+  action: string;
   entity?: string;
   service?: string;
   service_data?: string;
@@ -36,7 +36,7 @@ export function isV0Config(object: any): object is CompassCardConfigV0 {
 export function configV0ToV1(dep: CompassCardConfigV0): CompassCardConfigV1 {
   const conf: CompassCardConfigV1 = { type: 'custom:compass-card', indicator_sensors: [{ sensor: dep.entity }] };
 
-  if (dep.compass?.indicator && INDICATORS.indexOf(dep.compass?.indicator) !== DEFAULT_INDICATOR) {
+  if (dep.compass?.indicator && dep.compass?.indicator === DEFAULT_ICON_VALUE) {
     conf.indicator_sensors[0] = { ...conf.indicator_sensors[0], indicator: { icon_value: dep.compass.indicator } };
   }
   if (dep.secondary_entity && dep.secondary_entity !== '') {
