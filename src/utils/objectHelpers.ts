@@ -1,5 +1,5 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
-import { DEFAULT_INDICATOR, ICONS, INDICATORS } from '../const';
+import { ICONS, DEFAULT_ICON_VALUE, ICON_VALUES } from '../const';
 import { CCColors, CCCompass, CCHeader, CCIndicatorSensor, CCValueSensor, CCSensorAttrib, CCStyleBand, CCDynamicStyle } from '../cardTypes';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes';
 
@@ -40,11 +40,14 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
   const bgImage = config.compass?.circle?.background_image || '';
   const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : config.compass?.circle?.background_image ? 1.0 : 0.0;
   const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
+  const circleStrokeWidth = config.compass?.circle?.stroke_width || 2;
   const compass: CCCompass = {
+    scale: config.compass?.scale || 0,
     circle: {
       background_image: bgImage,
       background_opacity: bgOpacity,
       offset_background: bgOffset,
+      stroke_width: circleStrokeWidth,
       color: circleColor,
       dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow),
       show: circleShow,
@@ -89,12 +92,16 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const attrib = indicatorSensor.attribute || '';
   const indColor = indicatorSensor.indicator?.color || colors.accent;
   const indShow = getBoolean(indicatorSensor.indicator?.show, true);
+  const indIconImage = indicatorSensor.indicator?.image || ICON_VALUES[DEFAULT_ICON_VALUE];
   const abbrColor = indicatorSensor.state_abbreviation?.color || colors.secondaryText;
   const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, validIndex === 0);
   const valueColor = indicatorSensor.state_value?.color || colors.secondaryText;
   const valueShow = getBoolean(indicatorSensor.state_value?.show, false);
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
+  const size = indicatorSensor.indicator?.size || 19;
+  const radius = indicatorSensor.indicator?.radius || 70;
+  const scale = 70 / Math.max(radius, 70);
   const sensor: CCIndicatorSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: attrib !== '',
@@ -102,10 +109,13 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     decimals: indicatorSensor.decimals || 0,
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
     indicator: {
-      type: indicatorSensor.indicator?.type || INDICATORS[DEFAULT_INDICATOR],
+      image: indIconImage,
       dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
       color: indColor,
       show: indShow,
+      size: size,
+      radius: radius,
+      scale: scale * 100,
     },
     state_abbreviation: {
       color: abbrColor,
@@ -282,6 +292,7 @@ export function findValues(obj: CompassCardConfig, entities: HassEntities, debug
           if (entities[currentValue]) {
             found.push(currentValue);
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             debug && console.warn('Compass-Card configuration: ' + name + ' (' + currentValue + ') is invalid');
           }
           break;
@@ -292,6 +303,7 @@ export function findValues(obj: CompassCardConfig, entities: HassEntities, debug
           if (entity && entity.attributes && entity.attributes[currentValue]) {
             found.push(sensor);
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             debug &&
               console.warn(
                 'Compass-Card configuration: attribute ' +

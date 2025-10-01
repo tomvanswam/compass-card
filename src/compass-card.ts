@@ -2,14 +2,14 @@ import { LitElement, html, CSSResult, TemplateResult, PropertyValues, svg, SVGTe
 import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities } from 'home-assistant-js-websocket';
-import { CompassCardConfig } from './editorTypes';
+import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes';
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties, CCCircle } from './cardTypes';
 import handleClick from './utils/handleClick';
-
+import { assert, StructError } from 'superstruct';
 import './editor';
 import style from './style';
 
-import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from './const';
+import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_ICON_VALUE, UNAVAILABLE } from './const';
 
 import { localize } from './localize/localize';
 import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
@@ -47,7 +47,13 @@ export class CompassCard extends LitElement {
   public static getStubConfig(): CompassCardConfig {
     return {
       type: 'custom:compass-card',
-      indicator_sensors: [{ sensor: 'sun.sun', attribute: 'azimuth' }],
+      indicator_sensors: [
+        {
+          sensor: 'sun.sun',
+          attribute: 'azimuth',
+          indicator: { image: DEFAULT_ICON_VALUE },
+        },
+      ],
     };
   }
 
@@ -59,6 +65,7 @@ export class CompassCard extends LitElement {
   @state() protected indicatorSensors!: CCIndicatorSensor[];
   @state() protected entities: HassEntities = {};
   @state() protected valueSensors!: CCValueSensor[];
+  @property({ attribute: false }) protected svgScale!: number;
 
   public setConfig(config: CompassCardConfig): void {
     if (!config) {
@@ -71,6 +78,19 @@ export class CompassCard extends LitElement {
 
     if (config.test_gui) {
       getLovelace().setEditMode(true);
+    }
+    try {
+      assert(config, CompassCardConfigStruct);
+    } catch (e) {
+      const err = e as StructError;
+      const [last, secondLast] = [...err.path].reverse();
+      if (last === 'type' && secondLast === 'indicator') {
+        throw new Error(
+          `Compass Card: incompatible v2.0.0+ configuration. 
+          Edit this card in code editor (YAML mode) and replace 'type' with 'image' for indicator sensor indicators to fix this error.`,
+        );
+      }
+      throw new Error(`Compass Card: invalid yaml configuration. ${err.message}`);
     }
 
     this.colors = {
@@ -94,10 +114,10 @@ export class CompassCard extends LitElement {
 
   public getLayoutOptions() {
     return {
-      grid_rows: 4,
-      grid_columns: 4,
-      grid_min_rows: 3,
-      grid_min_columns: 2,
+      grid_rows: 3 + +this.showHeader(),
+      grid_columns: 12,
+      grid_min_rows: 1,
+      grid_min_columns: 1,
     };
   }
 
@@ -136,12 +156,14 @@ export class CompassCard extends LitElement {
     this.compass = getCompass(this._config, this.colors, this.entities);
     this.indicatorSensors = getIndicatorSensors(this._config, this.colors, this.entities);
     this.valueSensors = getValueSensors(this._config, this.colors, this.entities);
+    this.svgScale = this.compass.scale === 0 ? Math.min(...this.indicatorSensors.map((is) => (is.indicator.scale === 0 ? 100 : is.indicator.scale))) : this.compass.scale;
     if (getBoolean(this._config.debug, false)) {
       console.info('Compass-Card inflated configuration: header', this.header); // eslint-disable-line
       console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line
       console.info('Compass-Card inflated configuration: indicator sensors', this.indicatorSensors); //eslint-disable-line
       console.info('Compass-Card inflated configuration: value sensors', this.valueSensors); //eslint-disable-line
       console.info('Compass-Card configuration: listening to entities', this.entities); // eslint-disable-line
+      console.info('Compass-Card configuration: svgScale', this.svgScale); // eslint-disable-line
     }
   }
 
@@ -153,12 +175,8 @@ export class CompassCard extends LitElement {
     return html`
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
-
-        <div class="content">
-          <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
-          <div class="indicator-sensors">${this.renderDirections()}</div>
-          <div class="value-sensors">${this.renderValues()}</div>
-        </div>
+        <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
+        <div class="sensors">${this.renderDirections()} ${this.renderValues()}</div>
       </ha-card>
     `;
   }
@@ -199,20 +217,28 @@ export class CompassCard extends LitElement {
     this.indicatorSensors.forEach((indicator) => {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         divs.push(
-          html`<div class="sensor-${index}">
-            <span class="abbr" style="color: ${this.getColor(indicator.state_abbreviation)};"
-              >${this.getVisibility(indicator.state_abbreviation) ? this.computeIndicator(indicator).abbreviation : ''}</span
-            >
-            <span class="value" style="color: ${this.getColor(indicator.state_value)};"
-              >${this.getVisibility(indicator.state_value) ? this.computeIndicator(indicator).degrees.toFixed(indicator.decimals) : ''}</span
-            >
-            <span class="measurement" style="color: ${this.getColor(indicator.state_units)};">${this.getVisibility(indicator.state_units) ? indicator.units : ''}</span>
+          html`<div class="sensor-${index} indicator-sensor">
+            ${this.getVisibility(indicator.state_abbreviation) ? this.getIndicatorAbbreviation(indicator) : ''}
+            ${this.getVisibility(indicator.state_value) ? this.getIndicatorValue(indicator) : ''}
+            ${this.getVisibility(indicator.state_units) ? this.getIndicatorUnits(indicator) : ''}
           </div>`,
         );
         index++;
       }
     });
     return divs;
+  }
+
+  private getIndicatorAbbreviation(indicator: CCIndicatorSensor): TemplateResult {
+    return html` <span class="abbr" style="color: ${this.getColor(indicator.state_abbreviation)};">${this.computeIndicator(indicator).abbreviation}</span> `;
+  }
+
+  private getIndicatorValue(indicator: CCIndicatorSensor): TemplateResult {
+    return html` <span class="value" style="color: ${this.getColor(indicator.state_value)};">${this.computeIndicator(indicator).degrees.toFixed(indicator.decimals)}</span> `;
+  }
+
+  private getIndicatorUnits(indicator: CCIndicatorSensor): TemplateResult {
+    return html` <span class="measurement" style="color: ${this.getColor(indicator.state_units)};">${indicator.units}</span> `;
   }
 
   /**
@@ -225,7 +251,7 @@ export class CompassCard extends LitElement {
     this.valueSensors.forEach((value) => {
       if (this.getVisibility(value.state_value)) {
         divs.push(
-          html`<div class="sensor-${index}">
+          html`<div class="sensor-${index} value-sensor">
             <span class="value" style="color: ${this.getColor(value.state_value)};">${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span>
             <span class="measurement" style="color: ${this.getColor(value.state_units)};">${this.getVisibility(value.state_units) ? value.units : ''}</span>
           </div>`,
@@ -277,7 +303,7 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMin meet" class="compass-svg">
+    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg" style="--compass-card-svg-scale:${this.svgScale}%">
       <defs>
         <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
           <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
@@ -296,7 +322,7 @@ export class CompassCard extends LitElement {
   }
 
   private svgCircle(directionOffset: number): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="2" fill="${this.circleFill()}" fill-opacity="
+    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${this.circleFill()}" fill-opacity="
       ${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
   }
 
@@ -315,14 +341,20 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    switch (indicatorSensor.indicator.type) {
+    switch (indicatorSensor.indicator.image) {
       case 'arrow_outward':
         return this.svgIndicatorArrowOutward(indicatorSensor);
+      case 'arrow_inward':
+        return this.svgIndicatorArrowInward(indicatorSensor);
       case 'circle':
         return this.svgIndicatorCircle(indicatorSensor);
       default:
+        if (indicatorSensor.indicator.image.startsWith('mdi:')) {
+          return this.svgIndicatorMdi(indicatorSensor);
+        }
+        // else its an external image
+        return this.svgIndicatorImg(indicatorSensor);
     }
-    return this.svgIndicatorArrowInward(indicatorSensor);
   }
 
   private svgSingleIndicator(indicatorSensor: CCIndicatorSensor, index = 0): SVGTemplateResult {
@@ -364,6 +396,63 @@ export class CompassCard extends LitElement {
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="${this.getColor(indicatorSensor.indicator)}"/>
         <path d="m76 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="white" opacity="0.5"/>
       </g>
+    `;
+  }
+
+  private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const icon_v = indicatorSensor.indicator.image as string;
+    const size = indicatorSensor?.indicator.size ?? 16;
+    const r = indicatorSensor.indicator.radius ?? 0;
+
+    // Compass center and place at top
+    const cx = 76;
+    const cy = 76;
+
+    // Ensure the container is ≥ 24px to avoid clipping at small sizes
+    const box = Math.max(size, 24);
+    const x = cx - box / 2;
+    const y = cy - r - box / 2;
+
+    return svg`
+      <foreignObject x=${x} y=${y} width=${box} height=${box}>
+        <ha-icon
+          .icon=${icon_v}
+          style="
+            --mdc-icon-size:${size}px;  /* visual size you want */
+            --icon-primary-color: ${this.getColor(indicatorSensor.indicator)} !important;
+            width:${box}px; height:${box}px; /* container ≥ 24px prevents clip */
+            display:block; 
+            margin:auto; 
+            padding:0; 
+            pointer-events:none;
+            text-align: center;
+          "
+        ></ha-icon>
+      </foreignObject>
+    `;
+  }
+
+  private svgIndicatorImg(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const icon_v = indicatorSensor.indicator.image as string;
+    const size = indicatorSensor?.indicator.size ?? 16;
+    const r = indicatorSensor.indicator.radius ?? 0;
+
+    const cx = 76;
+    const cy = 76;
+
+    const box = size;
+    const x = cx - box / 2;
+    const y = cy - r - box / 2;
+
+    return svg`
+      <image 
+        href=${icon_v} 
+        x=${x} 
+        y=${y} 
+        width=${box} 
+        height=${box} 
+        preserveAspectRatio="xMidYMid meet"
+      />
     `;
   }
 
