@@ -83,7 +83,14 @@ export class CompassCard extends LitElement {
       assert(config, CompassCardConfigStruct);
     } catch (e) {
       const err = e as StructError;
-      throw new Error(`Compass Card: invalid yaml configuration. \n\n ${err.message}`);
+      const [last, secondLast] = [...err.path].reverse();
+      if (last === 'type' && secondLast === 'indicator') {
+        throw new Error(
+          `Compass Card: incompatible v2.0.0+ configuration. 
+          Edit this card in code editor (YAML mode) and replace 'type' with 'image' for indicator sensor indicators to fix this error.`,
+        );
+      }
+      throw new Error(`Compass Card: invalid yaml configuration. ${err.message}`);
     }
 
     this.colors = {
