@@ -9,7 +9,7 @@ import { assert, StructError } from 'superstruct';
 import './editor';
 import style from './style';
 
-import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, UNAVAILABLE } from './const';
+import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_ICON_VALUE, UNAVAILABLE } from './const';
 
 import { localize } from './localize/localize';
 import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
@@ -42,6 +42,19 @@ window.customCards.push({
 export class CompassCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     return document.createElement('compass-card-editor');
+  }
+
+  public static getStubConfig(): CompassCardConfig {
+    return {
+      type: 'custom:compass-card',
+      indicator_sensors: [
+        {
+          sensor: 'sun.sun',
+          attribute: 'azimuth',
+          indicator: { image: DEFAULT_ICON_VALUE },
+        },
+      ],
+    };
   }
 
   @property({ attribute: false }) public _hass!: HomeAssistant;
