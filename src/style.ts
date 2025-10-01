@@ -77,8 +77,8 @@ const style: CSSResult = css`
     overflow: visible;
     transform: scale(var(--compass-card-svg-scale, 1));
   }
-  .indicator-sensors,
-  .value-sensors {
+  .indicator-sensor,
+  .value-sensor {
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: center;
@@ -87,23 +87,23 @@ const style: CSSResult = css`
     justify-content: center;
     align-items: center;
   }
-  .indicator-sensors .abbr {
+  .indicator-sensor .abbr {
     font-size: 2rem;
     font-weight: 600;
   }
-  .indicator-sensors .measurement {
+  .indicator-sensor .measurement {
     padding-left: 0.2rem;
     font-size: 1rem;
   }
-  .indicator-sensors .value {
+  .indicator-sensor .value {
     padding-left: 0.2rem;
     font-size: 1rem;
   }
-  .value-sensors .measurement {
+  .value-sensor .measurement {
     font-size: 1rem;
     padding-left: 0.2rem;
   }
-  .value-sensors .value {
+  .value-sensor .value {
     font-size: 2rem;
   }
   [class^='sensor-'] {
@@ -112,7 +112,7 @@ const style: CSSResult = css`
     justify-content: center;
     align-items: baseline;
   }
-  .value-sensors [class^='sensor-']:not(:first-child) {
+  .value-sensor[class^='sensor-']:not(:first-child) {
     margin-top: -0.8rem;
   }
 `;
