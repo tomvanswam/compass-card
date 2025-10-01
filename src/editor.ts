@@ -2,12 +2,11 @@ import { LitElement, html, TemplateResult, CSSResult, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
-import { CCCompassConfig, CCHeaderConfig, CCIndicatorConfig, CCNorthConfig, CCHeaderItemConfig, CompassCardConfig } from './editorTypes';
+import { CompassCardConfig } from './editorTypes';
 
-import { ICON_VALUES, DEFAULT_ICON_VALUE, type IconValue } from './const';
+import { ICON_VALUES, DEFAULT_ICON_VALUE } from './const';
 
 import { localize, COMPASS_LANGUAGES } from './localize/localize';
-import { isNumeric } from './utils/objectHelpers';
 import { EditorTarget } from './utils/ha-types';
 
 import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
@@ -31,7 +30,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
   };
 
   public setConfig(config: CompassCardConfig): void {
-      this._config = config;
+    this._config = config;
     this.loadCardHelpers();
   }
 
