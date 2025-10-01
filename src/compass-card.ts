@@ -176,10 +176,7 @@ export class CompassCard extends LitElement {
       <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
         ${this.showHeader() ? this.renderHeader() : ''}
         <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
-        <div class="sensors">
-          <div class="indicator-sensors">${this.renderDirections()}</div>
-          <div class="value-sensors">${this.renderValues()}</div>
-        </div>
+        <div class="sensors">${this.renderDirections()} ${this.renderValues()}</div>
       </ha-card>
     `;
   }
@@ -220,14 +217,7 @@ export class CompassCard extends LitElement {
     this.indicatorSensors.forEach((indicator) => {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         divs.push(
-          html`<div class="sensor-${index}">
-            <span class="abbr" style="color: ${this.getColor(indicator.state_abbreviation)};"
-              >${this.getVisibility(indicator.state_abbreviation) ? this.computeIndicator(indicator).abbreviation : ''}</span
-            >
-            <span class="value" style="color: ${this.getColor(indicator.state_value)};"
-              >${this.getVisibility(indicator.state_value) ? this.computeIndicator(indicator).degrees.toFixed(indicator.decimals) : ''}</span
-            >
-            <span class="measurement" style="color: ${this.getColor(indicator.state_units)};">${this.getVisibility(indicator.state_units) ? indicator.units : ''}</span>
+          html`<div class="sensor-${index} indicator-sensor">
           </div>`,
         );
         index++;
@@ -246,7 +236,7 @@ export class CompassCard extends LitElement {
     this.valueSensors.forEach((value) => {
       if (this.getVisibility(value.state_value)) {
         divs.push(
-          html`<div class="sensor-${index}">
+          html`<div class="sensor-${index} value-sensor">
             <span class="value" style="color: ${this.getColor(value.state_value)};">${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span>
             <span class="measurement" style="color: ${this.getColor(value.state_units)};">${this.getVisibility(value.state_units) ? value.units : ''}</span>
           </div>`,
