@@ -65,12 +65,6 @@ export const CCIndicatorConfigStruct = assign(
     image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
     size: optional(number()),
     radius: optional(numberBetween(0, 90)),
-    type: optional(
-      deprecated(never(), (value, ctx) => {
-        // eslint-disable-next-line no-console
-        console.error(`${ctx.path} is not used in v3.0.0+, but value was '${value}'. Please use 'image' instead.`);
-      }),
-    ),
   }),
 );
 export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
