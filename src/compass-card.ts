@@ -218,12 +218,27 @@ export class CompassCard extends LitElement {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         divs.push(
           html`<div class="sensor-${index} indicator-sensor">
+            ${this.getVisibility(indicator.state_abbreviation) ? this.getIndicatorAbbreviation(indicator) : ''}
+            ${this.getVisibility(indicator.state_value) ? this.getIndicatorValue(indicator) : ''}
+            ${this.getVisibility(indicator.state_units) ? this.getIndicatorUnits(indicator) : ''}
           </div>`,
         );
         index++;
       }
     });
     return divs;
+  }
+
+  private getIndicatorAbbreviation(indicator: CCIndicatorSensor): TemplateResult {
+    return html` <span class="abbr" style="color: ${this.getColor(indicator.state_abbreviation)};">${this.computeIndicator(indicator).abbreviation}</span> `;
+  }
+
+  private getIndicatorValue(indicator: CCIndicatorSensor): TemplateResult {
+    return html` <span class="value" style="color: ${this.getColor(indicator.state_value)};">${this.computeIndicator(indicator).degrees.toFixed(indicator.decimals)}</span> `;
+  }
+
+  private getIndicatorUnits(indicator: CCIndicatorSensor): TemplateResult {
+    return html` <span class="measurement" style="color: ${this.getColor(indicator.state_units)};">${indicator.units}</span> `;
   }
 
   /**
