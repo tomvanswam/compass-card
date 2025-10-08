@@ -1,6 +1,13 @@
 import { CSSResult, css } from 'lit';
 
 const style: CSSResult = css`
+  :host {
+    --compass-card-masonry-height-without-header: 200px;
+    --compass-card-masonry-height-with-header: calc(var(--compass-card-masonry-height-without-header, 200) + 50px);
+    --compass-card-compass-padding: 16px;
+    --compass-card-svg-scale: 100%;
+  }
+
   :host ::slotted(.card-content:not(:first-child)),
   slot:not(:first-child)::slotted(.card-content) {
     padding-top: 0px;
@@ -10,10 +17,16 @@ const style: CSSResult = css`
     padding: 16px;
   }
   ha-card {
-    flex-direction: column;
-    flex: 1;
+    min-height: var(--row-size, var(--grid-card-column-count, var(--compass-card-masonry-height-without-header, 200px)));
     position: relative;
     overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex: stretch;
+    flex-direction: column;
+  }
+  ha-card:has(.header) {
+    min-height: var(--row-size, var(--grid-card-column-count, var(--compass-card-masonry-height-with-header, 250px)));
   }
   .header {
     display: flex;
@@ -33,51 +46,74 @@ const style: CSSResult = css`
     float: right;
   }
   .compass {
-    display: block;
-    width: 100%;
-    height: 100%;
-    margin: 10px auto;
+    z-index: 1;
   }
-  .content {
-    height: 152px;
-    position: relative;
-    width: 100%;
-    font-weight: normal;
-    line-height: 28px;
+  .sensors {
+    z-index: 2;
   }
-  .value-sensors {
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .sensors,
+  .compass {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: calc(100% - (2 * var(--compass-card-compass-padding, 16px)));
+    justify-content: center;
+    padding: var(--compass-card-compass-padding, 16px);
     position: absolute;
-    text-align: center;
-    top: 62px;
-    left: 50%;
-    transform: translateX(-50%);
+    width: calc(100% - (2 * var(--compass-card-compass-padding, 16px)));
   }
-  .indicator-sensors {
-    line-height: 18px;
-    font-weight: 500;
-    font-size: 16px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
-    overflow: hidden;
-    position: absolute;
-    top: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .value-sensors .measurement {
-    font-size: 18px;
-  }
-  .value-sensors .value {
-    font-size: 28px;
+  .header ~ .sensors,
+  .header ~ .compass {
+    padding-top: 0px;
+    top: 58px;
+    height: calc(100% - 74px);
   }
   .compass-svg {
-    width: 100%;
-    height: 100%;
-    padding-bottom: 92%;
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    display: block;
     overflow: visible;
+    transform: scale(var(--compass-card-svg-scale, 1));
+  }
+  .indicator-sensor,
+  .value-sensor {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .indicator-sensor .abbr {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  .indicator-sensor .measurement {
+    padding-left: 0.2rem;
+    font-size: 1rem;
+  }
+  .indicator-sensor .value {
+    padding-left: 0.2rem;
+    font-size: 1rem;
+  }
+  .value-sensor .measurement {
+    font-size: 1rem;
+    padding-left: 0.2rem;
+  }
+  .value-sensor .value {
+    font-size: 2rem;
+  }
+  [class^='sensor-'] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+  }
+  .value-sensor[class^='sensor-']:not(:first-child) {
+    margin-top: -0.8rem;
   }
 `;
 

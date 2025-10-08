@@ -16,7 +16,10 @@ export interface CCIndicatorSensor extends CCSensor {
 }
 
 export interface CCIndicator extends CCProperties {
-  type: string;
+  image: string;
+  size: number;
+  radius: number;
+  scale: number;
 }
 
 export interface CCHeader {
@@ -35,12 +38,14 @@ export interface CCCompass {
   east: CCProperties;
   south: CCProperties;
   west: CCProperties;
+  scale: number;
 }
 
 export interface CCCircle extends CCProperties {
   background_image: string;
   background_opacity: number;
   offset_background: boolean;
+  stroke_width: number;
 }
 
 export interface CCNorth extends CCProperties {
@@ -60,7 +65,7 @@ export interface CCDynamicStyle extends CCEntity {
 
 export interface CCStyleBand extends CCStyle {
   from_value: number;
-  background_image: string;
+  background_image?: string;
 }
 
 export interface CCStyle {

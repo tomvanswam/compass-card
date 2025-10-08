@@ -1,6 +1,6 @@
 import { localize } from './localize/localize';
 
-export const CARD_VERSION = '2.1.0';
+export const CARD_VERSION = '3.0.0';
 export const ICONS = {
   compass: 'mdi:compass',
 };
@@ -26,5 +26,6 @@ export const COMPASS_ABBREVIATIONS = [...Object.keys(COMPASS_POINTS)];
 
 export const UNAVAILABLE = localize('common.invalid');
 
-export const INDICATORS = ['arrow_inward', 'arrow_outward', 'circle'].sort();
-export const DEFAULT_INDICATOR = 1; // Arrow outward
+export const ICON_VALUES = ['arrow_inward', 'arrow_outward', 'circle'] as const;
+export type IconValue = (typeof ICON_VALUES)[number];
+export const DEFAULT_ICON_VALUE: IconValue = ICON_VALUES[1];
