@@ -5,10 +5,7 @@ export interface CCSensor extends CCEntity {
   state_units: CCProperties;
 }
 
-export interface CCValueSensor extends CCSensor {
-  state_min: CCProperties;
-  state_max: CCProperties;
-}
+export type CCValueSensor = CCSensor;
 
 export interface CCIndicatorSensor extends CCSensor {
   indicator: CCIndicator;

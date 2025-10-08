@@ -151,10 +151,6 @@ export function getValueSensors(config: CompassCardConfig, colors: CCColors, ent
 function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor: CCValueSensorConfig, entities: HassEntities): CCValueSensor {
   const sens = valueSensor.sensor || '';
   const attrib = valueSensor.attribute || '';
-  const minColor = valueSensor.state_min?.color || colors.secondaryText;
-  const minShow = getBoolean(valueSensor.state_min?.show, false);
-  const maxColor = valueSensor.state_max?.color || colors.secondaryText;
-  const maxShow = getBoolean(valueSensor.state_max?.show, false);
   const valueColor = valueSensor.state_value?.color || colors.primaryText;
   const valueShow = getBoolean(valueSensor.state_value?.show, true);
   const unitsColor = valueSensor.state_units?.color || colors.secondaryText;
@@ -165,16 +161,6 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
     decimals: valueSensor.decimals || 0,
     units: attrib !== '' ? valueSensor.units || '' : valueSensor.units || entities[sens].attributes?.unit_of_measurement || '',
     is_attribute: attrib !== '',
-    state_min: {
-      color: minColor,
-      dynamic_style: getDynamicStyle(valueSensor.state_min?.dynamic_style, config, entities, minColor, minShow),
-      show: minShow,
-    },
-    state_max: {
-      color: maxColor,
-      dynamic_style: getDynamicStyle(valueSensor.state_max?.dynamic_style, config, entities, maxColor, maxShow),
-      show: maxShow,
-    },
     state_value: {
       color: valueColor,
       dynamic_style: getDynamicStyle(valueSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow),

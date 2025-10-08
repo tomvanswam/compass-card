@@ -101,13 +101,8 @@ export const CCIndicatorSensorConfigStruct = assign(
 );
 export type CCIndicatorSensorConfig = Infer<typeof CCIndicatorSensorConfigStruct>;
 
-export const CCValueSensorConfigStruct = assign(
-  CCSensorConfigStruct,
-  object({
-    state_min: optional(CCPropertiesConfigStruct),
-    state_max: optional(CCPropertiesConfigStruct),
-  }),
-);
+export const CCValueSensorConfigStruct = CCSensorConfigStruct;
+
 export type CCValueSensorConfig = Infer<typeof CCValueSensorConfigStruct>;
 
 export const CCHeaderItemConfigStruct = assign(
