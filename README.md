@@ -10,6 +10,10 @@ A custom [Home Assistant](https://home-assistant.io/) dashboard card that displa
 
 [![Community Forum][forum-shield]][forum-link] [![Buy Me A Coffee][coffee-shield]][coffee-link]
 
+## Example
+
+![compass-card](images/card.png)
+
 ## Installation
 
 ### [HACS](https://hacs.xyz/) (Home Assistant Community Store)
