@@ -144,6 +144,7 @@ export const LovelaceCardBaseStruct = object({
 });
 
 export const CompassCardConfigStruct = assign(
+  type({}),
   LovelaceCardBaseStruct,
   type({
     type: string(),
