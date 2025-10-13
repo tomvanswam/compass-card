@@ -139,10 +139,6 @@ export const CCCompassConfigStruct = object({
 });
 export type CCCompassConfig = Infer<typeof CCCompassConfigStruct>;
 
-export const LovelaceCardBaseStruct = object({
-  view_layout: optional(any()),
-});
-
 export const CompassCardConfigStruct = type({
   type: string(),
   header: optional(CCHeaderConfigStruct),
