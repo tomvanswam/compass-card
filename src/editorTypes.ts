@@ -1,5 +1,5 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
-import { object, any, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type Infer } from 'superstruct';
+import { object, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type Infer } from 'superstruct';
 import { ICON_VALUES } from './const';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
@@ -143,20 +143,17 @@ export const LovelaceCardBaseStruct = object({
   view_layout: optional(any()),
 });
 
-export const CompassCardConfigStruct = assign(
-  type({}),
-  LovelaceCardBaseStruct,
-  type({
-    type: string(),
-    header: optional(CCHeaderConfigStruct),
-    compass: optional(CCCompassConfigStruct),
-    indicator_sensors: size(array(CCIndicatorSensorConfigStruct), 1, 10),
-    value_sensors: optional(array(CCValueSensorConfigStruct)),
-    tap_action: optional(ActionConfigStruct),
-    language: optional(string()),
-    debug: optional(boolean()),
-  }),
-);
+export const CompassCardConfigStruct = type({
+  type: string(),
+  header: optional(CCHeaderConfigStruct),
+  compass: optional(CCCompassConfigStruct),
+  indicator_sensors: size(array(CCIndicatorSensorConfigStruct), 1, 10),
+  value_sensors: optional(array(CCValueSensorConfigStruct)),
+  tap_action: optional(ActionConfigStruct),
+  language: optional(string()),
+  debug: optional(boolean()),
+  test_gui: optional(boolean()),
+});
 
 export type CompassCardExtras = Infer<typeof CompassCardConfigStruct>;
 
