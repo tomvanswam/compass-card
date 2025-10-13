@@ -145,7 +145,7 @@ export const LovelaceCardBaseStruct = object({
 
 export const CompassCardConfigStruct = assign(
   LovelaceCardBaseStruct,
-  object({
+  type({
     type: string(),
     header: optional(CCHeaderConfigStruct),
     compass: optional(CCCompassConfigStruct),
@@ -154,9 +154,6 @@ export const CompassCardConfigStruct = assign(
     tap_action: optional(ActionConfigStruct),
     language: optional(string()),
     debug: optional(boolean()),
-    test_gui: optional(boolean()),
-    grid_options: optional(any()),
-    card_mod: optional(any()),
   }),
 );
 
