@@ -97,7 +97,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
       ${this.getEditorInput('editor.name', 'editor.optional', 'header.title.value', this._name)}
       ${this.getEditorDropDown('editor.primary entity description', 'editor.required', 'indicator_sensors[0].sensor', this._entity, entities)}
       ${this.getEditorDropDown('editor.secondary entity description', 'editor.optional', 'value_sensors[0].sensor', this._secondary_entity, optionalEntities)}
-      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.icon_value', this._compass_indicator, ICON_VALUES)}
+      ${this.getEditorDropDown('editor.indicator', 'editor.optional', 'indicator_sensors[0].indicator.image', this._compass_indicator, ICON_VALUES)}
       ${this.getEditorDropDown('editor.language description', 'editor.optional', 'language', this._compass_language, COMPASS_LANGUAGES)}
       ${this.getEditorInput('editor.offset description', 'editor.optional', 'compass.north.offset', this._direction_offset)}
       ${this.getEditorSwitch('directions.north', 'compass.north.show', this._compass_show_north)}
