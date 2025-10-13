@@ -1,4 +1,5 @@
 import { LitElement, html, CSSResult, TemplateResult, PropertyValues, svg, SVGTemplateResult } from 'lit';
+import * as MDI from '@mdi/js';
 import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities } from 'home-assistant-js-websocket';
@@ -399,36 +400,41 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    const icon_v = indicatorSensor.indicator.image as string;
-    const size = indicatorSensor?.indicator.size ?? 16;
-    const r = indicatorSensor.indicator.radius ?? 0;
+  // svg indicator is using pure SVG to avoid issues in iOS  (no foreignObject ha-icon)
+  private svgIndicatorMdi(indicator: CCIndicatorSensor): SVGTemplateResult {
+    const MDI_MAP: Record<string, string> = MDI;
+    const toPascal = (s: string) =>
+      s
+        .split('-')
+        .map((p) => p[0]?.toUpperCase() + p.slice(1))
+        .join('');
+    const mdiPath = (icon: string): string | null => {
+      if (!icon?.startsWith('mdi:')) return null;
+      const key = 'mdi' + toPascal(icon.slice(4));
+      return MDI_MAP[key] ?? null;
+    };
+    const icon_v = indicator.indicator.image as string;
+    const d = mdiPath(icon_v) ?? MDI.mdiCompass;
+    const size = indicator?.indicator.size ?? 16;
+    const r = indicator.indicator.radius ?? 0;
 
-    // Compass center and place at top
     const cx = 76;
     const cy = 76;
-
-    // Ensure the container is ≥ 24px to avoid clipping at small sizes
     const box = Math.max(size, 24);
-    const x = cx - box / 2;
-    const y = cy - r - box / 2;
+
+    // anchor point on circle
+    const ax = cx;
+    const ay = cy - r;
+
+    // scale MDI's 24x24 viewBox to requested size
+    const s = size / 24;
 
     return svg`
-      <foreignObject x=${x} y=${y} width=${box} height=${box}>
-        <ha-icon
-          .icon=${icon_v}
-          style="
-            --mdc-icon-size:${size}px;  /* visual size you want */
-            --icon-primary-color: ${this.getColor(indicatorSensor.indicator)} !important;
-            width:${box}px; height:${box}px; /* container ≥ 24px prevents clip */
-            display:block; 
-            margin:auto; 
-            padding:0; 
-            pointer-events:none;
-            text-align: center;
-          "
-        ></ha-icon>
-      </foreignObject>
+      <svg x=${ax - box / 2} y=${ay - box / 2} width=${box} height=${box} viewBox="0 0 ${box} ${box}" overflow="visible">
+        <g transform="translate(${box / 2}, ${box / 2}) scale(${s}) translate(-12, -12)">
+          <path d=${d} fill=${this.getColor(indicator.indicator)} />
+        </g>
+      </svg>
     `;
   }
 
