@@ -140,9 +140,7 @@ export const CCCompassConfigStruct = object({
 export type CCCompassConfig = Infer<typeof CCCompassConfigStruct>;
 
 export const LovelaceCardBaseStruct = object({
-  // keep optional or delete entirely if you don't want it validated
-  // type: optional(string()),
-  view_layout: optional(object({ 'grid-area': optional(string()) })),
+  view_layout: optional(any()),
 });
 
 export const CompassCardConfigStruct = assign(
