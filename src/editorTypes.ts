@@ -20,7 +20,7 @@ export const numberBetween = (min: number, max: number) =>
 export const percentage = () => refine(number(), 'percentage', (value) => (value >= 0 && value <= 100 ? true : `Expected a percentage between 0 and 100, got ${value}`));
 
 export const ActionConfigStruct = object({
-  action: string(),
+  action: optional(string()),
   entity: optional(string()),
   service: optional(string()),
   service_data: optional(string()),
