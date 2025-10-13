@@ -2,8 +2,8 @@
   "common": {
     "version": "Version",
     "description": "Show a compass with an indicator in the direction of the entity's value",
-    "invalid_configuration": "Invalid configuration",
-    "missing_direction_entity": "Missing direction entity",
+    "invalid_configuration": "Compass Card: Invalid configuration. More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration",
+    "missing_direction_entity": "Compass Card: Missing direction entity. More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration#indicator-object",
     "no_entity": "Entity not configured",
     "offset_not_a_number": "Direction offset is not a number",
     "invalid": "invalid",
