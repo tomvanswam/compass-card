@@ -1,5 +1,5 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
-import { object, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type Infer } from 'superstruct';
+import { object, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type, Infer } from 'superstruct';
 import { ICON_VALUES } from './const';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
