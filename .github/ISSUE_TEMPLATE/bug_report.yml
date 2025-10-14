@@ -1,0 +1,54 @@
+name: Bug report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Note that clairvoyancy does not exist ... no details to replicate = no response
+  - type: checkboxes
+    id: checked-docu
+    attributes:
+      label: Own Analysis
+      description: I have read the [Documentation](https://github.com/tomvanswam/compass-card/wiki) which did not provide help. I have tried to review and/or install a newer (beta) release. 
+      options:
+        - label: I cannot find my issue in the documentation
+          required: true
+        - label: I have examined the release notes of the version installed for possible breaking changes
+          required: true
+        - label: I updated to the latest version available
+          required: true
+        - label: I cleared the cache of my browser
+          required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: A clear and concise description of what the issue is.
+      description: |
+        - has it worked before
+        - what it does not do vs. expectation
+      render: shell
+    validations:
+      required: true  
+  - type: textarea
+    id: yaml
+    attributes:
+      label: Add below a minimal (!) version of the yaml for reproduction
+      description: |
+        - minimal as-in: use common sensors as e.g. sun.sun
+      render: shell
+    validations:
+      required: true  
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Relevant screenshots
+      description: Paste or drag-drop screenshots here. You can add multiple images.
+      placeholder: |
+        If applicable, add screenshots to help explain your problem.
+
+
+
