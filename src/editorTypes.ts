@@ -1,6 +1,7 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
 import { object, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type, Infer } from 'superstruct';
 import { ICON_VALUES } from './const';
+import { COMPASS_LANGUAGES } from './localize/localize';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
 export interface CompassCardConfigV1 extends LovelaceCardConfig {
@@ -146,7 +147,7 @@ export const CompassCardConfigStruct = type({
   indicator_sensors: size(array(CCIndicatorSensorConfigStruct), 1, 10),
   value_sensors: optional(array(CCValueSensorConfigStruct)),
   tap_action: optional(ActionConfigStruct),
-  language: optional(string()),
+  language: optional(enums([...COMPASS_LANGUAGES])),
   debug: optional(boolean()),
   test_gui: optional(boolean()),
 });
