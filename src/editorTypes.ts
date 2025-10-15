@@ -65,7 +65,7 @@ export const CCIndicatorConfigStruct = assign(
   object({
     image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
     size: optional(number()),
-    radius: optional(numberBetween(0, 90)),
+    radius: optional(number()),
   }),
 );
 export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
