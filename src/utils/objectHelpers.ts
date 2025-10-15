@@ -100,7 +100,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
   const size = indicatorSensor.indicator?.size || 19;
-  const radius = indicatorSensor.indicator?.radius || 70;
+  const radius = indicatorSensor.indicator?.radius ?? 70;
   const scale = 70 / Math.max(radius, 70);
   const sensor: CCIndicatorSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,

@@ -13,3 +13,4 @@ frontend:
   themes: !include_dir_merge_named themes
   extra_module_url:
     - http://localhost:4000/compass-card.js
+    - /local/card-mod.js

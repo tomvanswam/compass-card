@@ -1,6 +1,7 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
-import { object, any, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type Infer } from 'superstruct';
+import { object, optional, assign, array, refine, boolean, string, enums, size, number, union, pattern, type, Infer } from 'superstruct';
 import { ICON_VALUES } from './const';
+import { COMPASS_LANGUAGES } from './localize/localize';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
 export interface CompassCardConfigV1 extends LovelaceCardConfig {
@@ -20,7 +21,7 @@ export const numberBetween = (min: number, max: number) =>
 export const percentage = () => refine(number(), 'percentage', (value) => (value >= 0 && value <= 100 ? true : `Expected a percentage between 0 and 100, got ${value}`));
 
 export const ActionConfigStruct = object({
-  action: string(),
+  action: optional(enums(['more-info', 'navigate', 'call-service', 'url'])),
   entity: optional(string()),
   service: optional(string()),
   service_data: optional(string()),
@@ -64,7 +65,7 @@ export const CCIndicatorConfigStruct = assign(
   object({
     image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
     size: optional(number()),
-    radius: optional(numberBetween(0, 90)),
+    radius: optional(number()),
   }),
 );
 export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
@@ -139,28 +140,17 @@ export const CCCompassConfigStruct = object({
 });
 export type CCCompassConfig = Infer<typeof CCCompassConfigStruct>;
 
-export const LovelaceCardBaseStruct = object({
-  // keep optional or delete entirely if you don't want it validated
-  // type: optional(string()),
-  view_layout: optional(object({ 'grid-area': optional(string()) })),
+export const CompassCardConfigStruct = type({
+  type: string(),
+  header: optional(CCHeaderConfigStruct),
+  compass: optional(CCCompassConfigStruct),
+  indicator_sensors: size(array(CCIndicatorSensorConfigStruct), 1, 10),
+  value_sensors: optional(array(CCValueSensorConfigStruct)),
+  tap_action: optional(ActionConfigStruct),
+  language: optional(enums([...COMPASS_LANGUAGES])),
+  debug: optional(boolean()),
+  test_gui: optional(boolean()),
 });
-
-export const CompassCardConfigStruct = assign(
-  LovelaceCardBaseStruct,
-  object({
-    type: string(),
-    header: optional(CCHeaderConfigStruct),
-    compass: optional(CCCompassConfigStruct),
-    indicator_sensors: size(array(CCIndicatorSensorConfigStruct), 1, 10),
-    value_sensors: optional(array(CCValueSensorConfigStruct)),
-    tap_action: optional(ActionConfigStruct),
-    language: optional(string()),
-    debug: optional(boolean()),
-    test_gui: optional(boolean()),
-    grid_options: optional(any()),
-    card_mod: optional(any()),
-  }),
-);
 
 export type CompassCardExtras = Infer<typeof CompassCardConfigStruct>;
 
