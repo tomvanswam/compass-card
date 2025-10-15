@@ -16,6 +16,7 @@ import * as pt from './languages/pt.json';
 import * as sv from './languages/sv.json';
 import * as sk from './languages/sk.json';
 import * as sl from './languages/sl.json';
+import * as tw from './languages/tw.json';
 import * as ru from './languages/ru.json';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,8 +37,9 @@ export const languages: any = {
   pl: pl,
   pt: pt,
   sv: sv,
-  sk: sk,  
+  sk: sk,
   sl: sl,
+  tw: tw,
   ru: ru,
 };
 export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
