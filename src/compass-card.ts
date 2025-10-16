@@ -309,27 +309,59 @@ export class CompassCard extends LitElement {
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
     return svg`
-    <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg" style="--compass-card-svg-scale:${this.svgScale}%">
-      <defs>
-        <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
-          <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
-        </pattern>
-      </defs>
-      ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
-        <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
-          ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
-          ${this.compass.east.show ? this.svgIndicatorEast() : ''}
-          ${this.compass.south.show ? this.svgIndicatorSouth() : ''}
-          ${this.compass.west.show ? this.svgIndicatorWest() : ''}
-          ${this.svgIndicators()}
-        </g>
-    </svg>
-    `;
+      <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg" style="--compass-card-svg-scale:${this.svgScale}%">
+        
+        ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
+          <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
+            ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
+            ${this.compass.east.show ? this.svgIndicatorEast() : ''}
+            ${this.compass.south.show ? this.svgIndicatorSouth() : ''}
+            ${this.compass.west.show ? this.svgIndicatorWest() : ''}
+            ${this.svgIndicators()}
+          </g>
+      </svg>
+      `;
   }
 
-  private svgCircle(directionOffset: number): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${this.circleFill()}" fill-opacity="
-      ${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
+  private svgCircle(rotation: number): SVGTemplateResult {
+    const imageUrl = this.getBackgroundImage(this.compass.circle);
+    // after 'analusis': The cleanest fix for SVG is to use the image as a standard <image> element
+    // if you want it *inside* the SVG and can't easily use CSS background-image.
+    // The following uses the <circle> as a mask/clip path and places the image behind it.
+    return svg`
+      <g transform="rotate(${rotation},76,76)">
+        <circle 
+            r="75" 
+            cx="76" 
+            cy="76" 
+            class="circle"
+            fill="none" 
+            stroke="${this.compass.circle.color}" 
+            stroke-width="${this.compass.circle.stroke_width}"
+            /* Add a clip-path to ensure the image only fills the circle area */
+            clip-path="url(#circle-clip)"
+        />
+        
+        ${
+          imageUrl
+            ? svg`
+          <image 
+            x="1" 
+            y="1" 
+            height="150" 
+            width="150" 
+            href="${imageUrl}" 
+            clip-path="url(#circle-clip)"
+            preserveAspectRatio="xMidYMid slice" 
+          />
+          <clipPath id="circle-clip">
+            <circle r="75" cx="76" cy="76" />
+          </clipPath>
+      `
+            : ''
+        }
+      </g>
+    `;
   }
 
   private circleFill(): string {
