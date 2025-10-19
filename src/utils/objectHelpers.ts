@@ -261,6 +261,19 @@ export function isNumeric(str: string): boolean {
   return !isNaN(Number(str)) && !isNaN(parseFloat(str));
 }
 
+export function resolveAttrPath(obj: any, path: string): any {
+  if (obj == null || typeof path !== 'string') return undefined;
+  const tokens: string[] = [];
+  const re = /([^.[\]]+)|\[(\d+)\]|\[(["'])(.*?)\3\]/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(path))) {
+    if (m[1] !== undefined) tokens.push(m[1]);       // dot token
+    else if (m[2] !== undefined) tokens.push(m[2]);  // [123]
+    else tokens.push(m[4]);                           // ["key"] or ['key']
+  }
+  return tokens.reduce<any>((acc, k) => (acc == null ? undefined : acc[k]), obj);
+}
+
 export function findValues(obj: CompassCardConfig, entities: HassEntities, debug: boolean, root = ''): string[] {
   const active = [obj];
   let found: string[] = [];
@@ -284,24 +297,22 @@ export function findValues(obj: CompassCardConfig, entities: HassEntities, debug
           break;
 
         case 'attribute':
-          const sensor = active[currentElement]['sensor'];
-          const entity = entities[sensor];
-          if (entity && entity.attributes && entity.attributes[currentValue]) {
-            found.push(sensor);
+          const sensor = active[currentElement]?.sensor;
+          const entity = entities?.[sensor];
+          const path = String(currentValue).trim();
+          const attrs = entity?.attributes;
+          const val = attrs ? resolveAttrPath(attrs, path) : undefined;
+
+          debug && console.warn('Attr check', { sensor, path, val, type: typeof val, keys: attrs && Object.keys(attrs) });
+
+          if (val !== undefined && val !== null) {
+            found.push(sensor); // accepts 0, false, and ""
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            debug &&
-              console.warn(
-                'Compass-Card configuration: attribute ' +
-                  name +
-                  ' (' +
-                  currentValue +
-                  ') is invalid for entity ' +
-                  name.slice(0, name.lastIndexOf('.')) +
-                  '.sensor (' +
-                  sensor +
-                  ')',
-              );
+            debug && console.warn(
+              'Compass-Card configuration: attribute ' + name +
+              ' (' + currentValue + ') is invalid for entity ' +
+              name.slice(0, name.lastIndexOf('.')) + '.sensor (' + sensor + ')'
+            );
           }
           break;
 
