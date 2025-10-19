@@ -13,7 +13,7 @@ import style from './style';
 import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_ICON_VALUE, ICON_VALUES, UNAVAILABLE } from './const';
 
 import { localize } from './localize/localize';
-import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
+import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric, resolveAttrPath } from './utils/objectHelpers';
 
 declare global {
   interface Window {
@@ -509,11 +509,11 @@ export class CompassCard extends LitElement {
 
   private getValue(entity: CCEntity): CCValue {
     if (entity.is_attribute) {
-      const entityStr = entity.sensor.slice(0, entity.sensor.lastIndexOf('.'));
+      const entityStr = entity.sensor.split('.').slice(0, 2).join('.');
       const entityObj = this.entities[entityStr];
       if (entityObj && entityObj.attributes) {
-        const attribStr = entity.sensor.slice(entity.sensor.lastIndexOf('.') + 1);
-        const value = entityObj.attributes[attribStr] || UNAVAILABLE;
+        const attribStr = entity.sensor.split('.').slice(2).join('.');
+        const value = resolveAttrPath(entityObj.attributes, attribStr) || UNAVAILABLE;
         return { value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value, units: entity.units };
       }
       return { value: UNAVAILABLE, units: entity.units };
