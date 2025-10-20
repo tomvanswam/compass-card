@@ -308,13 +308,29 @@ export class CompassCard extends LitElement {
    */
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
+    const bg = this.getBackgroundImage(this.compass.circle);
+    const imageRotate = this.compass.circle.offset_background ? directionOffset : 0;
+    const cx = 76;
+    const cy = 76;
+    const r = 62;
+    const imgSize = r * 2;
+    const imgX = cx - r;
+    const imgY = cy - r;
+
     return svg`
     <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg" style="--compass-card-svg-scale:${this.svgScale}%">
       <defs>
-        <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
-          <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
-        </pattern>
+        <!-- clip the image to the circle so the GIF can animate -->
+        <clipPath id="imageClip">
+          <circle cx="${cx}" cy="${cy}" r="${r}" />
+        </clipPath>
       </defs>
+
+      ${
+        bg
+          ? svg`<image href="${bg}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid slice" clip-path="url(#imageClip)" transform="rotate(${imageRotate}, ${cx}, ${cy})" />`
+          : ''
+      }
       ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
         <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
@@ -325,11 +341,6 @@ export class CompassCard extends LitElement {
         </g>
     </svg>
     `;
-  }
-
-  private svgCircle(directionOffset: number): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${this.circleFill()}" fill-opacity="
-      ${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
   }
 
   private circleFill(): string {
