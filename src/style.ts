@@ -17,7 +17,7 @@ const style: CSSResult = css`
     padding: 16px;
   }
   ha-card {
-    min-height: var(--row-size, var(--grid-card-column-count, var(--compass-card-masonry-height-without-header, 200px)));
+    min-height: var(--grid-column-count, var(--compass-card-masonry-height-without-header, 200px));
     position: relative;
     overflow: hidden;
     height: 100%;
@@ -26,7 +26,7 @@ const style: CSSResult = css`
     flex-direction: column;
   }
   ha-card:has(.header) {
-    min-height: var(--row-size, var(--grid-card-column-count, var(--compass-card-masonry-height-with-header, 250px)));
+    min-height: var(--grid-column-count, var(--compass-card-masonry-height-with-header, 250px));
   }
   .header {
     display: flex;
