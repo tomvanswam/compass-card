@@ -343,8 +343,11 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private circleFill(): string {
-    return this.getBackgroundImage(this.compass.circle) === '' ? 'white' : 'url(#image)';
+  private svgCircle(directionOffset: number): SVGTemplateResult {
+    // if we used a background image we want the image visible, so don't fill the circle
+    // otherwise fall back to a solid fill (keeps previous behavior)
+    const fill = this.getBackgroundImage(this.compass.circle) === '' ? 'white' : 'none';
+    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${fill}" fill-opacity="${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
   }
 
   private svgIndicators(): SVGTemplateResult[] {
