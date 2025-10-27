@@ -13,7 +13,7 @@ import style from './style';
 import { CARD_VERSION, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_ICON_VALUE, ICON_VALUES, UNAVAILABLE } from './const';
 
 import { localize } from './localize/localize';
-import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric } from './utils/objectHelpers';
+import { getHeader, getCompass, getIndicatorSensors, getValueSensors, getBoolean, findValues, isNumeric, resolveAttrPath } from './utils/objectHelpers';
 
 declare global {
   interface Window {
@@ -308,13 +308,29 @@ export class CompassCard extends LitElement {
    */
 
   private svgCompass(directionOffset: number): SVGTemplateResult {
+    const bg = this.getBackgroundImage(this.compass.circle);
+    const imageRotate = this.compass.circle.offset_background ? directionOffset : 0;
+    const cx = 76;
+    const cy = 76;
+    const r = 62;
+    const imgSize = r * 2;
+    const imgX = cx - r;
+    const imgY = cy - r;
+
     return svg`
     <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg" style="--compass-card-svg-scale:${this.svgScale}%">
       <defs>
-        <pattern id="image" x="0" y="0" patternContentUnits="objectBoundingBox" height="100%" width="100%">
-          <image x="0" y="0" height="1" width="1" href="${this.getBackgroundImage(this.compass.circle)}" preserveAspectRatio="xMidYMid meet"></image>
-        </pattern>
+        <!-- clip the image to the circle so the GIF can animate -->
+        <clipPath id="imageClip">
+          <circle cx="${cx}" cy="${cy}" r="${r}" />
+        </clipPath>
       </defs>
+
+      ${
+        bg
+          ? svg`<image href="${bg}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid slice" clip-path="url(#imageClip)" transform="rotate(${imageRotate}, ${cx}, ${cy})" />`
+          : ''
+      }
       ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
         <g class="indicators" transform="rotate(${directionOffset},76,76)" stroke-width=".5">
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
@@ -328,12 +344,10 @@ export class CompassCard extends LitElement {
   }
 
   private svgCircle(directionOffset: number): SVGTemplateResult {
-    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${this.circleFill()}" fill-opacity="
-      ${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
-  }
-
-  private circleFill(): string {
-    return this.getBackgroundImage(this.compass.circle) === '' ? 'white' : 'url(#image)';
+    // if we used a background image we want the image visible, so don't fill the circle
+    // otherwise fall back to a solid fill (keeps previous behavior)
+    const fill = this.getBackgroundImage(this.compass.circle) === '' ? 'white' : 'none';
+    return svg`<circle class="circle" cx="76" cy="76" r="62" stroke="${this.getColor(this.compass.circle)}" stroke-width="${this.compass.circle.stroke_width}" fill="${fill}" fill-opacity="${this.compass.circle.background_opacity}" stroke-opacity="1.0" transform="rotate(${directionOffset},76,76)" />`;
   }
 
   private svgIndicators(): SVGTemplateResult[] {
@@ -509,11 +523,11 @@ export class CompassCard extends LitElement {
 
   private getValue(entity: CCEntity): CCValue {
     if (entity.is_attribute) {
-      const entityStr = entity.sensor.slice(0, entity.sensor.lastIndexOf('.'));
+      const entityStr = entity.sensor.split('.').slice(0, 2).join('.');
       const entityObj = this.entities[entityStr];
       if (entityObj && entityObj.attributes) {
-        const attribStr = entity.sensor.slice(entity.sensor.lastIndexOf('.') + 1);
-        const value = entityObj.attributes[attribStr] || UNAVAILABLE;
+        const attribStr = entity.sensor.split('.').slice(2).join('.');
+        const value = resolveAttrPath(entityObj.attributes, attribStr) || UNAVAILABLE;
         return { value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value, units: entity.units };
       }
       return { value: UNAVAILABLE, units: entity.units };

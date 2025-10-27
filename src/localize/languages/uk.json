@@ -1,0 +1,53 @@
+{
+  "common": {
+    "version": "Версія",
+    "description": "Показує компас з індикатором напрямку значення об'єкта",
+    "invalid_configuration": "Неправильна конфігурація",
+    "no_entity": "Об'єкт не налаштовано",
+    "offset_not_a_number": "Зміщення напрямку не є числом",
+    "invalid": "помилка",
+    "on": "Увімк.",
+    "off": "Вимк."
+  },
+  "editor": {
+    "name": "Ім'я",
+    "optional": "Не обов'язково",
+    "entity": "Об'єкт",
+    "required": "Обов'язково",
+    "primary": "Напрямок",
+    "secondary": "Додатково",
+    "indicator": "Індикатор",
+    "direction": "Напрямок",
+    "offset": "Зміщення",
+    "show": "Показати",
+    "abbreviations": "Скорочення",
+    "toggle": "Увімкнути",
+    "language": "Мова",
+    "primary entity description": "Об'єкт напрямку",
+    "secondary entity description": "Додатковий об'єкт",
+    "language description": "Мова скорочень напрямку",
+    "offset description": "Зміщення напрямку"
+  },
+  "directions": {
+    "north": "Північ",
+    "east": "Схід",
+    "south": "Південь",
+    "west": "Захід",
+    "N": "Пн",
+    "NNE": "ПнПнСх",
+    "NE": "ПнСх",
+    "ENE": "СхПнСх",
+    "E": "Сх",
+    "ESE": "СхПдСх",
+    "SE": "ПдСх",
+    "SSE": "ПдПдСх",
+    "S": "Пд",
+    "SSW": "ПдПдЗх",
+    "SW": "ПдЗх",
+    "WSW": "ЗхПдЗх",
+    "W": "Зх",
+    "WNW": "ЗхПнЗх",
+    "NW": "ПнЗх",
+    "NNW": "ПнПнЗх"
+  }
+}
