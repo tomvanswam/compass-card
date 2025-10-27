@@ -2,10 +2,14 @@ import { CSSResult, css } from 'lit';
 
 const style: CSSResult = css`
   :host {
-    --compass-card-masonry-height-without-header: 200px;
-    --compass-card-masonry-height-with-header: calc(var(--compass-card-masonry-height-without-header, 200) + 50px);
     --compass-card-compass-padding: 16px;
     --compass-card-svg-scale: 100%;
+    --compass-card-masonry-row-height: 50px;
+    --compass-card-masonry-rows: 3;
+    --compass-card-masonry-header-rows: 1;
+    --compass-card-section-min-height: calc(var(--row-size) * var(--row-height));
+    --compass-card-masonry-min-height: calc(var(--compass-card-masonry-rows) * var(--compass-card-masonry-row-height));
+    --compass-card-masonry-min-height-header: calc((var(--compass-card-masonry-rows) + var(--compass-card-masonry-header-rows)) * var(--compass-card-masonry-row-height));
   }
 
   :host ::slotted(.card-content:not(:first-child)),
@@ -17,7 +21,7 @@ const style: CSSResult = css`
     padding: 16px;
   }
   ha-card {
-    min-height: var(--grid-column-count, var(--compass-card-masonry-height-without-header, 200px));
+    min-height: var(--compass-card-section-min-height, var(--compass-card-masonry-min-height, 150px));
     position: relative;
     overflow: hidden;
     height: 100%;
@@ -26,7 +30,7 @@ const style: CSSResult = css`
     flex-direction: column;
   }
   ha-card:has(.header) {
-    min-height: var(--grid-column-count, var(--compass-card-masonry-height-with-header, 250px));
+    min-height: var(--compass-card-section-min-height, var(--compass-card-masonry-min-height-header, 200px));
   }
   .header {
     display: flex;
