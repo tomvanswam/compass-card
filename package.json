@@ -63,7 +63,8 @@
   "scripts": {
     "start": "rollup -c --watch",
     "build": "npm run lint && npm run rollup",
-    "lint": "eslint src/*.ts",
+    "lint": "eslint \"src/**/*.{js,ts,tsx,jsx}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{js,ts,tsx,jsx}\"",
     "rollup": "rollup -c",
     "start:hass-stable": "podman run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:stable",
     "start:hass": "podman run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:beta",

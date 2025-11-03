@@ -339,10 +339,10 @@ export class CompassCard extends LitElement {
       </defs>
 
       ${
-        bg
-          ? svg`<image href="${bg}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid slice" clip-path="url(#imageClip)" transform="rotate(${imageRotate}, ${CIRCLE.CENTER}, ${CIRCLE.CENTER})" class="compass-background" />`
-          : ''
-      }
+  bg
+    ? svg`<image href="${bg}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid slice" clip-path="url(#imageClip)" transform="rotate(${imageRotate}, ${CIRCLE.CENTER}, ${CIRCLE.CENTER})" class="compass-background" />`
+    : ''
+}
       ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}
         <g class="indicators" transform="rotate(${directionOffset},${CIRCLE.CENTER},${CIRCLE.CENTER})" stroke-width=".5">
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
@@ -371,18 +371,18 @@ export class CompassCard extends LitElement {
 
   private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     switch (indicatorSensor.indicator.image) {
-      case 'arrow_outward':
-        return this.svgIndicatorArrowOutward();
-      case 'arrow_inward':
-        return this.svgIndicatorArrowInward();
-      case 'circle':
-        return this.svgIndicatorCircle();
-      default:
-        if (indicatorSensor.indicator.image.startsWith('mdi:')) {
-          return this.svgIndicatorMdi(indicatorSensor);
-        }
-        // else its an external image
-        return this.svgIndicatorImg(indicatorSensor);
+    case 'arrow_outward':
+      return this.svgIndicatorArrowOutward();
+    case 'arrow_inward':
+      return this.svgIndicatorArrowInward();
+    case 'circle':
+      return this.svgIndicatorCircle();
+    default:
+      if (indicatorSensor.indicator.image.startsWith('mdi:')) {
+        return this.svgIndicatorMdi(indicatorSensor);
+      }
+      // else its an external image
+      return this.svgIndicatorImg(indicatorSensor);
     }
   }
 
