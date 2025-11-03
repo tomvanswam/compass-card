@@ -10,6 +10,7 @@ const style: CSSResult = css`
     --compass-card-section-min-height: calc(var(--row-size) * var(--row-height));
     --compass-card-masonry-min-height: calc(var(--compass-card-masonry-rows) * var(--compass-card-masonry-row-height));
     --compass-card-masonry-min-height-header: calc((var(--compass-card-masonry-rows) + var(--compass-card-masonry-header-rows)) * var(--compass-card-masonry-row-height));
+    --compass-card-svg-image-opacity: 0;
   }
 
   :host ::slotted(.card-content:not(:first-child)),
@@ -80,6 +81,12 @@ const style: CSSResult = css`
     display: block;
     overflow: visible;
     transform: scale(var(--compass-card-svg-scale, 1));
+  }
+  .compass-svg image {
+    opacity: var(--compass-card-svg-image-opacity);
+  }
+  .compass-svg .circle {
+    fill: none;
   }
   .indicator-sensor,
   .value-sensor {
