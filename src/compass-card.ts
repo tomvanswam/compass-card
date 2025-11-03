@@ -198,8 +198,12 @@ export class CompassCard extends LitElement {
   private renderHeader(): TemplateResult {
     return html`
       <div class="header">
-        <div class="name" style="color:${this.getColor(this.header.title)};">${this.getVisibility(this.header.title) ? this.renderTitle() : html`<span>&nbsp;</span>`}</div>
-        <div class="icon" style="color:${this.getColor(this.header.icon)};">${this.getVisibility(this.header.icon) ? this.renderIcon() : html`<span>&nbsp;</span>`}</div>
+        <div class="name" style="--compass-card-header-title-color: ${this.getColor(this.header.title)};">
+          ${this.getVisibility(this.header.title) ? this.renderTitle() : html`<span>&nbsp;</span>`}
+        </div>
+        <div class="icon" style="--compass-card-header-icon-color: ${this.getColor(this.header.icon)};">
+          ${this.getVisibility(this.header.icon) ? this.renderIcon() : html`<span>&nbsp;</span>`}
+        </div>
       </div>
     `;
   }
@@ -236,15 +240,21 @@ export class CompassCard extends LitElement {
   }
 
   private getIndicatorAbbreviation(indicator: CCIndicatorSensor): TemplateResult {
-    return html` <span class="abbr" style="color: ${this.getColor(indicator.state_abbreviation)};">${this.computeIndicator(indicator).abbreviation}</span> `;
+    return html`
+      <span class="abbr" style="--compass-card-indicator-abbr-color: ${this.getColor(indicator.state_abbreviation)};">${this.computeIndicator(indicator).abbreviation}</span>
+    `;
   }
 
   private getIndicatorValue(indicator: CCIndicatorSensor): TemplateResult {
-    return html` <span class="value" style="color: ${this.getColor(indicator.state_value)};">${this.computeIndicator(indicator).degrees.toFixed(indicator.decimals)}</span> `;
+    return html`
+      <span class="value" style="--compass-card-indicator-value-color: ${this.getColor(indicator.state_value)};"
+        >${this.computeIndicator(indicator).degrees.toFixed(indicator.decimals)}</span
+      >
+    `;
   }
 
   private getIndicatorUnits(indicator: CCIndicatorSensor): TemplateResult {
-    return html` <span class="measurement" style="color: ${this.getColor(indicator.state_units)};">${indicator.units}</span> `;
+    return html` <span class="measurement" style="--compass-card-indicator-units-color: ${this.getColor(indicator.state_units)};">${indicator.units}</span> `;
   }
 
   /**
@@ -258,8 +268,12 @@ export class CompassCard extends LitElement {
       if (this.getVisibility(value.state_value)) {
         divs.push(
           html`<div class="sensor-${index} value-sensor">
-            <span class="value" style="color: ${this.getColor(value.state_value)};">${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span>
-            <span class="measurement" style="color: ${this.getColor(value.state_units)};">${this.getVisibility(value.state_units) ? value.units : ''}</span>
+            <span class="value" style="--compass-card-value-value-color: ${this.getColor(value.state_value)};"
+              >${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span
+            >
+            <span class="measurement" style="--compass-card-value-units-color: ${this.getColor(value.state_units)};"
+              >${this.getVisibility(value.state_units) ? value.units : ''}</span
+            >
           </div>`,
         );
         index++;
