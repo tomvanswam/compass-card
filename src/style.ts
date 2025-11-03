@@ -81,12 +81,44 @@ const style: CSSResult = css`
     display: block;
     overflow: visible;
     transform: scale(var(--compass-card-svg-scale, 1));
+    transform-box: fill-box;
+    transform-origin: 76px 76px;
   }
   .compass-svg .compass-background {
     opacity: var(--compass-card-svg-image-opacity);
   }
+
+  /* circle presentational styling via variables */
   .compass-svg .circle {
     fill: none;
+    stroke: var(--compass-circle-stroke, var(--primary-text-color));
+    stroke-width: var(--compass-circle-stroke-width, 2px);
+    stroke-opacity: 1;
+  }
+
+  /* indicator shapes use --compass-card-indicator-color (set inline on the group) */
+  .compass-svg [class^='indicator-'] *,
+  .compass-svg .arrow-outward path,
+  .compass-svg .arrow-inward path,
+  .compass-svg .circle-indicator path {
+    /* elements that use var(--compass-card-indicator-color) will inherit it */
+  }
+
+  /* direction labels: centralized font & sizing, color via --compass-card-dir-text-color */
+  .compass-svg .dir-text {
+    font-family: sans-serif;
+    font-size: 13.333px;
+    fill: var(--compass-card-dir-text-color, var(--primary-text-color));
+  }
+
+  /* anchors for compass points */
+  .compass-svg .north-text,
+  .compass-svg .south-text {
+    text-anchor: middle;
+  }
+  .compass-svg .east-text,
+  .compass-svg .west-text {
+    text-anchor: start;
   }
   .indicator-sensor,
   .value-sensor {
