@@ -325,7 +325,7 @@ export class CompassCard extends LitElement {
 
       ${
         bg
-          ? svg`<image href="${bg}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid slice" clip-path="url(#imageClip)" transform="rotate(${imageRotate}, ${CIRCLE.CENTER}, ${CIRCLE.CENTER})" />`
+          ? svg`<image href="${bg}" x="${imgX}" y="${imgY}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid slice" clip-path="url(#imageClip)" transform="rotate(${imageRotate}, ${CIRCLE.CENTER}, ${CIRCLE.CENTER})" class="compass-background" />`
           : ''
       }
       ${this.getVisibility(this.compass.circle) ? this.svgCircle(this.compass.circle.offset_background ? directionOffset : 0) : ''}

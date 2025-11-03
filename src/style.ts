@@ -82,7 +82,7 @@ const style: CSSResult = css`
     overflow: visible;
     transform: scale(var(--compass-card-svg-scale, 1));
   }
-  .compass-svg image {
+  .compass-svg .compass-background {
     opacity: var(--compass-card-svg-image-opacity);
   }
   .compass-svg .circle {
