@@ -45,10 +45,12 @@ const style: CSSResult = css`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    color: var(--compass-card-header-title-color, var(--primary-text-color));
   }
   .icon {
     margin-top: 8px;
     float: right;
+    color: var(--compass-card-header-icon-color, var(--primary-text-color));
   }
   .compass {
     z-index: 1;
@@ -133,21 +135,26 @@ const style: CSSResult = css`
   .indicator-sensor .abbr {
     font-size: 2rem;
     font-weight: 600;
+    color: var(--compass-card-indicator-abbr-color, var(--primary-text-color));
   }
   .indicator-sensor .measurement {
     padding-left: 0.2rem;
     font-size: 1rem;
+    color: var(--compass-card-indicator-units-color, var(--secondary-text-color));
   }
   .indicator-sensor .value {
     padding-left: 0.2rem;
     font-size: 1rem;
+    color: var(--compass-card-indicator-value-color, var(--primary-text-color));
   }
   .value-sensor .measurement {
     font-size: 1rem;
     padding-left: 0.2rem;
+    color: var(--compass-card-value-units-color, var(--secondary-text-color));
   }
   .value-sensor .value {
     font-size: 2rem;
+    color: var(--compass-card-value-value-color, var(--primary-text-color));
   }
   [class^='sensor-'] {
     display: flex;
