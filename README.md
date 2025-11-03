@@ -54,8 +54,8 @@ And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](
 
 - [@rsnodgrass](https://github.com/rsnodgrass) for the idea to make this
 - [@iantrich](https://www.github.com/iantrich) for the [boiler-plate card](https://github.com/custom-cards/boilerplate-card), which got me started
-- [@vingerha]https://github.com/vingerha for creating the dynamic background image, mdi icon support and much more
-- [All the translators](#language)
+- [@vingerha](https://github.com/vingerha) for creating the dynamic background image, mdi icon support and much more
+- [All the translators](https://github.com/tomvanswam/compass-card/wiki/1.-YAML-configuration#language)
 
 ## Support
 
