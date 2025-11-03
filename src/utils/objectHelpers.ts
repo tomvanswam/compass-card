@@ -260,7 +260,7 @@ export function isNumeric(str: string): boolean {
   if (typeof str !== 'string' && typeof str !== 'number') return false;
   return !isNaN(Number(str)) && !isNaN(parseFloat(str));
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function resolveAttrPath(obj: any, path: string): any {
   if (obj == null || typeof path !== 'string') return undefined;
   const tokens: string[] = [];
@@ -271,6 +271,7 @@ export function resolveAttrPath(obj: any, path: string): any {
     else if (m[2] !== undefined) tokens.push(m[2]);  // [123]
     else tokens.push(m[4]);                           // ["key"] or ['key']
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return tokens.reduce<any>((acc, k) => (acc == null ? undefined : acc[k]), obj);
 }
 
@@ -287,40 +288,42 @@ export function findValues(obj: CompassCardConfig, entities: HassEntities, debug
         name = root !== '' ? root + '.' + currentKeys[index] : currentKeys[index];
       }
       switch (currentKey) {
-        case 'sensor':
-          if (entities[currentValue]) {
-            found.push(currentValue);
-          } else {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            debug && console.warn('Compass-Card configuration: ' + name + ' (' + currentValue + ') is invalid');
-          }
-          break;
+      case 'sensor':
+        if (entities[currentValue]) {
+          found.push(currentValue);
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          debug && console.warn('Compass-Card configuration: ' + name + ' (' + currentValue + ') is invalid');
+        }
+        break;
 
-        case 'attribute':
-          const sensor = active[currentElement]?.sensor;
-          const entity = entities?.[sensor];
-          const path = String(currentValue).trim();
-          const attrs = entity?.attributes;
-          const val = attrs ? resolveAttrPath(attrs, path) : undefined;
+      case 'attribute': {
+        const sensor = active[currentElement]?.sensor;
+        const entity = entities?.[sensor];
+        const path = String(currentValue).trim();
+        const attrs = entity?.attributes;
+        const val = attrs ? resolveAttrPath(attrs, path) : undefined;
 
-          debug && console.warn('Attr check', { sensor, path, val, type: typeof val, keys: attrs && Object.keys(attrs) });
+        //eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        debug && console.warn('Attr check', { sensor, path, val, type: typeof val, keys: attrs && Object.keys(attrs) });
 
-          if (val !== undefined && val !== null) {
-            found.push(sensor); // accepts 0, false, and ""
-          } else {
-            debug && console.warn(
-              'Compass-Card configuration: attribute ' + name +
+        if (val !== undefined && val !== null) {
+          found.push(sensor); // accepts 0, false, and ""
+        } else {
+          //eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          debug && console.warn(
+            'Compass-Card configuration: attribute ' + name +
               ' (' + currentValue + ') is invalid for entity ' +
               name.slice(0, name.lastIndexOf('.')) + '.sensor (' + sensor + ')'
-            );
-          }
-          break;
-
-        default:
-          if (currentValue && typeof currentValue === 'object') {
-            found = [...found, ...findValues(currentValue, entities, debug, name)];
-          }
-          break;
+          );
+        }
+        break;
+      }
+      default:
+        if (currentValue && typeof currentValue === 'object') {
+          found = [...found, ...findValues(currentValue, entities, debug, name)];
+        }
+        break;
       }
     });
   }

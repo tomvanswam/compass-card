@@ -12,6 +12,10 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    // adjust rules to your taste; keep formatting-related rules minimal so ESLint can act as formatter
+      "@typescript-eslint/camelcase": 0,
+      "no-console": ["error", {"allow": ["warn"]}],
+      "indent": ["error", 2],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"]
   }
 }
