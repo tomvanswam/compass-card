@@ -17,7 +17,7 @@ body:
       options:
         - label: I cannot find my issue in the documentation
           required: true
-        - label: The issue is unique: there is no other existing issue that covers this neither open nor closed
+        - label: The issue is unique:,there is no other existing issue that covers this, neither open nor closed
           required: true
         - label: I have examined the release notes of the version installed for possible breaking changes
           required: true
