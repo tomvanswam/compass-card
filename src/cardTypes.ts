@@ -62,11 +62,11 @@ export interface CCDynamicStyle extends CCEntity {
 
 export interface CCStyleBand extends CCStyle {
   from_value: number;
-  background_image: string;
 }
 
 export interface CCStyle {
   color: string;
+  background_image: string;
   show: boolean;
 }
 

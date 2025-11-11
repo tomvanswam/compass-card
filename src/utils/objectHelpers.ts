@@ -49,7 +49,7 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
       offset_background: bgOffset,
       stroke_width: circleStrokeWidth,
       color: circleColor,
-      dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow),
+      dynamic_style: getDynamicStyle(config.compass?.circle?.dynamic_style, config, entities, circleColor, circleShow, bgImage),
       show: circleShow,
     },
     north: {
@@ -199,6 +199,7 @@ function getDynamicStyle(
   entities: HassEntities,
   startColor: string,
   startVisibility: boolean,
+  startBgImage: string = ''
 ): CCDynamicStyle {
   const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
@@ -217,6 +218,7 @@ function getDynamicStyle(
     unknown: {
       color: dynamicStyle?.unknown?.color || startColor,
       show: dynamicStyle?.unknown?.show || startVisibility,
+      background_image: dynamicStyle?.unknown?.background_image || startBgImage,
     },
   };
 }
