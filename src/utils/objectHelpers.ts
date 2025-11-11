@@ -185,7 +185,7 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
     newBands.forEach((band, i) => {
       const color = band.color || (i === 0 ? startColor : styleBands[i - 1].color) || startColor;
       const prevVisibility = i === 0 ? startVisibility : getBoolean(styleBands[i - 1].show, startVisibility);
-      const background_image = band.background_image;
+      const background_image = band.background_image? band.background_image : '';
       const show = getBoolean(band.show, prevVisibility);
       styleBands.push({ from_value: band.from_value, color: color, show: show, background_image: background_image });
     });
