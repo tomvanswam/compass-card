@@ -34,13 +34,13 @@ export type ActionConfig = Infer<typeof ActionConfigStruct>;
 export const CCStyleConfigStruct = object({
   color: optional(string()),
   show: optional(boolean()),
+  background_image: optional(string()),
 });
 
 export const CCStyleBandConfigStruct = assign(
   CCStyleConfigStruct,
   object({
     from_value: number(),
-    background_image: optional(string()),
   }),
 );
 export type CCStyleBandConfig = Infer<typeof CCStyleBandConfigStruct>;
