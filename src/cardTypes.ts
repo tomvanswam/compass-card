@@ -53,6 +53,8 @@ export interface CCProperties {
   color: string;
   dynamic_style: CCDynamicStyle;
   show: boolean;
+  size: number;
+  radius: number;
 }
 
 export interface CCDynamicStyle extends CCEntity {
@@ -63,11 +65,14 @@ export interface CCDynamicStyle extends CCEntity {
 export interface CCStyleBand extends CCStyle {
   from_value: number;
   background_image?: string;
+  image?: string;
 }
 
 export interface CCStyle {
   color: string;
   show: boolean;
+  size: number;
+  radius: number;
 }
 
 export interface CCEntity {

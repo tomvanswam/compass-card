@@ -186,8 +186,11 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
       const color = band.color || (i === 0 ? startColor : styleBands[i - 1].color) || startColor;
       const prevVisibility = i === 0 ? startVisibility : getBoolean(styleBands[i - 1].show, startVisibility);
       const background_image = band.background_image;
+      const image = band.image;
+      const size = band.size;
+      const radius = band.radius;
       const show = getBoolean(band.show, prevVisibility);
-      styleBands.push({ from_value: band.from_value, color: color, show: show, background_image: background_image });
+      styleBands.push({ from_value: band.from_value, color: color, show: show, background_image: background_image, image: image, size: size, radius: radius });
     });
   }
   return styleBands;

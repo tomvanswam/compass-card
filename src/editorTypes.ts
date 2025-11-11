@@ -34,6 +34,8 @@ export type ActionConfig = Infer<typeof ActionConfigStruct>;
 export const CCStyleConfigStruct = object({
   color: optional(string()),
   show: optional(boolean()),
+  size: optional(number()),
+  radius: optional(number()),
 });
 
 export const CCStyleBandConfigStruct = assign(
@@ -41,6 +43,7 @@ export const CCStyleBandConfigStruct = assign(
   object({
     from_value: number(),
     background_image: optional(string()),
+    image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
   }),
 );
 export type CCStyleBandConfig = Infer<typeof CCStyleBandConfigStruct>;
