@@ -68,6 +68,9 @@ export interface CCStyle {
   color: string;
   background_image: string;
   show: boolean;
+  image: string;
+  size: number;
+  radius: number;
 }
 
 export interface CCEntity {

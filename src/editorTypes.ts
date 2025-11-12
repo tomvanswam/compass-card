@@ -35,6 +35,9 @@ export const CCStyleConfigStruct = object({
   color: optional(string()),
   show: optional(boolean()),
   background_image: optional(string()),
+  image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
+  size: optional(number()),
+  radius: optional(number()),
 });
 
 export const CCStyleBandConfigStruct = assign(

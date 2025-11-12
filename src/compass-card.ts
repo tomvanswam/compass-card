@@ -4,7 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { getLovelace, HomeAssistant, LovelaceCardEditor, LovelaceCard } from 'custom-card-helpers';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes';
-import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties, CCCircle } from './cardTypes';
+import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCValueSensor, CCValue, CCProperties, CCCircle, CCIndicator } from './cardTypes';
 import handleClick from './utils/handleClick';
 import { assert, StructError } from 'superstruct';
 import './editor';
@@ -305,6 +305,29 @@ export class CompassCard extends LitElement {
     }
     return properties.color;
   }
+  private getSize(properties: CCIndicator): number {
+    if (properties.dynamic_style.bands.length === 0) {
+      return properties.size;
+    }
+    const value = this.getValue(properties.dynamic_style);
+    if (isNumeric(value.value)) {
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      return usableBands[usableBands.length - 1]?.size || properties.size;
+    }
+    return properties.size;
+  }
+
+  private getRadius(properties: CCIndicator): number {
+    if (properties.dynamic_style.bands.length === 0) {
+      return properties.radius;
+    }
+    const value = this.getValue(properties.dynamic_style);
+    if (isNumeric(value.value)) {
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      return usableBands[usableBands.length - 1]?.radius || properties.radius;
+    }
+    return properties.radius;
+  }
 
   private getBackgroundImage(properties: CCCircle): string {
     if (properties.dynamic_style.bands.length === 0) {
@@ -369,8 +392,21 @@ export class CompassCard extends LitElement {
     return result;
   }
 
+  private getIndicatorImage(properties: CCIndicator): string {
+    if (properties.dynamic_style.bands.length === 0) {
+      return properties.image;
+    }
+    const value = this.getValue(properties.dynamic_style);
+    if (isNumeric(value.value)) {
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      return usableBands[usableBands.length - 1]?.image || properties.image;
+    }
+    return properties.image;
+  }
+
   private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    switch (indicatorSensor.indicator.image) {
+    const img = this.getIndicatorImage(indicatorSensor.indicator);
+    switch (img) {
     case 'arrow_outward':
       return this.svgIndicatorArrowOutward();
     case 'arrow_inward':
@@ -378,7 +414,7 @@ export class CompassCard extends LitElement {
     case 'circle':
       return this.svgIndicatorCircle();
     default:
-      if (indicatorSensor.indicator.image.startsWith('mdi:')) {
+      if (img.startsWith('mdi:')) {
         return this.svgIndicatorMdi(indicatorSensor);
       }
       // else its an external image
@@ -429,7 +465,7 @@ export class CompassCard extends LitElement {
   }
 
   // svg indicator is using pure SVG to avoid issues in iOS  (no foreignObject ha-icon)
-  private svgIndicatorMdi(indicator: CCIndicatorSensor): SVGTemplateResult {
+  private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const MDI_MAP: Record<string, string> = MDI;
     const toPascal = (s: string) =>
       s
@@ -441,10 +477,10 @@ export class CompassCard extends LitElement {
       const key = 'mdi' + toPascal(icon.slice(4));
       return MDI_MAP[key] ?? null;
     };
-    const icon_v = indicator.indicator.image as string;
+    const icon_v = this.getIndicatorImage(indicatorSensor.indicator) as string;
     const d = mdiPath(icon_v) ?? MDI.mdiCompass;
-    const size = indicator?.indicator.size ?? 16;
-    const r = indicator.indicator.radius ?? 0;
+    const size = this.getSize(indicatorSensor.indicator) ?? 16;
+    const r = this.getRadius(indicatorSensor.indicator) ?? 0;
 
     const box = Math.max(size, 24);
 
@@ -465,9 +501,9 @@ export class CompassCard extends LitElement {
   }
 
   private svgIndicatorImg(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    const icon_v = indicatorSensor.indicator.image as string;
-    const size = indicatorSensor?.indicator.size ?? 16;
-    const r = indicatorSensor.indicator.radius ?? 0;
+    const icon_v = this.getIndicatorImage(indicatorSensor.indicator) as string;
+    const size = this.getSize(indicatorSensor.indicator) ?? 16;
+    const r = this.getRadius(indicatorSensor.indicator) ?? 0;
 
     const box = size;
     const x = CIRCLE.CENTER - box / 2;
