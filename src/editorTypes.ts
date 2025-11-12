@@ -20,6 +20,8 @@ export const numberBetween = (min: number, max: number) =>
 
 export const percentage = () => refine(number(), 'percentage', (value) => (value >= 0 && value <= 100 ? true : `Expected a percentage between 0 and 100, got ${value}`));
 
+const CCImageStruct = optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)]));
+
 export const ActionConfigStruct = object({
   action: optional(enums(['more-info', 'navigate', 'call-service', 'url'])),
   entity: optional(string()),
@@ -35,7 +37,7 @@ export const CCStyleConfigStruct = object({
   color: optional(string()),
   show: optional(boolean()),
   background_image: optional(string()),
-  image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
+  image: CCImageStruct,
   size: optional(number()),
   radius: optional(number()),
 });
@@ -66,7 +68,7 @@ export type CCPropertiesConfig = Infer<typeof CCPropertiesConfigStruct>;
 export const CCIndicatorConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
-    image: optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(https?:\/\/)|(\/local\/)/)])),
+    image: CCImageStruct,
     size: optional(number()),
     radius: optional(number()),
   }),
