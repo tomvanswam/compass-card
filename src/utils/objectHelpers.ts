@@ -175,7 +175,7 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
   return sensor;
 }
 
-function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, startVisibility: boolean): CCStyleBand[] {
+function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, startVisibility: boolean, startBgImage: string, startImage: string, startSize: number, startRadius: number): CCStyleBand[] {
   const styleBands: CCStyleBand[] = [];
   const newBands = [...(bands || [])];
   if (newBands && newBands.length > 0) {
@@ -185,10 +185,10 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
     newBands.forEach((band, i) => {
       const color = band.color || (i === 0 ? startColor : styleBands[i - 1].color) || startColor;
       const prevVisibility = i === 0 ? startVisibility : getBoolean(styleBands[i - 1].show, startVisibility);
-      const background_image = band.background_image? band.background_image : '';
-      const image = band.image? band.image : '';
-      const size = band.size? band.size : 16;
-      const radius = band.radius? band.radius : 0;
+      const background_image = band.background_image || (i === 0 ? startBgImage : styleBands[i - 1].background_image) || startBgImage;
+      const image = band.image || (i === 0 ? startImage : styleBands[i - 1].image) || startImage;
+      const size = band.size || (i === 0 ? startSize : styleBands[i - 1].size) || startSize;
+      const radius = band.radius || (i === 0 ? startRadius : styleBands[i - 1].radius) || startRadius;
       const show = getBoolean(band.show, prevVisibility);
       styleBands.push({ from_value: band.from_value, color: color, show: show, background_image: background_image, image: image, size: size, radius: radius });
     });
@@ -202,7 +202,10 @@ function getDynamicStyle(
   entities: HassEntities,
   startColor: string,
   startVisibility: boolean,
-  startBgImage: string = ''
+  startBgImage: string = '',
+  startImage: string = '',
+  startSize: number = 16,
+  startRadius: number = 0
 ): CCDynamicStyle {
   const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
@@ -215,16 +218,16 @@ function getDynamicStyle(
     entity: entity,
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: is_attribute,
-    bands: getBands(dynamicStyle?.bands, startColor, startVisibility),
+    bands: getBands(dynamicStyle?.bands, startColor, startVisibility, startBgImage, startImage, startSize, startRadius),
     decimals: decimals,
     units: units,
     unknown: {
       color: dynamicStyle?.unknown?.color || startColor,
       show: dynamicStyle?.unknown?.show || startVisibility,
       background_image: dynamicStyle?.unknown?.background_image || startBgImage,
-      image: dynamicStyle?.unknown?.image || '',
-      size: dynamicStyle?.unknown?.size || 16,
-      radius: dynamicStyle?.unknown?.radius || 0,
+      image: dynamicStyle?.unknown?.image || startImage,
+      size: dynamicStyle?.unknown?.size || startSize,
+      radius: dynamicStyle?.unknown?.radius || startRadius,
     },
   };
 }
