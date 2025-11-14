@@ -101,6 +101,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
   const size = indicatorSensor.indicator?.size || 19;
   const radius = indicatorSensor.indicator?.radius ?? 70;
+  const opacity = indicatorSensor.indicator?.opacity ?? 1;
   const scale = 70 / Math.max(radius, 70);
   const sensor: CCIndicatorSensor = {
     sensor: attrib === '' ? sens : sens + '.' + attrib,
@@ -116,6 +117,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
       size: size,
       radius: radius,
       scale: scale * 100,
+      opacity: opacity
     },
     state_abbreviation: {
       color: abbrColor,
@@ -175,7 +177,7 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
   return sensor;
 }
 
-function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, startVisibility: boolean, startBgImage: string, startImage: string, startSize: number, startRadius: number): CCStyleBand[] {
+function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, startVisibility: boolean, startBgImage: string, startImage: string, startSize: number, startRadius: number, startOpacity: number): CCStyleBand[] {
   const styleBands: CCStyleBand[] = [];
   const newBands = [...(bands || [])];
   if (newBands && newBands.length > 0) {
@@ -189,8 +191,9 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
       const image = band.image || (i === 0 ? startImage : styleBands[i - 1].image) || startImage;
       const size = band.size || (i === 0 ? startSize : styleBands[i - 1].size) || startSize;
       const radius = band.radius || (i === 0 ? startRadius : styleBands[i - 1].radius) || startRadius;
+      const opacity = band.opacity || (i === 0 ? startOpacity : styleBands[i - 1].opacity) || startOpacity;
       const show = getBoolean(band.show, prevVisibility);
-      styleBands.push({ from_value: band.from_value, color: color, show: show, background_image: background_image, image: image, size: size, radius: radius });
+      styleBands.push({ from_value: band.from_value, color: color, show: show, background_image: background_image, image: image, size: size, radius: radius, opacity: opacity});
     });
   }
   return styleBands;
@@ -204,8 +207,9 @@ function getDynamicStyle(
   startVisibility: boolean,
   startBgImage: string = '',
   startImage: string = '',
-  startSize: number = 16,
-  startRadius: number = 0
+  startSize: number = 0,
+  startRadius: number = 0,
+  startOpacity: number = 0
 ): CCDynamicStyle {
   const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
@@ -218,7 +222,7 @@ function getDynamicStyle(
     entity: entity,
     sensor: attrib === '' ? sens : sens + '.' + attrib,
     is_attribute: is_attribute,
-    bands: getBands(dynamicStyle?.bands, startColor, startVisibility, startBgImage, startImage, startSize, startRadius),
+    bands: getBands(dynamicStyle?.bands, startColor, startVisibility, startBgImage, startImage, startSize, startRadius, startOpacity),
     decimals: decimals,
     units: units,
     unknown: {
@@ -228,6 +232,7 @@ function getDynamicStyle(
       image: dynamicStyle?.unknown?.image || startImage,
       size: dynamicStyle?.unknown?.size || startSize,
       radius: dynamicStyle?.unknown?.radius || startRadius,
+      opacity: dynamicStyle?.unknown?.opacity || startOpacity,
     },
   };
 }

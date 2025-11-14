@@ -306,27 +306,49 @@ export class CompassCard extends LitElement {
     return properties.color;
   }
   private getSize(properties: CCIndicator): number {
+    console.warn('getSize props: ',properties);
     if (properties.dynamic_style.bands.length === 0) {
       return properties.size;
     }
     const value = this.getValue(properties.dynamic_style);
+    console.warn('getSize value: ',value);
     if (isNumeric(value.value)) {
       const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      console.warn('getSize usableBands: ',usableBands);
+      console.warn('getSize1: ',usableBands[usableBands.length - 1]?.size || properties.size);
       return usableBands[usableBands.length - 1]?.size || properties.size;
     }
+    console.warn('getSize2: ',properties.size);
     return properties.size;
   }
 
   private getRadius(properties: CCIndicator): number {
+    console.warn('getRadius props: ',properties);
     if (properties.dynamic_style.bands.length === 0) {
       return properties.radius;
     }
     const value = this.getValue(properties.dynamic_style);
+    console.warn('getRadius value: ',value);
     if (isNumeric(value.value)) {
       const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      console.warn('getRadius usableBands: ',usableBands);
+      console.warn('getRadius1: ',usableBands[usableBands.length - 1]?.radius || properties.radius);
+
       return usableBands[usableBands.length - 1]?.radius || properties.radius;
     }
     return properties.radius;
+  }
+
+  private getOpacity(properties: CCIndicator): number {
+    if (properties.dynamic_style.bands.length === 0) {
+      return properties.opacity;
+    }
+    const value = this.getValue(properties.dynamic_style);
+    if (isNumeric(value.value)) {
+      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
+      return usableBands[usableBands.length - 1]?.opacity || properties.opacity;
+    }
+    return properties.opacity;
   }
 
   private getBackgroundImage(properties: CCCircle): string {
@@ -428,7 +450,7 @@ export class CompassCard extends LitElement {
 
     // set per-indicator color via CSS variable so presentational attributes move to CSS
     return svg`
-      <g class="indicator-${index}" transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}">
+      <g class="indicator-${index}" transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
         ${indicatorPath}
       </g>
     `;
@@ -481,7 +503,7 @@ export class CompassCard extends LitElement {
     const d = mdiPath(icon_v) ?? MDI.mdiCompass;
     const size = this.getSize(indicatorSensor.indicator) ?? 16;
     const r = this.getRadius(indicatorSensor.indicator) ?? 0;
-
+    const opacity = this.getOpacity(indicatorSensor.indicator) ?? 1;
     const box = Math.max(size, 24);
 
     // anchor point on circle
@@ -494,7 +516,7 @@ export class CompassCard extends LitElement {
     return svg`
       <svg x=${ax - box / 2} y=${ay - box / 2} width=${box} height=${box} viewBox="0 0 ${box} ${box}" overflow="visible">
         <g transform="translate(${box / 2}, ${box / 2}) scale(${s}) translate(-12, -12)">
-          <path d=${d} fill="var(--compass-card-indicator-color)" />
+          <path d=${d} fill="var(--compass-card-indicator-color)" opacity=${opacity}/>
         </g>
       </svg>
     `;
@@ -504,7 +526,7 @@ export class CompassCard extends LitElement {
     const icon_v = this.getIndicatorImage(indicatorSensor.indicator) as string;
     const size = this.getSize(indicatorSensor.indicator) ?? 16;
     const r = this.getRadius(indicatorSensor.indicator) ?? 0;
-
+    const opacity = this.getOpacity(indicatorSensor.indicator) ?? 1;
     const box = size;
     const x = CIRCLE.CENTER - box / 2;
     const y = CIRCLE.CENTER - r - box / 2;
@@ -517,6 +539,7 @@ export class CompassCard extends LitElement {
         width=${box} 
         height=${box} 
         preserveAspectRatio="xMidYMid meet"
+        opacity=${opacity}
       />
     `;
   }
