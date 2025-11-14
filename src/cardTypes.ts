@@ -16,6 +16,7 @@ export interface CCIndicator extends CCProperties {
   image: string;
   size: number;
   radius: number;
+  opacity: number;
   scale: number;
 }
 
@@ -71,6 +72,7 @@ export interface CCStyle {
   image: string;
   size: number;
   radius: number;
+  opacity: number;
 }
 
 export interface CCEntity {

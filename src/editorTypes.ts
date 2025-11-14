@@ -40,6 +40,7 @@ export const CCStyleConfigStruct = object({
   image: CCImageStruct,
   size: optional(number()),
   radius: optional(number()),
+  opacity: optional(number()),
 });
 
 export const CCStyleBandConfigStruct = assign(
@@ -71,6 +72,7 @@ export const CCIndicatorConfigStruct = assign(
     image: CCImageStruct,
     size: optional(number()),
     radius: optional(number()),
+    opacity: optional(number()),
   }),
 );
 export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
