@@ -306,34 +306,24 @@ export class CompassCard extends LitElement {
     return properties.color;
   }
   private getSize(properties: CCIndicator): number {
-    console.warn('getSize props: ',properties);
     if (properties.dynamic_style.bands.length === 0) {
       return properties.size;
     }
     const value = this.getValue(properties.dynamic_style);
-    console.warn('getSize value: ',value);
     if (isNumeric(value.value)) {
       const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      console.warn('getSize usableBands: ',usableBands);
-      console.warn('getSize1: ',usableBands[usableBands.length - 1]?.size || properties.size);
       return usableBands[usableBands.length - 1]?.size || properties.size;
     }
-    console.warn('getSize2: ',properties.size);
     return properties.size;
   }
 
   private getRadius(properties: CCIndicator): number {
-    console.warn('getRadius props: ',properties);
     if (properties.dynamic_style.bands.length === 0) {
       return properties.radius;
     }
     const value = this.getValue(properties.dynamic_style);
-    console.warn('getRadius value: ',value);
     if (isNumeric(value.value)) {
       const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      console.warn('getRadius usableBands: ',usableBands);
-      console.warn('getRadius1: ',usableBands[usableBands.length - 1]?.radius || properties.radius);
-
       return usableBands[usableBands.length - 1]?.radius || properties.radius;
     }
     return properties.radius;
