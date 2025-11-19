@@ -16,11 +16,11 @@ export default [
   {
     ignores: ['dist/*.js', 'node_modules/*'],
   },
-  ...compat.extends('plugin:@typescript-eslint/recommended', 'prettier', 'plugin:prettier/recommended'),
+  ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended'),
   {
     languageOptions: {
       parser: tsParser,
-      ecmaVersion: 2018,
+      ecmaVersion: 2021,
       sourceType: 'module',
 
       parserOptions: {
@@ -37,6 +37,9 @@ export default [
           allow: ['warn'],
         },
       ],
+      "indent": ["error", 2],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"]
     },
   },
 ];

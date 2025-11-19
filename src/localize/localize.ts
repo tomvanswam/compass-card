@@ -57,7 +57,7 @@ export function localize(string: string, search = '', replace = '', language = '
   }
   try {
     translated = string.split('.').reduce((o, i) => o[i], languages[language]);
-  } catch (e) {
+  } catch {
     translated = string.split('.').reduce((o, i) => o[i], languages['en']);
   }
 
