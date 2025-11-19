@@ -1,45 +1,100 @@
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
+import { FlatCompat } from '@eslint/eslintrc';
 import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
+import path from 'node:path';
+import tsParser from '@typescript-eslint/parser';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
+  allConfig: js.configs.all,
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
 });
 
 export default [
   {
-    ignores: ['dist/*.js', 'node_modules/*'],
+    ignores: ['dist/*', 'node_modules/*', '.hass_dev/*'],
   },
   ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended'),
   {
     languageOptions: {
-      parser: tsParser,
       ecmaVersion: 2021,
-      sourceType: 'module',
-
+      parser: tsParser,
       parserOptions: {
         experimentalDecorators: true,
       },
+      sourceType: 'module',
     },
-
     rules: {
-      '@typescript-eslint/camelcase': 0,
-
-      'no-console': [
-        'error',
-        {
-          allow: ['warn'],
-        },
-      ],
-      "indent": ["error", 2],
-      "quotes": ["error", "single"],
-      "semi": ["error", "always"]
+      'block-scoped-var': ['error'],
+      'camelcase': ['warn', { allow: ['indicator_sensors', 'value_sensors', 'background_image', 'is_attribute'] }],
+      'class-methods-use-this': ['error'],
+      'consistent-return': ['error'],
+      'consistent-this': ['error', 'that'],
+      'default-case': ['error'],
+      'default-case-last': ['error'],
+      'default-param-last': ['error'],
+      'dot-notation': ['error'],
+      'eqeqeq': ['error', 'always'],
+      'no-alert': ['error'],
+      'no-caller': ['error'],
+      'no-console': ['error'],
+      'no-constructor-return': ['error'],
+      'no-div-regex': ['error'],
+      'no-duplicate-imports': ['error'],
+      'no-else-return': ['error'],
+      'no-empty': ['error'],
+      'no-empty-function': ['error'],
+      'no-eq-null': ['error'],
+      'no-eval': ['error'],
+      'no-implied-eval': ['error'],
+      'no-lone-blocks': ['error'],
+      'no-lonely-if': ['error'],
+      'no-loop-func': ['error'],
+      'no-magic-numbers': ['warn', { ignore: [-1] }],
+      'no-new': ['error'],
+      'no-new-func': ['error'],
+      'no-new-wrappers': ['error'],
+      'no-nonoctal-decimal-escape': ['error'],
+      'no-octal': ['error'],
+      'no-param-reassign': ['error'],
+      'no-return-assign': ['error'],
+      'no-script-url': ['error'],
+      'no-self-compare': ['error'],
+      'no-shadow': ['error'],
+      'no-shadow-restricted-names': ['error'],
+      'no-unassigned-vars': ['error'],
+      'no-unmodified-loop-condition': ['error'],
+      'no-unreachable-loop': ['error'],
+      'no-unused-expressions': ['error'],
+      'no-unused-vars': ['warn'],
+      'no-use-before-define': ['error'],
+      'no-useless-assignment': ['error'],
+      'no-useless-call': ['error'],
+      'no-useless-computed-key': ['error'],
+      'no-useless-concat': ['error'],
+      'no-useless-constructor': ['error'],
+      'no-useless-rename': ['error'],
+      'no-useless-return': ['error'],
+      'no-var': ['error'],
+      'no-with': ['error'],
+      'prefer-arrow-callback': ['error'],
+      'prefer-const': ['error'],
+      'prefer-destructuring': ['error'],
+      'prefer-named-capture-group': ['error'],
+      'prefer-numeric-literals': ['error'],
+      'prefer-object-has-own': ['error'],
+      'prefer-object-spread': ['error'],
+      'prefer-regex-literals': ['error'],
+      'prefer-rest-params': ['error'],
+      'prefer-spread': ['error'],
+      'prefer-template': ['error'],
+      'quotes': ['error', 'single'],
+      'semi': ['error', 'always'],
+      'sort-imports': ['error'],
+      'sort-keys': ['error'],
+      'sort-vars': ['error'],
     },
   },
 ];
