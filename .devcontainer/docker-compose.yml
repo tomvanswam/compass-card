@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  devcontainer:
+    image: mcr.microsoft.com/vscode/devcontainers/typescript-node:22
+    # Mount repo root into /workspace (compose file lives in .devcontainer)
+    volumes:
+      - ..:/workspace:cached
+    networks:
+      - ha_net
+    # Keep container running for interactive use (override if needed)
+    tty: true
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: home-assistant
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+    volumes:
+      - ../.hass_dev:/config
+    environment:
+      - TZ=UTC
+    networks:
+      - ha_net
+
+networks:
+  ha_net:
+    driver: bridge
