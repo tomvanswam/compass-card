@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "es2021",
     "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["ES2021", "dom", "dom.iterable"],
+    "moduleResolution": "bundler",
+    "lib": ["ES2021", "dom", "dom.iterable", "dom.asynciterable"],
     "noEmit": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
