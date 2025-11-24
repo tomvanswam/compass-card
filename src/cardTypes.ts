@@ -1,5 +1,19 @@
 import { HassEntity } from 'home-assistant-js-websocket';
 
+export interface CCEntity {
+  entity: HassEntity;
+  sensor: string;
+  is_attribute: boolean;
+  units: string;
+  decimals: number;
+}
+
+export interface CCProperties {
+  color: string;
+  dynamic_style: CCDynamicStyle;
+  show: boolean;
+}
+
 export interface CCSensor extends CCEntity {
   state_value: CCProperties;
   state_units: CCProperties;
@@ -50,21 +64,6 @@ export interface CCNorth extends CCProperties {
   offset: number;
 }
 
-export interface CCProperties {
-  color: string;
-  dynamic_style: CCDynamicStyle;
-  show: boolean;
-}
-
-export interface CCDynamicStyle extends CCEntity {
-  bands: CCStyleBand[];
-  unknown: CCStyle;
-}
-
-export interface CCStyleBand extends CCStyle {
-  from_value: number;
-}
-
 export interface CCStyle {
   color: string;
   background_image: string;
@@ -75,12 +74,14 @@ export interface CCStyle {
   opacity: number;
 }
 
-export interface CCEntity {
-  entity: HassEntity;
-  sensor: string;
-  is_attribute: boolean;
-  units: string;
-  decimals: number;
+export interface CCDynamicStyle extends CCEntity {
+  bands: CCStyleBand[];
+  unknown: CCStyle;
+}
+
+
+export interface CCStyleBand extends CCStyle {
+  from_value: number;
 }
 
 export interface CCDirectionInfo {

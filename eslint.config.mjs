@@ -1,34 +1,56 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import { fileURLToPath } from 'node:url';
+import css from '@eslint/css';
+import { defineConfig } from 'eslint/config';
+import globals from 'globals';
 import js from '@eslint/js';
-import path from 'node:path';
+import json from '@eslint/json';
+import markdown from '@eslint/markdown';
+import tseslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  allConfig: js.configs.all,
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
-export default [
+export default defineConfig([
   {
-    ignores: ['dist/*', 'node_modules/*', '.hass_dev/*'],
+    ignores: ['dist/*', 'node_modules/*', '.hass_dev/*', 'package-lock.json'],
   },
-  ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended'),
   {
-    languageOptions: {
-      ecmaVersion: 2021,
+    extends: ['js/recommended'], files: ['**/*.{js,mjs,cjs,ts,mts,cts}'], languageOptions: {
+      ecmaVersion: 2021, globals: globals.browser,
       parser: tsParser,
       parserOptions: {
         experimentalDecorators: true,
+        sourceType: 'module',
       },
-      sourceType: 'module',
-    },
+    }, plugins: { js }
+  },
+  tseslint.configs.recommended,
+  { extends: ['json/recommended'], files: ['**/*.json'], language: 'json/json', plugins: { json } },
+  { extends: ['markdown/recommended'], files: ['**/*.md'], language: 'markdown/gfm', plugins: { markdown } },
+  { extends: ['css/recommended'], files: ['**/*.css'], language: 'css/css', plugins: { css } },
+  {
     rules: {
       'block-scoped-var': ['error'],
-      'camelcase': ['warn', { allow: ['indicator_sensors', 'value_sensors', 'background_image', 'is_attribute'] }],
+      'camelcase': ['warn', {
+        allow: [
+          'indicator_sensors',
+          'value_sensors',
+          'background_image',
+          'is_attribute',
+          'service_data',
+          'navigation_path',
+          'new_tab',
+          'from_value',
+          'state_abbreviation',
+          'state_units',
+          'state_value',
+          'background_opacity',
+          'offset_background',
+          'stroke_width',
+          'dynamic_style',
+          'tap_action',
+          'test_gui',
+          'mwc-*',
+          ''
+        ]
+      }],
       'class-methods-use-this': ['error'],
       'consistent-return': ['error'],
       'consistent-this': ['error', 'that'],
@@ -52,7 +74,7 @@ export default [
       'no-lone-blocks': ['error'],
       'no-lonely-if': ['error'],
       'no-loop-func': ['error'],
-      'no-magic-numbers': ['warn', { ignore: [-1] }],
+      'no-magic-numbers': ['warn', { ignoreArrayIndexes: true, ignoreDefaultValues: true }],
       'no-new': ['error'],
       'no-new-func': ['error'],
       'no-new-wrappers': ['error'],
@@ -92,9 +114,9 @@ export default [
       'prefer-template': ['error'],
       'quotes': ['error', 'single'],
       'semi': ['error', 'always'],
-      'sort-imports': ['error'],
-      'sort-keys': ['error'],
-      'sort-vars': ['error'],
+      'sort-imports': ['error', { ignoreCase: true }],
+      'sort-keys': ['error', 'asc', { caseSensitive: false }],
+      'sort-vars': ['error', { ignoreCase: true }],
     },
   },
-];
+]);
