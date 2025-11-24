@@ -9,19 +9,21 @@ jobs:
     name: Prepare release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        # REPLACE <SHA_FOR_actions_checkout> with the 40-char commit SHA for actions/checkout you want to pin
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5
 
       # Build
       - name: Build the file
         run: |
           cd /home/runner/work/compass-card/compass-card
-          npm install
+          npm ci
           npm run build
 
-      # Upload build file to the releas as an asset.
+      # Upload build file to the release as an asset.
       - name: Upload js to release
-        uses: svenstaro/upload-release-action@2.0.0
-
+        # REPLACE <SHA_FOR_svenstaro_upload_release_action> with the 40-char commit SHA to pin
+        uses: svenstaro/upload-release-action@dd2828236b4fa38af1eaebc4ef158b8a71078302
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: /home/runner/work/compass-card/compass-card/dist/compass-card.js
