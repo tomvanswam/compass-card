@@ -66,14 +66,14 @@
   },
   "scripts": {
     "start": "rollup -c --watch",
-    "build": "npm run lint && npm run clean:npm && npm ci && npm run rollup",
+    "build": "npm run lint && npm run clean:npm && npm run rollup",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "rollup": "rollup -c",
     "clean:dist": "rm -rf dist",
     "clean:node": "rm -rf node_modules",
     "clean:lock": "rm -rf package-lock.json",
-    "clean:npm": "npm cache clean --force",
+    "clean:npm": "npm cache verify",
     "clean": "npm run clean:dist && npm run clean:node && npm run clean:npm && npm run clean:lock",
     "update": "npx npm-check-updates -i"
   }
