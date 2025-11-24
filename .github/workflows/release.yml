@@ -17,6 +17,7 @@ jobs:
       - name: Build the file
         run: |
           cd /home/runner/work/compass-card/compass-card
+          npm ci
           npm run build
 
       # Upload build file to the release as an asset.
