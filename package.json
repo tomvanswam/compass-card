@@ -1,6 +1,7 @@
 {
   "name": "compass-card",
-  "version": "3.3.0'",
+  "version": "3.3.0",
+  "type": "module",
   "description": "Lovelace compass-card",
   "keywords": [
     "home-assistant",
@@ -32,24 +33,30 @@
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@babel/eslint-parser": "^7.28.5",
-    "@babel/plugin-transform-class-properties": "^7.27.1",
     "@babel/plugin-proposal-decorators": "^7.28.0",
+    "@babel/plugin-transform-class-properties": "^7.27.1",
+    "@eslint/css": "^0.14.1",
     "@eslint/js": "^9.39.1",
+    "@eslint/json": "^0.14.0",
+    "@eslint/markdown": "^7.5.1",
     "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-commonjs": "^29.0.0",
-    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@typescript-eslint/eslint-plugin": "^8.48.1",
-    "@typescript-eslint/parser": "^8.48.1",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
     "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-lit": "^2.1.1",
-    "rollup": "^4.52.5",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
+    "rollup": "^4.53.3",
     "rollup-plugin-ignore": "^1.0.10",
     "rollup-plugin-serve": "^3.0.0",
     "rollup-plugin-server": "^0.7.0",
-    "rollup-plugin-typescript2": "^0.36.0"
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript-eslint": "^8.47.0"
   },
   "resolutions": {
     "lit": "^2.1.2",
@@ -59,8 +66,15 @@
   },
   "scripts": {
     "start": "rollup -c --watch",
-    "build": "npm run lint && npm run rollup",
-    "lint": "eslint \"**/*.{js,ts,tsx,jsx,json,mjs}\"",
-    "lint:fix": "eslint --fix \"**/*.{js,ts,tsx,jsx,json,mjs}\"",
-    "rollup": "rollup -c"  }
+    "build": "npm run lint && npm run clean:npm && npm ci && npm run rollup",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "rollup": "rollup -c",
+    "clean:dist": "rm -rf dist",
+    "clean:node": "rm -rf node_modules",
+    "clean:lock": "rm -rf package-lock.json",
+    "clean:npm": "npm cache clean --force",
+    "clean": "npm run clean:dist && npm run clean:node && npm run clean:npm && npm run clean:lock",
+    "update": "npx npm-check-updates -i"
+  }
 }

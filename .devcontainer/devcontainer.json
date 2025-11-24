@@ -12,6 +12,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "davidanson.vscode-markdownlint",
         "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-next",
         "mhutchie.git-graph"
