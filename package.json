@@ -48,7 +48,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-lit": "^2.1.1",
     "eslint-plugin-prettier": "^5.5.4",
-    "prettier": "^3.7.1",
+    "prettier": "^3.7.3",
     "prettier-eslint": "^16.4.2",
     "rollup": "^4.53.3",
     "rollup-plugin-ignore": "^1.0.10",
