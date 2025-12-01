@@ -283,20 +283,12 @@ export function resolveAttrPath(obj: any, path: string): any {
   if (obj === null || typeof path !== 'string') return undefined;
 
   const tokens: string[] = [];
-  const REGEX_PATTERN = /(?:[^.[\]]+)|\[(?:\d+)\]|\[(?<group>["'])(?:.*?)\1\]/g;
-  const UNNAMED_TOKEN_INDEX = 1;
-  const NUMERIC_INDEX_TOKEN_INDEX = 2;
-  const QUOTED_KEY_TOKEN_INDEX = 4;
+  const REGEX_PATTERN = /(?:[^.[\]]+)|\[(?:\d+)\]|\[(?<quote>["'])(?:.*?)\k<quote>\]/g;
 
   let m: RegExpExecArray | null;
   while ((m = REGEX_PATTERN.exec(path))) {
-    if (m[UNNAMED_TOKEN_INDEX] !== undefined) {
-      tokens.push(m[UNNAMED_TOKEN_INDEX]);           // dot notation token
-    } else if (m[NUMERIC_INDEX_TOKEN_INDEX] !== undefined) {
-      tokens.push(m[NUMERIC_INDEX_TOKEN_INDEX]);     // [123] array index
-    } else {
-      tokens.push(m[QUOTED_KEY_TOKEN_INDEX]);        // ["key"] or ['key'] object key
-    }
+    const [fullMatch] = m;
+    tokens.push(fullMatch);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
