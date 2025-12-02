@@ -208,7 +208,7 @@ export class CompassCardEditor extends ScopedRegistryHost(LitElement) implements
     return html`<mwc-select
       naturalMenuWidth
       fixedMenuPosition
-      label="${localize(label)} (${localize(required)})
+      label="${localize(label)} (${localize(required)})"
       .configValue=${key}
       .value=${value}
       @selected=${this._valueChanged}
