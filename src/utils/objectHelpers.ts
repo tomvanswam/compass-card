@@ -1,6 +1,6 @@
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes.js';
-import { DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_RADIUS_SIZE, DEFAULT_START_SIZE, DEGREES_MIN, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN, TO_PERCENTAGE_FACTOR } from '../const.js';
+import { DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEGREES_MIN, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
 export function getBoolean(value: boolean | number | string | undefined, defValue: boolean): boolean {
@@ -53,7 +53,7 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
       const size = band.size || (i === INDEX_ELEMENT_0 ? startSize : styleBands[i + LENGTH_TO_INDEX].size) || startSize;
       const radius = band.radius || (i === INDEX_ELEMENT_0 ? startRadius : styleBands[i + LENGTH_TO_INDEX].radius) || startRadius;
       const opacity = band.opacity || (i === INDEX_ELEMENT_0 ? startOpacity : styleBands[i + LENGTH_TO_INDEX].opacity) || startOpacity;
-      const scale = (DEFAULT_INDICATOR_RADIUS / Math.max(radius, DEFAULT_INDICATOR_RADIUS)) * TO_PERCENTAGE_FACTOR;
+      const scale = (DEFAULT_INDICATOR_RADIUS / Math.max(radius, DEFAULT_INDICATOR_RADIUS));
       const show = getBoolean(band.show, prevVisibility);
       styleBands.push({ background_image: background_image, color: color, from_value: band.from_value, image: image, opacity: opacity, radius: radius, scale: scale, show: show, size: size });
     });
@@ -71,7 +71,7 @@ function getDynamicStyle(
   startBgImage: string = '',
   startImage: string = '',
   startSize: number = DEFAULT_START_SIZE,
-  startRadius: number = DEFAULT_RADIUS_SIZE,
+  startRadius: number = DEFAULT_INDICATOR_RADIUS,
   startOpacity: number = OPACITY_VISIBLE
 ): CCDynamicStyle {
   const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
@@ -94,7 +94,7 @@ function getDynamicStyle(
       image: dynamicStyle?.unknown?.image || startImage,
       opacity: dynamicStyle?.unknown?.opacity || startOpacity,
       radius: dynamicStyle?.unknown?.radius || startRadius,
-      scale: (DEFAULT_INDICATOR_RADIUS / Math.max(dynamicStyle?.unknown?.radius || startRadius, DEFAULT_INDICATOR_RADIUS)) * TO_PERCENTAGE_FACTOR,
+      scale: (DEFAULT_INDICATOR_RADIUS / Math.max(dynamicStyle?.unknown?.radius || startRadius, DEFAULT_INDICATOR_RADIUS)),
       show: dynamicStyle?.unknown?.show || startVisibility,
       size: dynamicStyle?.unknown?.size || startSize,
     },
@@ -201,7 +201,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
       image: indIconImage,
       opacity: opacity,
       radius: radius,
-      scale: scale * TO_PERCENTAGE_FACTOR,
+      scale: scale,
       show: indShow,
       size: size,
     },
@@ -327,7 +327,7 @@ export function findValues(obj: CompassCardConfig, entities: HassEntities, debug
           const val = attrs ? resolveAttrPath(attrs, path) : undefined;
 
           // eslint-disable-next-line no-console
-          if (debug) console.warn('Attr check', { keys: attrs && Object.keys(attrs), path, sensor, type: typeof val, val });
+          if (debug) console.log('Compass-Card configuration: attribute check', { keys: attrs && Object.keys(attrs), path, sensor, type: typeof val, val });
 
           if (val !== undefined && val !== null) {
             found.push(sensor); // accepts 0, false, and ""

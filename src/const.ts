@@ -40,7 +40,6 @@ export const DEFAULT_CIRCLE_STROKE_WIDTH = 2;
 export const DEFAULT_DECIMALS = 0;
 export const DEFAULT_INDICATOR_RADIUS = 70;
 export const DEFAULT_INDICATOR_SIZE = 19;
-export const DEFAULT_RADIUS_SIZE = 0;
 export const DEFAULT_SECTIONS_SIZE = {
   COLUMNS_DEFAULT: 12,
   COLUMNS_MIN: 1,
@@ -65,4 +64,3 @@ export const OPACITY_VISIBLE = 1;
 export const RADIUS_TO_DIAMETER_FACTOR = 2;
 export const SVG_SCALE_MAX = 100;
 export const SVG_SCALE_MIN = 0;
-export const TO_PERCENTAGE_FACTOR = 100;
