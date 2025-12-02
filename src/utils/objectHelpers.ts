@@ -53,8 +53,9 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
       const size = band.size || (i === INDEX_ELEMENT_0 ? startSize : styleBands[i + LENGTH_TO_INDEX].size) || startSize;
       const radius = band.radius || (i === INDEX_ELEMENT_0 ? startRadius : styleBands[i + LENGTH_TO_INDEX].radius) || startRadius;
       const opacity = band.opacity || (i === INDEX_ELEMENT_0 ? startOpacity : styleBands[i + LENGTH_TO_INDEX].opacity) || startOpacity;
+      const scale = (DEFAULT_INDICATOR_RADIUS / Math.max(radius, DEFAULT_INDICATOR_RADIUS)) * TO_PERCENTAGE_FACTOR;
       const show = getBoolean(band.show, prevVisibility);
-      styleBands.push({ background_image: background_image, color: color, from_value: band.from_value, image: image, opacity: opacity, radius: radius, show: show, size: size });
+      styleBands.push({ background_image: background_image, color: color, from_value: band.from_value, image: image, opacity: opacity, radius: radius, scale: scale, show: show, size: size });
     });
   }
   return styleBands;
@@ -93,6 +94,7 @@ function getDynamicStyle(
       image: dynamicStyle?.unknown?.image || startImage,
       opacity: dynamicStyle?.unknown?.opacity || startOpacity,
       radius: dynamicStyle?.unknown?.radius || startRadius,
+      scale: (DEFAULT_INDICATOR_RADIUS / Math.max(dynamicStyle?.unknown?.radius || startRadius, DEFAULT_INDICATOR_RADIUS)) * TO_PERCENTAGE_FACTOR,
       show: dynamicStyle?.unknown?.show || startVisibility,
       size: dynamicStyle?.unknown?.size || startSize,
     },

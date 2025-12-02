@@ -160,7 +160,14 @@ export class CompassCard extends LitElement {
     this.compass = getCompass(this._config, this.colors, this.entities);
     this.indicatorSensors = getIndicatorSensors(this._config, this.colors, this.entities);
     this.valueSensors = getValueSensors(this._config, this.colors, this.entities);
-    this.svgScale = this.compass.scale === SVG_SCALE_MIN ? Math.min(...this.indicatorSensors.map((is) => (is.indicator.scale === SVG_SCALE_MIN ? SVG_SCALE_MAX : is.indicator.scale))) : this.compass.scale;
+    const allScales = [
+      ...this.indicatorSensors.map((is) => is.indicator.scale).filter((scale) => scale !== SVG_SCALE_MIN),
+      ...this.indicatorSensors.map((is) => is.indicator.dynamic_style?.bands?.map((band) => band.scale).filter((scale) => scale !== SVG_SCALE_MIN)).flat(),
+      ...this.indicatorSensors.map((is) => is.indicator.dynamic_style?.unknown?.scale).filter((scale) => scale !== SVG_SCALE_MIN),
+    ];
+    this.svgScale = this.compass.scale === SVG_SCALE_MIN
+      ? Math.min(...allScales.map((scale) => (scale === SVG_SCALE_MIN ? SVG_SCALE_MAX : scale)))
+      : this.compass.scale;
     if (getBoolean(this._config.debug, false)) {
       console.info('Compass-Card inflated configuration: header', this.header); // eslint-disable-line
       console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line

@@ -69,6 +69,7 @@ export interface CCStyle {
   background_image: string;
   show: boolean;
   image: string;
+  scale: number;
   size: number;
   radius: number;
   opacity: number;
