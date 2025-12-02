@@ -3,7 +3,7 @@ import { css, CSSResult } from 'lit';
 const style: CSSResult = css`
   :host {
     --compass-card-compass-padding: 16px;
-    --compass-card-svg-scale: 100%;
+    --compass-card-svg-scale: 1;
     --compass-card-masonry-row-height: 50px;
     --compass-card-masonry-rows: 3;
     --compass-card-masonry-header-rows: 1;
@@ -27,7 +27,7 @@ const style: CSSResult = css`
     overflow: hidden;
     height: 100%;
     display: flex;
-    flex: stretch;
+    flex: 1;
     flex-direction: column;
   }
   ha-card:has(.header) {
@@ -77,14 +77,16 @@ const style: CSSResult = css`
     height: calc(100% - 74px);
   }
   .compass-svg {
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
     max-height: 100%;
     display: block;
     overflow: visible;
     transform: scale(var(--compass-card-svg-scale, 1));
     transform-box: fill-box;
-    transform-origin: 76px 76px;
+    transform-origin: center center;
+    aspect-ratio: 1;
   }
   .compass-svg .compass-background {
     opacity: var(--compass-card-svg-image-opacity);

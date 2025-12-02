@@ -370,7 +370,7 @@ export class CompassCard extends LitElement {
 
     return svg`
     <svg viewbox="0 0 152 152" preserveAspectRatio="xMidYMid meet" class="compass-svg"
-         style="--compass-card-svg-scale:${this.svgScale}%; --compass-card-svg-image-opacity: ${this.compass.circle.background_opacity}; --compass-circle-stroke: ${this.getColor(this.compass.circle)}; --compass-circle-stroke-width: ${this.compass.circle.stroke_width}px;">
+         style="--compass-card-svg-scale:${this.svgScale}; --compass-card-svg-image-opacity: ${this.compass.circle.background_opacity}; --compass-circle-stroke: ${this.getColor(this.compass.circle)}; --compass-circle-stroke-width: ${this.compass.circle.stroke_width}px;">
       <defs>
         <!-- clip the image to the circle so the GIF can animate -->
         <clipPath id="imageClip">
