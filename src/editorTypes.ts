@@ -1,5 +1,5 @@
 import { array, assign, boolean, enums, Infer, number, object, optional, pattern, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MIN, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE } from './const.js';
+import { DEGREES_MAX, DEGREES_MIN, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE } from './const.js';
 import { COMPASS_LANGUAGES } from './localize/localize.js';
 import { LovelaceCardConfig } from 'custom-card-helpers';
 
@@ -37,7 +37,7 @@ export const CCStyleConfigStruct = object({
   background_image: optional(string()),
   color: optional(string()),
   image: CCImageStruct,
-  opacity: optional(number()),
+  opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
   radius: optional(number()),
   show: optional(boolean()),
   size: optional(number()),
@@ -70,7 +70,7 @@ export const CCIndicatorConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
     image: CCImageStruct,
-    opacity: optional(number()),
+    opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
     radius: optional(number()),
     size: optional(number()),
   }),
@@ -131,7 +131,7 @@ export const CCCircleConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
     background_image: optional(string()),
-    background_opacity: optional(number()),
+    background_opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
     offset_background: optional(boolean()),
     stroke_width: optional(number()),
   }),
