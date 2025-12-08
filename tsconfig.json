@@ -1,17 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es2021",
+    "declaration": true,
+    "declarationMap": true,    
+    "experimentalDecorators": true,
+    "lib": ["ES2021", "dom", "dom.iterable", "dom.asynciterable"],
     "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["ES2021", "dom", "dom.iterable"],
+    "moduleResolution": "bundler",
     "noEmit": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "strict": true,
     "noImplicitAny": false,
-    "skipLibCheck": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "outDir": "./dist",
     "resolveJsonModule": true,
-    "experimentalDecorators": true
-  }
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2021"
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist" , ".*"]
 }

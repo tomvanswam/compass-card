@@ -1,0 +1,30 @@
+{
+  "name": "Compass Card Devcontainer",
+  "dockerComposeFile": ["docker-compose.yml"],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "runServices": ["homeassistant"],
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8123],
+  "postCreateCommand": "npm ci",
+  "postStartCommand": "npm run lint:fix || true",
+  "remoteUser": "node",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "davidanson.vscode-markdownlint",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-next",
+        "mhutchie.git-graph"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "always"
+        },
+        "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"]
+      }
+    }
+  }
+}

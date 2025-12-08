@@ -1,42 +1,122 @@
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import css from '@eslint/css';
+import { defineConfig } from 'eslint/config';
+import globals from 'globals';
 import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
+import json from '@eslint/json';
+import markdown from '@eslint/markdown';
+import tseslint from 'typescript-eslint';
+import tsParser from '@typescript-eslint/parser';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-export default [
+export default defineConfig([
   {
-    ignores: ['dist/*.js', 'node_modules/*'],
+    ignores: ['dist/*', 'node_modules/*', '.hass_dev/*', 'package-lock.json'],
   },
-  ...compat.extends('plugin:@typescript-eslint/recommended', 'prettier', 'plugin:prettier/recommended'),
   {
-    languageOptions: {
+    extends: ['js/recommended'], files: ['**/*.{js,mjs,cjs,ts,mts,cts}'], languageOptions: {
+      ecmaVersion: 2021, globals: globals.browser,
       parser: tsParser,
-      ecmaVersion: 2018,
-      sourceType: 'module',
-
       parserOptions: {
         experimentalDecorators: true,
+        sourceType: 'module',
       },
-    },
-
+    }, plugins: { js }
+  },
+  tseslint.configs.recommended,
+  { extends: ['json/recommended'], files: ['**/*.json'], language: 'json/json', plugins: { json } },
+  { extends: ['markdown/recommended'], files: ['**/*.md'], language: 'markdown/gfm', plugins: { markdown } },
+  { extends: ['css/recommended'], files: ['**/*.css'], language: 'css/css', plugins: { css } },
+  {
     rules: {
-      '@typescript-eslint/camelcase': 0,
-
-      'no-console': [
-        'error',
-        {
-          allow: ['warn'],
-        },
-      ],
+      'block-scoped-var': ['error'],
+      'camelcase': ['warn', {
+        allow: [
+          'indicator_sensors',
+          'value_sensors',
+          'background_image',
+          'is_attribute',
+          'service_data',
+          'navigation_path',
+          'new_tab',
+          'from_value',
+          'state_abbreviation',
+          'state_units',
+          'state_value',
+          'background_opacity',
+          'offset_background',
+          'stroke_width',
+          'dynamic_style',
+          'tap_action',
+          'test_gui',
+          'mwc-*',
+          ''
+        ]
+      }],
+      'class-methods-use-this': ['error'],
+      'consistent-return': ['error'],
+      'consistent-this': ['error', 'that'],
+      'default-case': ['error'],
+      'default-case-last': ['error'],
+      'default-param-last': ['error'],
+      'dot-notation': ['error'],
+      'eqeqeq': ['error', 'always'],
+      'no-alert': ['error'],
+      'no-caller': ['error'],
+      'no-console': ['error'],
+      'no-constructor-return': ['error'],
+      'no-div-regex': ['error'],
+      'no-duplicate-imports': ['error'],
+      'no-else-return': ['error'],
+      'no-empty': ['error'],
+      'no-empty-function': ['error'],
+      'no-eq-null': ['error'],
+      'no-eval': ['error'],
+      'no-implied-eval': ['error'],
+      'no-lone-blocks': ['error'],
+      'no-lonely-if': ['error'],
+      'no-loop-func': ['error'],
+      'no-magic-numbers': ['warn', { ignoreArrayIndexes: true, ignoreDefaultValues: true }],
+      'no-new': ['error'],
+      'no-new-func': ['error'],
+      'no-new-wrappers': ['error'],
+      'no-nonoctal-decimal-escape': ['error'],
+      'no-octal': ['error'],
+      'no-param-reassign': ['error'],
+      'no-return-assign': ['error'],
+      'no-script-url': ['error'],
+      'no-self-compare': ['error'],
+      'no-shadow': ['error'],
+      'no-shadow-restricted-names': ['error'],
+      'no-unassigned-vars': ['error'],
+      'no-unmodified-loop-condition': ['error'],
+      'no-unreachable-loop': ['error'],
+      'no-unused-expressions': ['error'],
+      'no-unused-vars': ['warn'],
+      'no-use-before-define': ['error'],
+      'no-useless-assignment': ['error'],
+      'no-useless-call': ['error'],
+      'no-useless-computed-key': ['error'],
+      'no-useless-concat': ['error'],
+      'no-useless-constructor': ['error'],
+      'no-useless-rename': ['error'],
+      'no-useless-return': ['error'],
+      'no-var': ['error'],
+      'no-with': ['error'],
+      'prefer-arrow-callback': ['error'],
+      'prefer-const': ['error'],
+      'prefer-destructuring': ['error'],
+      'prefer-named-capture-group': ['error'],
+      'prefer-numeric-literals': ['error'],
+      'prefer-object-has-own': ['error'],
+      'prefer-object-spread': ['error'],
+      'prefer-regex-literals': ['error'],
+      'prefer-rest-params': ['error'],
+      'prefer-spread': ['error'],
+      'prefer-template': ['error'],
+      'quotes': ['error', 'single'],
+      'semi': ['error', 'always'],
+      'sort-imports': ['error', { ignoreCase: true }],
+      'sort-keys': ['error', 'asc', { caseSensitive: false }],
+      'sort-vars': ['error', { ignoreCase: true }],
     },
   },
-];
+]);

@@ -1,6 +1,6 @@
+import { ActionConfig, CompassCardConfig } from '../editorTypes.js';
+import { CompassCard } from '../compass-card.js';
 import { HomeAssistant } from 'custom-card-helpers';
-import { CompassCard } from '../compass-card';
-import { ActionConfig, CompassCardConfig } from '../editorTypes';
 
 export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: ActionConfig): void => {
   let e;
@@ -8,7 +8,7 @@ export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfi
     case 'more-info': {
       e = new Event('hass-more-info', { composed: true });
       e.detail = {
-        entityId: actionConfig.entity || config?.['tap_action'],
+        entityId: actionConfig.entity || config?.tap_action,
       };
       node.dispatchEvent(e);
       break;
@@ -27,7 +27,8 @@ export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfi
     }
     case 'call-service': {
       if (!actionConfig.service) return;
-      const [domain, service] = actionConfig.service.split('.', 2);
+      const MAX_SERVICE_LENGTH = 2;
+      const [domain, service] = actionConfig.service.split('.', MAX_SERVICE_LENGTH);
       const serviceData = actionConfig.service_data ? { ...JSON.parse(actionConfig.service_data) } : '';
       hass.callService(domain, service, serviceData);
       break;
@@ -42,6 +43,6 @@ export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfi
       break;
     }
     default:
-      return;
+
   }
 };

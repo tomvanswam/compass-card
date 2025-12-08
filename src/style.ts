@@ -1,9 +1,9 @@
-import { CSSResult, css } from 'lit';
+import { css, CSSResult } from 'lit';
 
 const style: CSSResult = css`
   :host {
     --compass-card-compass-padding: 16px;
-    --compass-card-svg-scale: 100%;
+    --compass-card-svg-scale: 1;
     --compass-card-masonry-row-height: 50px;
     --compass-card-masonry-rows: 3;
     --compass-card-masonry-header-rows: 1;
@@ -27,7 +27,7 @@ const style: CSSResult = css`
     overflow: hidden;
     height: 100%;
     display: flex;
-    flex: stretch;
+    flex: 1;
     flex-direction: column;
   }
   ha-card:has(.header) {
@@ -45,10 +45,12 @@ const style: CSSResult = css`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    color: var(--compass-card-header-title-color, var(--primary-text-color));
   }
   .icon {
     margin-top: 8px;
     float: right;
+    color: var(--compass-card-header-icon-color, var(--primary-text-color));
   }
   .compass {
     z-index: 1;
@@ -75,18 +77,52 @@ const style: CSSResult = css`
     height: calc(100% - 74px);
   }
   .compass-svg {
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
     max-height: 100%;
     display: block;
     overflow: visible;
     transform: scale(var(--compass-card-svg-scale, 1));
+    transform-box: fill-box;
+    transform-origin: center center;
+    aspect-ratio: 1;
   }
   .compass-svg .compass-background {
     opacity: var(--compass-card-svg-image-opacity);
   }
+
+  /* circle presentational styling via variables */
   .compass-svg .circle {
     fill: none;
+    stroke: var(--compass-circle-stroke, var(--primary-text-color));
+    stroke-width: var(--compass-circle-stroke-width, 2px);
+    stroke-opacity: 1;
+  }
+
+  /* indicator shapes use --compass-card-indicator-color (set inline on the group) */
+  .compass-svg [class^='indicator-'] *,
+  .compass-svg .arrow-outward path,
+  .compass-svg .arrow-inward path,
+  .compass-svg .circle-indicator path {
+    /* elements that use var(--compass-card-indicator-color) will inherit it */
+  }
+
+  /* direction labels: centralized font & sizing, color via --compass-card-dir-text-color */
+  .compass-svg .dir-text {
+    font-family: sans-serif;
+    font-size: 13.333px;
+    fill: var(--compass-card-dir-text-color, var(--primary-text-color));
+  }
+
+  /* anchors for compass points */
+  .compass-svg .north-text,
+  .compass-svg .south-text {
+    text-anchor: middle;
+  }
+  .compass-svg .east-text,
+  .compass-svg .west-text {
+    text-anchor: start;
   }
   .indicator-sensor,
   .value-sensor {
@@ -101,21 +137,26 @@ const style: CSSResult = css`
   .indicator-sensor .abbr {
     font-size: 2rem;
     font-weight: 600;
+    color: var(--compass-card-indicator-abbr-color, var(--primary-text-color));
   }
   .indicator-sensor .measurement {
     padding-left: 0.2rem;
     font-size: 1rem;
+    color: var(--compass-card-indicator-units-color, var(--secondary-text-color));
   }
   .indicator-sensor .value {
     padding-left: 0.2rem;
     font-size: 1rem;
+    color: var(--compass-card-indicator-value-color, var(--primary-text-color));
   }
   .value-sensor .measurement {
     font-size: 1rem;
     padding-left: 0.2rem;
+    color: var(--compass-card-value-units-color, var(--secondary-text-color));
   }
   .value-sensor .value {
     font-size: 2rem;
+    color: var(--compass-card-value-value-color, var(--primary-text-color));
   }
   [class^='sensor-'] {
     display: flex;
