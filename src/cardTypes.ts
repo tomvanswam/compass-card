@@ -46,6 +46,7 @@ export interface CCHeaderItem extends CCProperties {
 
 export interface CCCompass {
   circle: CCCircle;
+  ticks: CCTicks;
   north: CCNorth;
   east: CCProperties;
   south: CCProperties;
@@ -58,6 +59,11 @@ export interface CCCircle extends CCProperties {
   background_opacity: number;
   offset_background: boolean;
   stroke_width: number;
+}
+
+export interface CCTicks extends CCProperties {
+  step: number;
+  radius: number;
 }
 
 export interface CCNorth extends CCProperties {
