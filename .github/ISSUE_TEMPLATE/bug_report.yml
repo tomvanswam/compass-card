@@ -17,12 +17,14 @@ body:
       options:
         - label: I cannot find my issue in the documentation
           required: true
-        - label: The issue is unique:,there is no other existing issue that covers this, neither open nor closed
+        - label: The issue is unique: there is no other existing issue that covers this, neither open nor closed
           required: true
         - label: I have examined the release notes of the version installed for possible breaking changes
           required: true
-        - label: I updated to the latest version available
+        - label: For the compass-card: I updated to the latest version available
           required: true
+        - label: For Home Assistant: I am latest / recent versionm if not...specify in the case
+          required: true          
         - label: I cleared the cache of my browser
           required: true
   - type: textarea
