@@ -167,6 +167,22 @@ const style: CSSResult = css`
   .value-sensor[class^='sensor-']:not(:first-child) {
     margin-top: -0.8rem;
   }
+  .compass__ticks {
+    stroke: var(--compass-card-tick-color, var(--primary-text-color));
+    stroke-linecap: round;
+  }
+  .compass__tick {
+    stroke-width: 0.7;
+    opacity: 0.7;
+  }
+  .compass__tick--major {
+    stroke-width: 1.2;
+    opacity: 0.7;
+  }
+  .compass__tick--minor {
+    stroke-width: 0.7;
+    opacity: 0.7;
+  }
 `;
 
 export default style;
