@@ -92,7 +92,7 @@ export const CCTicksConfigStruct = assign(
     step: optional(numberBetween(DEGREES_MIN, DEGREES_MID)),
   }),
 );
-export type CCTicksConfig = Infer<typeof CCNorthConfigStruct>;
+export type CCTicksConfig = Infer<typeof CCTicksConfigStruct>;
 
 export const CCEntityConfigStruct = object({
   attribute: optional(string()),
