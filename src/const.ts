@@ -40,6 +40,7 @@ export const DEFAULT_CIRCLE_STROKE_WIDTH = 2;
 export const DEFAULT_DECIMALS = 0;
 export const DEFAULT_INDICATOR_RADIUS = 70;
 export const DEFAULT_INDICATOR_SIZE = 19;
+export const DEFAULT_TICK_STEP = 15;
 export const DEFAULT_SECTIONS_SIZE = {
   COLUMNS_DEFAULT: 12,
   COLUMNS_MIN: 1,
@@ -48,6 +49,8 @@ export const DEFAULT_SECTIONS_SIZE = {
 };
 export const DEFAULT_START_SIZE = 0;
 export const DEGREES_MAX = 360;
+export const DEGREES_MID = 180;
+export const DEGREES_QRT = 90;
 export const DEGREES_MIN = 0;
 export const DEGREES_ONE = 1;
 export const DEGREES_PER_ABBREVIATION = 22.5;
@@ -64,3 +67,10 @@ export const OPACITY_VISIBLE = 1;
 export const RADIUS_TO_DIAMETER_FACTOR = 2;
 export const SVG_SCALE_MAX = 100;
 export const SVG_SCALE_MIN = 0;
+export const TICKS_OUTER_RADIUS_OFFSET = 2;
+export const TICKS_TOLERANCE_DEGREE = 1;
+export const BASE_TICK_INNER_RADIUS_LENGTH = 4;
+export const MINOR_TICK_INNER_RADIUS_LENGTH = 6;
+export const MEDIUM_TICK_INNER_RADIUS_LENGTH = 8;
+export const MAJOR_TICK_INNER_RADIUS_LENGTH = 10;
+export const MAJOR_TICK_ANGLE = 22.5;
