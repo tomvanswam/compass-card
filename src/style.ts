@@ -167,20 +167,24 @@ const style: CSSResult = css`
   .value-sensor[class^='sensor-']:not(:first-child) {
     margin-top: -0.8rem;
   }
-  .compass__ticks {
+  .compass .ticks {
     stroke: var(--compass-card-tick-color, var(--primary-text-color));
     stroke-linecap: round;
   }
-  .compass__tick {
+  .compass .tick {
     stroke-width: 0.7;
     opacity: 0.7;
   }
-  .compass__tick--major {
-    stroke-width: 1.2;
+  .compass .tick.major {
+    stroke-width: 2;
     opacity: 0.7;
   }
-  .compass__tick--minor {
-    stroke-width: 0.7;
+  .compass .tick.medium {
+    stroke-width: 1;
+    opacity: 0.7;
+  }
+  .compass .tick.minor {
+    stroke-width: 0.5;
     opacity: 0.7;
   }
 `;
