@@ -401,8 +401,8 @@ export class CompassCard extends LitElement {
 
   private renderTicks(): TemplateResult {
     const ticksColor = this.compass.ticks.color;
-    const ticksRadius = this.compass.ticks.radius || CIRCLE.RADIUS;
-    const ticksStep = this.compass.ticks.step || DEFAULT_TICK_STEP;
+    const ticksRadius = this.compass.ticks.radius;
+    const ticksStep = this.compass.ticks.step;
     const ticks: TemplateResult[] = [];
     const center = CIRCLE.CENTER;
     const radiusOuter = ticksRadius + TICKS_OUTER_RADIUS_OFFSET;
