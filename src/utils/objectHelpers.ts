@@ -208,7 +208,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     entity: entities[sens],
     indicator: {
       color: indColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow, '', indIconImage, size, radius, opacity),
       image: indIconImage,
       opacity: opacity,
       radius: radius,
@@ -220,17 +220,17 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     sensor: attrib === '' ? sens : `${sens}.${attrib}`,
     state_abbreviation: {
       color: abbrColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow, '', indIconImage, size, radius, opacity),
       show: abbrShow,
     },
     state_units: {
       color: unitsColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow, '', indIconImage, size, radius, opacity),
       show: unitsShow,
     },
     state_value: {
       color: valueColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, '', indIconImage, size, radius, opacity),
       show: valueShow,
     },
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
