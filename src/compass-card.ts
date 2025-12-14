@@ -1,7 +1,7 @@
 import './editor.js';
 import * as MDI from '@mdi/js';
 import { assert, StructError } from 'superstruct';
-import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, UNAVAILABLE } from './const.js';
+import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCValue, CCValueSensor } from './cardTypes.js';
 import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
 import { CSSResult, html, LitElement, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
@@ -384,6 +384,7 @@ export class CompassCard extends LitElement {
       }
       ${this.getVisibility(this.compass.circle) ? CompassCard.svgCircle(this.compass.circle.offset_background ? directionOffset : DEGREES_MIN) : ''}
         <g class="indicators" transform="rotate(${directionOffset},${CIRCLE.CENTER},${CIRCLE.CENTER})" stroke-width=".5">
+          ${this.compass.ticks.show ? this.renderTicks() : ''}
           ${this.compass.north.show ? this.svgIndicatorNorth() : ''}
           ${this.compass.east.show ? this.svgIndicatorEast() : ''}
           ${this.compass.south.show ? this.svgIndicatorSouth() : ''}
@@ -396,6 +397,68 @@ export class CompassCard extends LitElement {
 
   private static svgCircle(directionOffset: number): SVGTemplateResult {
     return svg`<circle class="circle" cx="${CIRCLE.CENTER}" cy="${CIRCLE.CENTER}" r="${CIRCLE.RADIUS}" transform="rotate(${directionOffset},${CIRCLE.CENTER},${CIRCLE.CENTER})" />`;
+  }
+
+  private renderTicks(): TemplateResult {
+    const { color: ticksColor, radius: ticksRadius, step: ticksStep } = this.compass.ticks;
+    const ticks: TemplateResult[] = [];
+    const center = CIRCLE.CENTER;
+    const radiusOuter = ticksRadius + TICKS_OUTER_RADIUS_OFFSET;
+    const radiusInnerMinor = ticksRadius - MINOR_TICK_INNER_RADIUS_LENGTH;
+    const radiusInnerMedium = ticksRadius - MEDIUM_TICK_INNER_RADIUS_LENGTH;
+    const radiusInnerMajor = ticksRadius - MAJOR_TICK_INNER_RADIUS_LENGTH;
+
+    for (let angle = 0; angle < DEGREES_MAX; angle += ticksStep) {
+      // normalize angle into 0–359
+      const angle_n = CompassCard.positiveDegrees(angle);
+
+      // Level classification:
+      const isMajor = angle_n % DEGREES_QRT === DEGREES_MIN; // N, E, S, W
+      let isMedium = false;
+      if (!isMajor) {
+        const ratio = angle_n / MAJOR_TICK_ANGLE; // e.g. 22.5 → 1, 45 → 2, 67.5 → 3
+        const nearest = Math.round(ratio);
+        const nearestAngle = nearest * MAJOR_TICK_ANGLE;
+        const diff = Math.abs(angle_n - nearestAngle); // difference in degrees
+
+        isMedium = diff <= TICKS_TOLERANCE_DEGREE;
+      }
+
+      let level: 'major' | 'medium' | 'minor';
+      let r1: number;
+
+      if (isMajor) {
+        level = 'major';
+        r1 = radiusInnerMajor;
+      } else if (isMedium) {
+        level = 'medium';
+        r1 = radiusInnerMedium;
+      } else {
+        level = 'minor';
+        r1 = radiusInnerMinor;
+      }
+
+      const r2 = radiusOuter;
+
+      const rad = (angle_n * Math.PI) / DEGREES_MID;
+      const x1 = center + r1 * Math.sin(rad);
+      const y1 = center - r1 * Math.cos(rad);
+      const x2 = center + r2 * Math.sin(rad);
+      const y2 = center - r2 * Math.cos(rad);
+
+      ticks.push(svg`
+      <line
+        x1="${x1}" y1="${y1}"
+        x2="${x2}" y2="${y2}"
+        class="tick ${level}"
+      />
+    `);
+    }
+    return svg`
+      <g class="ticks" style=${ticksColor ? `--compass-card-tick-color: ${ticksColor};` : ''}>
+        ${ticks}
+      </g>
+    `;
   }
 
   private svgIndicators(): SVGTemplateResult[] {

@@ -1,6 +1,6 @@
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes.js';
-import { DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEGREES_MIN, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
+import { CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
 export function getBoolean(value: boolean | number | string | undefined, defValue: boolean): boolean {
@@ -136,6 +136,10 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
   const southShow = getBoolean(config.compass?.south?.show, false);
   const westColor = config.compass?.west?.color || colors.primary;
   const westShow = getBoolean(config.compass?.west?.show, false);
+  const ticksColor = config.compass?.ticks?.color || colors.primary;
+  const ticksShow = getBoolean(config.compass?.ticks?.show, false);
+  const ticksRadius = config.compass?.ticks?.radius || CIRCLE.RADIUS;
+  const ticksStep = config.compass?.ticks?.step || DEFAULT_TICK_STEP;
   const bgImage = config.compass?.circle?.background_image || '';
   const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : config.compass?.circle?.background_image ? OPACITY_VISIBLE : OPACITY_TRANSPARENT;
   const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
@@ -167,6 +171,13 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
       dynamic_style: getDynamicStyle(config.compass?.south?.dynamic_style, config, entities, southColor, southShow),
       show: southShow,
     },
+    ticks: {
+      color: ticksColor,
+      dynamic_style: getDynamicStyle(config.compass?.ticks?.dynamic_style, config, entities, ticksColor, ticksShow),
+      radius: ticksRadius,
+      show: ticksShow,
+      step: ticksStep,
+    },    
     west: {
       color: westColor,
       dynamic_style: getDynamicStyle(config.compass?.west?.dynamic_style, config, entities, westColor, westShow),
@@ -197,7 +208,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     entity: entities[sens],
     indicator: {
       color: indColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow, '', indIconImage, size, radius, opacity),
       image: indIconImage,
       opacity: opacity,
       radius: radius,
@@ -209,17 +220,17 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     sensor: attrib === '' ? sens : `${sens}.${attrib}`,
     state_abbreviation: {
       color: abbrColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow, '', indIconImage, size, radius, opacity),
       show: abbrShow,
     },
     state_units: {
       color: unitsColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow, '', indIconImage, size, radius, opacity),
       show: unitsShow,
     },
     state_value: {
       color: valueColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, '', indIconImage, size, radius, opacity),
       show: valueShow,
     },
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',

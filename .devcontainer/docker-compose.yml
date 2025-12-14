@@ -5,6 +5,8 @@ services:
     # Mount repo root into /workspace (compose file lives in .devcontainer)
     volumes:
       - ..:/workspace:cached
+    ports:
+      - "4000:4000"
     networks:
       - ha_net
     # Keep container running for interactive use (override if needed)

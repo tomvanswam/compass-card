@@ -1,11 +1,18 @@
 {
   "name": "Compass Card Devcontainer",
-  "dockerComposeFile": ["docker-compose.yml"],
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
-  "runServices": ["homeassistant"],
+  "runServices": [
+    "homeassistant"
+  ],
   "shutdownAction": "stopCompose",
-  "forwardPorts": [8123],
+  "forwardPorts": [
+    8123,
+    4000
+  ],
   "postCreateCommand": "npm ci",
   "postStartCommand": "npm run lint:fix || true",
   "remoteUser": "node",
@@ -23,7 +30,12 @@
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "always"
         },
-        "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"]
+        "eslint.validate": [
+          "javascript",
+          "typescript",
+          "javascriptreact",
+          "typescriptreact"
+        ]
       }
     }
   }
