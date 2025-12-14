@@ -177,15 +177,12 @@ const style: CSSResult = css`
   }
   .compass .tick.major {
     stroke-width: 2;
-    opacity: 0.7;
   }
   .compass .tick.medium {
     stroke-width: 1;
-    opacity: 0.7;
   }
   .compass .tick.minor {
     stroke-width: 0.5;
-    opacity: 0.7;
   }
 `;
 

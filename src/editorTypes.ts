@@ -1,5 +1,5 @@
 import { array, assign, boolean, enums, Infer, number, object, optional, pattern, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE } from './const.js';
+import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE } from './const.js';
 import { COMPASS_LANGUAGES } from './localize/localize.js';
 import { LovelaceCardConfig } from 'custom-card-helpers';
 
@@ -88,8 +88,8 @@ export type CCNorthConfig = Infer<typeof CCNorthConfigStruct>;
 export const CCTicksConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
-    radius: optional(number()),    
-    step: optional(numberBetween(DEGREES_MIN, DEGREES_MID)),
+    radius: optional(number()),
+    step: optional(numberBetween(DEGREES_ONE, DEGREES_MID)),
   }),
 );
 export type CCTicksConfig = Infer<typeof CCTicksConfigStruct>;

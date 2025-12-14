@@ -400,9 +400,7 @@ export class CompassCard extends LitElement {
   }
 
   private renderTicks(): TemplateResult {
-    const ticksColor = this.compass.ticks.color;
-    const ticksRadius = this.compass.ticks.radius;
-    const ticksStep = this.compass.ticks.step;
+    const { color: ticksColor, radius: ticksRadius, step: ticksStep } = this.compass.ticks;
     const ticks: TemplateResult[] = [];
     const center = CIRCLE.CENTER;
     const radiusOuter = ticksRadius + TICKS_OUTER_RADIUS_OFFSET;
@@ -412,16 +410,16 @@ export class CompassCard extends LitElement {
 
     for (let angle = 0; angle < DEGREES_MAX; angle += ticksStep) {
       // normalize angle into 0–359
-      const angle_n = ((angle % DEGREES_MAX) + DEGREES_MAX) % DEGREES_MAX;
+      const angle_n = CompassCard.positiveDegrees(angle);
 
       // Level classification:
-      const isMajor = angle_n % DEGREES_QRT === DEGREES_MIN;                                 // N, E, S, W
+      const isMajor = angle_n % DEGREES_QRT === DEGREES_MIN; // N, E, S, W
       let isMedium = false;
       if (!isMajor) {
-        const ratio = angle_n / MAJOR_TICK_ANGLE;             // e.g. 22.5 → 1, 45 → 2, 67.5 → 3
+        const ratio = angle_n / MAJOR_TICK_ANGLE; // e.g. 22.5 → 1, 45 → 2, 67.5 → 3
         const nearest = Math.round(ratio);
         const nearestAngle = nearest * MAJOR_TICK_ANGLE;
-        const diff = Math.abs(angle_n - nearestAngle);                   // difference in degrees
+        const diff = Math.abs(angle_n - nearestAngle); // difference in degrees
 
         isMedium = diff <= TICKS_TOLERANCE_DEGREE;
       }
