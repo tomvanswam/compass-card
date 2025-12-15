@@ -41,5 +41,10 @@ export default [
       format: 'es',
     },
     plugins: [...plugins],
+    watch: {
+      chokidar: {
+        usePolling: true,
+      },
+    },
   },
 ];
