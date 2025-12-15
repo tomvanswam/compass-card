@@ -7,7 +7,7 @@ import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
 import { CSSResult, html, LitElement, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
-import { getLovelace, HomeAssistant, LovelaceCard, LovelaceCardEditor } from 'custom-card-helpers';
+import { getLovelace, HomeAssistant, LovelaceCard, LovelaceCardEditor } from './ha-helpers.js';
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { localize } from './localize/localize.js';
