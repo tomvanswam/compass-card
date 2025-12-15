@@ -54,6 +54,7 @@ export const DEGREES_QRT = 90;
 export const DEGREES_MIN = 0;
 export const DEGREES_ONE = 1;
 export const DEGREES_PER_ABBREVIATION = 22.5;
+export const HALF = 0.5;
 export const INDEX_ELEMENT_0 = 0;
 export const LENGTH_TO_INDEX = -1;
 export const MAX_INDICATOR_ARRAY_SIZE = 10;
