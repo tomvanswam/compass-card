@@ -3,7 +3,7 @@ import { COMPASS_LANGUAGES, localize } from './localize/localize.js';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, DEGREES_MAX, DEGREES_MIN, ICON_VALUES, NO_ELEMENTS } from './const';
-import { fireEvent, HomeAssistant, LovelaceCardEditor } from './ha-helpers';
+import { fireEvent, HomeAssistant, LovelaceCardEditor } from './utils/ha-helpers';
 
 
 interface CardHelpers {
