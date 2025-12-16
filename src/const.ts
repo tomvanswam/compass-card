@@ -4,6 +4,7 @@ import { localize } from './localize/localize.js';
 export const CARD_VERSION = '3.4.0';
 export const ICONS = {
   compass: 'mdi:compass',
+  sun: 'mdi:sun',
 };
 
 export const COMPASS_POINTS = {

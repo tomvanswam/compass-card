@@ -34,7 +34,7 @@ export const ActionConfigStruct = object({
 export type ActionConfig = Infer<typeof ActionConfigStruct>;
 
 export const CCStyleConfigStruct = object({
-  background_image: optional(string()),
+  background_image: optional(pattern(string(), /^(?:https?:\/\/)|(?:\/local\/)/)),
   color: optional(string()),
   image: CCImageStruct,
   opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
