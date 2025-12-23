@@ -75,3 +75,4 @@ export const MINOR_TICK_INNER_RADIUS_LENGTH = 6;
 export const MEDIUM_TICK_INNER_RADIUS_LENGTH = 8;
 export const MAJOR_TICK_INNER_RADIUS_LENGTH = 10;
 export const MAJOR_TICK_ANGLE = 22.5;
+export const URL_REGEX = /^(?:https?:\/\/)|(?:\/local\/)/i;
