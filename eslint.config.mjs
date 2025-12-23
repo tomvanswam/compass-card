@@ -9,7 +9,7 @@ import tsParser from '@typescript-eslint/parser';
 
 export default defineConfig([
   {
-    ignores: ['dist/*', 'node_modules/*', '.hass_dev/*', 'package-lock.json'],
+    ignores: ['dist/*', 'node_modules/*', '.hass_dev/*', 'package-lock.json', 'ha-frontend/*'],
   },
   {
     extends: ['js/recommended'], files: ['**/*.{js,mjs,cjs,ts,mts,cts}'], languageOptions: {
