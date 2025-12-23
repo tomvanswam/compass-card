@@ -47,7 +47,6 @@ export default defineConfig([
           'dynamic_style',
           'tap_action',
           'test_gui',
-          'mwc-*',
           ''
         ]
       }],
