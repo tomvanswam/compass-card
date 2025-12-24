@@ -21,6 +21,8 @@
     "direction": "Direction",
     "offset": "Offset",
     "show": "Show",
+    "value_sensors": "Value Sensors",
+    "indicator_sensors": "Indicator Sensors",
     "abbreviations": "Abbreviations",
     "toggle": "Toggle",
     "language": "Language",
@@ -37,7 +39,18 @@
       "attribute": "Attribute",
       "indicator": "Icon",
       "units": "Units",
-      "decimals": "Decimals"
+      "decimals": "Decimals",
+      "indicator_color": "Indicator Color",
+      "indicator_opacity": "Indicator Opacity",
+      "indicator_radius": "Indicator Radius",
+      "indicator_size": "Indicator Size",
+      "indicator_show": "Show Indicator",
+      "state_value_show": "Show Value",
+      "state_value_color": "Value Color",
+      "state_units_show": "Show Units",
+      "state_units_color": "Units Color",
+      "state_abbreviation_show": "Show Abbreviation",
+      "state_abbreviation_color": "Abbreviation Color"
     }
   },
   "directions": {

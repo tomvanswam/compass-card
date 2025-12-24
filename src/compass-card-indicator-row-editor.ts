@@ -6,6 +6,7 @@ import { fireEvent, HomeAssistant } from './utils/ha-helpers';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCIndicatorSensorConfig } from './editorTypes';
 import { repeat } from 'lit/directives/repeat.js';
+import { localize } from './localize/localize';
 
 
 declare global {
@@ -37,7 +38,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
 
     return html`
       <h3>
-        ${this.label || 'Indicators'}
+        ${localize('editor.indicator_sensors')}
       </h3>
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="entities">
