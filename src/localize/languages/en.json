@@ -47,7 +47,20 @@
       "state_units_color": "Units Color",
       "state_abbreviation_show": "Show Abbreviation",
       "state_abbreviation_color": "Abbreviation Color"
-    }
+    },
+    "header_icon": "Header Icon",
+    "compass_circle_image": "Circle Image",
+    "compass_circle_opacity": "Circle Opacity",
+    "compass_circle_offset": "Offset Circle",
+    "compass_circle_stroke": "Circle Stroke Width",
+    "compass_north_show": "Show North",
+    "compass_east_show": "Show East",
+    "compass_south_show": "Show South",
+    "compass_west_show": "Show West",
+    "compass_ticks_radius": "Ticks Radius",
+    "compass_ticks_step": "Ticks Step",
+    "header_conf": "Header Configuration",
+    "circle_conf": "Circle Configuration"
   },
   "directions": {
     "north": "North",

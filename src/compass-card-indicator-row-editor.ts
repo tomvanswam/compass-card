@@ -1,11 +1,11 @@
 
+import { COMPASS_LANGUAGES, localize } from './localize/localize';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from './const';
 import { fireEvent, HomeAssistant } from './utils/ha-helpers';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCIndicatorSensorConfig } from './editorTypes';
-import { localize } from './localize/localize';
 import { repeat } from 'lit/directives/repeat.js';
 
 
@@ -20,6 +20,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @property({ attribute: false }) public entities?: CCIndicatorSensorConfig[];
   @property() public label?: string;
+  @property() public language?: string;
 
   private _entityKeys = new WeakMap<CCIndicatorSensorConfig, string>();
 
@@ -40,12 +41,31 @@ export class CompassCardIndicatorRowEditor extends LitElement {
       <h3>
         ${localize('editor.indicator_sensors')}
       </h3>
+      <ha-form
+        .hass=${this.hass}
+        .data=${{
+        language: this.language || ''
+      }}
+        .schema=${[
+        {
+          name: 'language',
+          selector: {
+            select: {
+              mode: 'dropdown',
+              options: COMPASS_LANGUAGES.map((lang) => ({ label: lang, value: lang })),
+            },
+          },
+        },
+      ]}
+        .computeLabel=${this._computeAbbLabel}
+        @value-changed=${this._abbValueChanged}
+      ></ha-form>
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="entities">
           ${repeat(
-      entities,
-      (entityConf) => this._getKey(entityConf),
-      (entityConf, index) => html`
+        entities,
+        (entityConf) => this._getKey(entityConf),
+        (entityConf, index) => html`
               <div class="entity">
                 <div class="handle">
                   <ha-svg-icon .path=${mdiDragHorizontalVariant}></ha-svg-icon>
@@ -77,7 +97,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
                 ></ha-icon-button>
               </div>
             `
-    )}
+      )}
         </div>
       </ha-sortable>
       <ha-entity-picker
@@ -108,6 +128,37 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
 
+  private _abbValueChanged(ev: CustomEvent): void {
+    const data = ev.detail.value;
+
+    if (data.language !== this.language) {
+      fireEvent(this, 'language-changed', { language: data.language });
+    }
+
+    const newEntities = [...(this.entities || [])];
+    if (!newEntities[INDEX_ELEMENT_0]) {
+      newEntities[INDEX_ELEMENT_0] = {
+        indicator: { image: DEFAULT_ICON_VALUE },
+        sensor: '',
+      };
+    }
+
+    newEntities[INDEX_ELEMENT_0] = {
+      ...newEntities[INDEX_ELEMENT_0],
+      state_abbreviation: {
+        ...newEntities[INDEX_ELEMENT_0].state_abbreviation,
+        color: data.state_abbreviation_color,
+        show: data.state_abbreviation_show,
+      },
+    };
+
+    if (!newEntities[INDEX_ELEMENT_0].state_abbreviation!.color) {
+      delete newEntities[INDEX_ELEMENT_0].state_abbreviation!.color;
+    }
+
+    fireEvent(this, 'entities-changed', { entities: newEntities });
+  }
+
   private _addEntity(ev: CustomEvent): void {
     const { value } = ev.detail;
     if (value === '') {
@@ -121,6 +172,11 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (ev.target as any).value = '';
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
+  }
+
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
+  private _computeAbbLabel(schema: any): string {
+    return localize(`editor.sensor_config.${schema.name}`);
   }
 
   private _rowMoved(ev: CustomEvent): void {
