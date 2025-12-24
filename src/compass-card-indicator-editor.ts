@@ -9,31 +9,31 @@ import { localize } from './localize/localize';
 
 @customElement('compass-card-indicator-editor')
 export class CompassCardIndicatorEditor extends LitElement {
-    @property({ attribute: false }) public hass?: HomeAssistant;
-    @property({ attribute: false }) public config?: CCIndicatorSensorConfig;
+  @property({ attribute: false }) public hass?: HomeAssistant;
+  @property({ attribute: false }) public config?: CCIndicatorSensorConfig;
 
-    protected render(): TemplateResult {
-        if (!this.hass || !this.config) {
-            return html``;
-        }
+  protected render(): TemplateResult {
+    if (!this.hass || !this.config) {
+      return html``;
+    }
 
-        const schema = [
-            { name: 'sensor', selector: { entity: {} } },
-            { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
-            { name: 'indicator', selector: { select: { mode: 'dropdown', options: ICON_VALUES.map((icon) => ({ label: icon, value: icon })) } } },
-            { name: 'units', selector: { text: {} } },
-            { name: 'decimals', selector: { number: { min: 0, max: 10, mode: 'box' } } },
-        ];
+    const schema = [
+      { name: 'sensor', selector: { entity: {} } },
+      { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
+      { name: 'indicator', selector: { select: { mode: 'dropdown', options: ICON_VALUES.map((icon) => ({ label: icon, value: icon })) } } },
+      { name: 'units', selector: { text: {} } },
+      { name: 'decimals', selector: { number: { min: 0, max: 10, mode: 'box' } } },
+    ];
 
-        const data = {
-            sensor: this.config.sensor || '',
-            attribute: this.config.attribute || '',
-            indicator: this.config.indicator?.image || DEFAULT_ICON_VALUE,
-            units: this.config.units || '',
-            decimals: this.config.decimals,
-        };
+    const data = {
+      sensor: this.config.sensor || '',
+      attribute: this.config.attribute || '',
+      indicator: this.config.indicator?.image || DEFAULT_ICON_VALUE,
+      units: this.config.units || '',
+      decimals: this.config.decimals,
+    };
 
-        return html`
+    return html`
       <div class="header">
         <ha-icon-button
           .label=${this.hass.localize('ui.common.back')}
@@ -51,58 +51,45 @@ export class CompassCardIndicatorEditor extends LitElement {
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static _computeLabel(schema: any): string {
+    return localize(`editor.sensor_config.${schema.name}`);
+  }
+
+  private _valueChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this.config) {
+      return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private static _computeLabel(schema: any) {
-        switch (schema.name) {
-            case 'sensor':
-                return localize('editor.primary entity description');
-            case 'attribute':
-                return 'Attribute';
-            case 'indicator':
-                return localize('editor.indicator');
-            case 'units':
-                return 'Units';
-            case 'decimals':
-                return 'Decimals';
-            default:
-                return schema.name;
-        }
-    }
+    const data = ev.detail.value;
+    const newConfig = {
+      ...this.config,
+      sensor: data.sensor,
+      attribute: data.attribute,
+      units: data.units,
+      decimals: data.decimals,
+      indicator: {
+        ...this.config.indicator,
+        image: data.indicator,
+      },
+    };
 
-    private _valueChanged(ev: CustomEvent): void {
-        ev.stopPropagation();
-        if (!this.config) {
-            return;
-        }
+    if (!data.attribute) delete newConfig.attribute;
+    if (!data.units) delete newConfig.units;
+    if (data.decimals === undefined) delete newConfig.decimals;
 
-        const data = ev.detail.value;
-        const newConfig = {
-            ...this.config,
-            sensor: data.sensor,
-            attribute: data.attribute,
-            units: data.units,
-            decimals: data.decimals,
-            indicator: {
-                ...this.config.indicator,
-                image: data.indicator,
-            },
-        };
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
 
-        if (!data.attribute) delete newConfig.attribute;
-        if (!data.units) delete newConfig.units;
-        if (data.decimals === undefined) delete newConfig.decimals;
+  private _goBack(): void {
+    fireEvent(this, 'go-back');
+  }
 
-        fireEvent(this, 'config-changed', { config: newConfig });
-    }
-
-    private _goBack(): void {
-        fireEvent(this, 'go-back');
-    }
-
-    static get styles(): CSSResultGroup {
-        return css`
+  static get styles(): CSSResultGroup {
+    return css`
       .header {
         display: flex;
         align-items: center;
@@ -116,5 +103,5 @@ export class CompassCardIndicatorEditor extends LitElement {
         --mdc-icon-button-size: 36px;
       }
     `;
-    }
+  }
 }

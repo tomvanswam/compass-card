@@ -27,7 +27,14 @@
     "primary entity description": "Direction entity",
     "secondary entity description": "Secondary entity",
     "language description": "Direction abbreviation language",
-    "offset description": "Direction offset"
+    "offset description": "Direction offset",
+    "sensor_config": {
+      "sensor": "Entity",
+      "attribute": "Attribute",
+      "indicator": "Icon",
+      "units": "Units",
+      "decimals": "Decimals"
+    }
   },
   "directions": {
     "north": "North",
