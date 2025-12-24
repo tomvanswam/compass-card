@@ -1,8 +1,10 @@
-import { CCCompassConfig, CCHeaderConfig, CCHeaderItemConfig, CCIndicatorConfig, CCNorthConfig, CompassCardConfig } from './editorTypes';
+import './compass-card-indicator-editor';
+import './compass-card-indicator-row-editor';
+import { CCCompassConfig, CCHeaderConfig, CCHeaderItemConfig, CCNorthConfig, CompassCardConfig } from './editorTypes';
 import { COMPASS_LANGUAGES, localize } from './localize/localize.js';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MIN, ICON_VALUES, NO_ELEMENTS, UNKNOWN_DIRECTION_VALUES } from './const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MIN, NO_ELEMENTS, UNKNOWN_DIRECTION_VALUES } from './const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from './utils/ha-helpers';
 
 
@@ -16,6 +18,8 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _helpers?: CardHelpers;
   @state() private _config?: CompassCardConfig;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @state() private _subElementEditorConfig?: any;
   private _initialized = false;
 
   public setConfig(config: CompassCardConfig): void {
@@ -42,6 +46,17 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const schema = this._computeSchema();
     const data = this._computeData();
 
+    if (this._subElementEditorConfig) {
+      return html`
+        <compass-card-indicator-editor
+          .hass=${this.hass}
+          .config=${this._subElementEditorConfig.elementConfig}
+          @go-back=${this._goBack}
+          @config-changed=${this._handleSubElementChanged}
+        ></compass-card-indicator-editor>
+      `;
+    }
+
     return html`
       <ha-form
         .hass=${this.hass}
@@ -50,7 +65,44 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
+      <compass-card-indicator-row-editor
+        .hass=${this.hass}
+        .entities=${this._config.indicator_sensors}
+        @entities-changed=${this._valueChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></compass-card-indicator-row-editor>
     `;
+  }
+
+  private _editDetailElement(ev: CustomEvent): void {
+    this._subElementEditorConfig = ev.detail.subElementConfig;
+  }
+
+  private _goBack(): void {
+    this._subElementEditorConfig = undefined;
+  }
+
+  private _handleSubElementChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this._config || !this.hass) {
+      return;
+    }
+
+    const configValue = this._subElementEditorConfig.type;
+    const value = ev.detail.config;
+
+    if (configValue === 'indicator') {
+      const newConfigEntities = [...(this._config.indicator_sensors || [])];
+      newConfigEntities[this._subElementEditorConfig.index] = value;
+      this._config = { ...this._config, indicator_sensors: newConfigEntities };
+    }
+
+    this._subElementEditorConfig = {
+      ...this._subElementEditorConfig,
+      elementConfig: value,
+    };
+
+    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -58,17 +110,17 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const entityDomains = ['sensor', 'sun', 'input_number', 'input_text'];
     return [
       { name: 'name', selector: { text: {} } },
-      { name: 'primary_entity', required: true, selector: { entity: { domain: entityDomains } } },
+      // { name: 'primary_entity', required: true, selector: { entity: { domain: entityDomains } } },
       { name: 'secondary_entity', selector: { entity: { domain: entityDomains } } },
-      {
-        name: 'indicator',
-        selector: {
-          select: {
-            mode: 'dropdown',
-            options: ICON_VALUES.map((icon) => ({ label: icon, value: icon })),
-          },
-        },
-      },
+      // {
+      //   name: 'indicator',
+      //   selector: {
+      //     select: {
+      //       mode: 'dropdown',
+      //       options: ICON_VALUES.map((icon) => ({ label: icon, value: icon })),
+      //     },
+      //   },
+      // },
       {
         name: 'language',
         selector: {
@@ -123,7 +175,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       name: this._config?.header?.title?.value || '',
       north: this._config?.compass?.north?.show || false,
       offset: this._config?.compass?.north?.offset || DEGREES_MIN,
-      primary_entity: this._config?.indicator_sensors?.[0]?.sensor || '',
+      // primary_entity: this._config?.indicator_sensors?.[0]?.sensor || '',
       secondary_entity: this._config?.value_sensors?.[0]?.sensor || '',
       unknown_direction: this._config?.unknown_direction || DEFAULT_UNKNOWN_DIRECTION,
     };
@@ -138,7 +190,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const newConfig = { ...config };
 
     // Update Name
-    if (data.name !== undefined) {
+    if (data && data.name !== undefined) {
       const titleValue: CCHeaderItemConfig = { ...newConfig.header?.title, value: data.name };
       const headerTitleValue: CCHeaderConfig = { ...newConfig.header, title: titleValue };
       newConfig.header = headerTitleValue;
@@ -153,22 +205,13 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       }
     }
 
-    // Update Primary Entity (indicator_sensors[0].sensor)
-    if (data.primary_entity !== undefined) {
-      if (!newConfig.indicator_sensors) {
-        newConfig.indicator_sensors = [{ indicator: {}, sensor: data.primary_entity }];
-      } else {
-        const sensors = [...newConfig.indicator_sensors];
-        sensors[0] = { ...sensors[0], sensor: data.primary_entity };
-        if (sensors[0].attribute) {
-          delete sensors[0].attribute;
-        }
-        newConfig.indicator_sensors = sensors;
-      }
+    // Update Indicators (Entities Changed)
+    if (ev.detail && ev.detail.entities) {
+      newConfig.indicator_sensors = ev.detail.entities;
     }
 
     // Update Secondary Entity (value_sensors[0].sensor)
-    if (data.secondary_entity !== undefined) {
+    if (data && data.secondary_entity !== undefined) {
       if (!newConfig.value_sensors || !newConfig.value_sensors.length) {
         newConfig.value_sensors = [{ sensor: data.secondary_entity }];
       } else {
@@ -181,20 +224,20 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       }
     }
 
-    // Update Indicator Image
-    if (data.indicator !== undefined) {
-      if (!newConfig.indicator_sensors) {
-        newConfig.indicator_sensors = [{ indicator: { image: data.indicator }, sensor: '' }];
-      } else {
-        const sensors = [...newConfig.indicator_sensors];
-        const indicator: CCIndicatorConfig = { ...sensors[0].indicator, image: data.indicator };
-        sensors[0] = { ...sensors[0], indicator };
-        newConfig.indicator_sensors = sensors;
-      }
-    }
+    // Update Indicator Image - Removed as it's now in the sub-editor
+    // if (data.indicator !== undefined) {
+    //   if (!newConfig.indicator_sensors) {
+    //     newConfig.indicator_sensors = [{ indicator: { image: data.indicator }, sensor: '' }];
+    //   } else {
+    //     const sensors = [...newConfig.indicator_sensors];
+    //     const indicator: CCIndicatorConfig = { ...sensors[0].indicator, image: data.indicator };
+    //     sensors[0] = { ...sensors[0], indicator };
+    //     newConfig.indicator_sensors = sensors;
+    //   }
+    // }
 
     // Update Language
-    if (data.language !== undefined) {
+    if (data && data.language !== undefined) {
       newConfig.language = data.language;
       if (!data.language?.trim()) {
         delete newConfig.language;
@@ -210,7 +253,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // Update Offset
-    if (data.offset !== undefined) {
+    if (data && data.offset !== undefined) {
       const north: CCNorthConfig = { ...newConfig.compass?.north, offset: Number(data.offset) };
       const compass: CCCompassConfig = { ...newConfig.compass, north };
       newConfig.compass = compass;
@@ -225,7 +268,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // Update North Show
-    if (data.north !== undefined) {
+    if (data && data.north !== undefined) {
       const north: CCNorthConfig = { ...newConfig.compass?.north, show: data.north };
       const compass: CCCompassConfig = { ...newConfig.compass, north };
       newConfig.compass = compass;
