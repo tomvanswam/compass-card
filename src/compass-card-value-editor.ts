@@ -56,7 +56,7 @@ export class CompassCardValueEditor extends LitElement {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private static _computeLabel(schema: any): string {
-        return localize(`editor.indicator.${schema.name}`);
+        return localize(`editor.sensor_config.${schema.name}`);
     }
 
     private _goBack(): void {
