@@ -1,5 +1,7 @@
 import './compass-card-indicator-editor';
 import './compass-card-indicator-row-editor';
+import './compass-card-value-editor';
+import './compass-card-value-row-editor';
 import { CCCompassConfig, CCHeaderConfig, CCHeaderItemConfig, CCNorthConfig, CompassCardConfig } from './editorTypes';
 import { COMPASS_LANGUAGES, localize } from './localize/localize.js';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
@@ -47,17 +49,35 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const data = this._computeData();
 
     if (this._subElementEditorConfig) {
-      return html`
-        <compass-card-indicator-editor
-          .hass=${this.hass}
-          .config=${this._subElementEditorConfig.elementConfig}
-          @go-back=${this._goBack}
-          @config-changed=${this._handleSubElementChanged}
-        ></compass-card-indicator-editor>
-      `;
+      if (this._subElementEditorConfig.type === 'indicator') {
+        return html`
+          <compass-card-indicator-editor
+            .hass=${this.hass}
+            .config=${this._subElementEditorConfig.elementConfig}
+            @go-back=${this._goBack}
+            @config-changed=${this._handleSubElementChanged}
+          ></compass-card-indicator-editor>
+        `;
+      }
+      if (this._subElementEditorConfig.type === 'value') {
+        return html`
+          <compass-card-value-editor
+            .hass=${this.hass}
+            .config=${this._subElementEditorConfig.elementConfig}
+            @go-back=${this._goBack}
+            @config-changed=${this._handleSubElementChanged}
+          ></compass-card-value-editor>
+        `;
+      }
     }
 
+    // Force load of ha-entity-picker by using it in a hidden ha-form
+    const forceLoadSchema = [{ name: 'dummy', selector: { entity: {} } }];
+
     return html`
+      <div style="display: none">
+        <ha-form .hass=${this.hass} .data=${{}} .schema=${forceLoadSchema}></ha-form>
+      </div>
       <ha-form
         .hass=${this.hass}
         .data=${data}
@@ -71,6 +91,13 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></compass-card-indicator-row-editor>
+      <compass-card-value-row-editor
+        .hass=${this.hass}
+        .entities=${this._config.value_sensors}
+        .label=${localize('editor.secondary.title')}
+        @entities-changed=${this._valueChanged}
+        @edit-detail-element=${this._editDetailElement}
+      ></compass-card-value-row-editor>
     `;
   }
 
@@ -95,6 +122,10 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       const newConfigEntities = [...(this._config.indicator_sensors || [])];
       newConfigEntities[this._subElementEditorConfig.index] = value;
       this._config = { ...this._config, indicator_sensors: newConfigEntities };
+    } else if (configValue === 'value') {
+      const newConfigEntities = [...(this._config.value_sensors || [])];
+      newConfigEntities[this._subElementEditorConfig.index] = value;
+      this._config = { ...this._config, value_sensors: newConfigEntities };
     }
 
     this._subElementEditorConfig = {
@@ -107,11 +138,11 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   // eslint-disable-next-line class-methods-use-this
   private _computeSchema() {
-    const entityDomains = ['sensor', 'sun', 'input_number', 'input_text'];
+    // const entityDomains = ['sensor', 'sun', 'input_number', 'input_text'];
     return [
       { name: 'name', selector: { text: {} } },
       // { name: 'primary_entity', required: true, selector: { entity: { domain: entityDomains } } },
-      { name: 'secondary_entity', selector: { entity: { domain: entityDomains } } },
+      // { name: 'secondary_entity', selector: { entity: { domain: entityDomains } } },
       // {
       //   name: 'indicator',
       //   selector: {
@@ -149,12 +180,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     switch (schema.name) {
       case 'name':
         return `${localize('editor.name')} (${localize('editor.optional')})`;
-      case 'primary_entity':
-        return `${localize('editor.primary entity description')} (${localize('editor.required')})`;
-      case 'secondary_entity':
         return `${localize('editor.secondary entity description')} (${localize('editor.optional')})`;
-      case 'indicator':
-        return `${localize('editor.indicator')} (${localize('editor.optional')})`;
       case 'language':
         return `${localize('editor.language description')} (${localize('editor.optional')})`;
       case 'unknown_direction':
@@ -176,7 +202,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       north: this._config?.compass?.north?.show || false,
       offset: this._config?.compass?.north?.offset || DEGREES_MIN,
       // primary_entity: this._config?.indicator_sensors?.[0]?.sensor || '',
-      secondary_entity: this._config?.value_sensors?.[0]?.sensor || '',
+      // secondary_entity: this._config?.value_sensors?.[0]?.sensor || '',
       unknown_direction: this._config?.unknown_direction || DEFAULT_UNKNOWN_DIRECTION,
     };
   }
@@ -207,20 +233,12 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
     // Update Indicators (Entities Changed)
     if (ev.detail && ev.detail.entities) {
-      newConfig.indicator_sensors = ev.detail.entities;
-    }
-
-    // Update Secondary Entity (value_sensors[0].sensor)
-    if (data && data.secondary_entity !== undefined) {
-      if (!newConfig.value_sensors || !newConfig.value_sensors.length) {
-        newConfig.value_sensors = [{ sensor: data.secondary_entity }];
-      } else {
-        const sensors = [...newConfig.value_sensors];
-        sensors[0] = { ...sensors[0], sensor: data.secondary_entity };
-        if (sensors[0].attribute) {
-          delete sensors[0].attribute;
-        }
-        newConfig.value_sensors = sensors;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const source = ev.composedPath()[0] as any;
+      if (source.tagName === 'COMPASS-CARD-INDICATOR-ROW-EDITOR') {
+        newConfig.indicator_sensors = ev.detail.entities;
+      } else if (source.tagName === 'COMPASS-CARD-VALUE-ROW-EDITOR') {
+        newConfig.value_sensors = ev.detail.entities;
       }
     }
 
