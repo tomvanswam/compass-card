@@ -1,28 +1,28 @@
 
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from './const';
 import { fireEvent, HomeAssistant } from './utils/ha-helpers';
+import { INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from './const';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
-import { CCIndicatorSensorConfig } from './editorTypes';
+import { CCValueSensorConfig } from './editorTypes';
 import { repeat } from 'lit/directives/repeat.js';
 
 
 declare global {
   interface HTMLElementTagNameMap {
-    'compass-card-indicator-row-editor': CompassCardIndicatorRowEditor;
+    'compass-card-value-row-editor': CompassCardValueRowEditor;
   }
 }
 
-@customElement('compass-card-indicator-row-editor')
-export class CompassCardIndicatorRowEditor extends LitElement {
+@customElement('compass-card-value-row-editor')
+export class CompassCardValueRowEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @property({ attribute: false }) public entities?: CCIndicatorSensorConfig[];
+  @property({ attribute: false }) public entities?: CCValueSensorConfig[];
   @property() public label?: string;
 
-  private _entityKeys = new WeakMap<CCIndicatorSensorConfig, string>();
+  private _entityKeys = new WeakMap<CCValueSensorConfig, string>();
 
-  private _getKey(entity: CCIndicatorSensorConfig) {
+  private _getKey(entity: CCValueSensorConfig) {
     if (!this._entityKeys.has(entity)) {
       this._entityKeys.set(entity, Math.random().toString());
     }
@@ -37,7 +37,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
 
     return html`
       <h3>
-        ${this.label || 'Indicators'}
+        ${this.label || 'Value Sensors'}
       </h3>
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="entities">
@@ -111,8 +111,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     if (value === '') {
       return;
     }
-    const newConfigEntities = this.entities!.concat({
-      indicator: { image: DEFAULT_ICON_VALUE },
+    const newConfigEntities = (this.entities || []).concat({
       sensor: value as string,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
@@ -124,7 +123,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   private _rowMoved(ev: CustomEvent): void {
     ev.stopPropagation();
     const { oldIndex, newIndex } = ev.detail;
-    const newEntities = this.entities!.concat();
+    const newEntities = (this.entities || []).concat();
     newEntities.splice(newIndex, INDEX_ELEMENT_0, newEntities.splice(oldIndex, INDEX_ELEMENT_1)[0]);
     fireEvent(this, 'entities-changed', { entities: newEntities });
   }
@@ -132,7 +131,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   private _removeRow(ev: CustomEvent): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { index } = (ev.currentTarget as any);
-    const newConfigEntities = this.entities!.concat();
+    const newConfigEntities = (this.entities || []).concat();
     newConfigEntities.splice(index, INDEX_ELEMENT_1);
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
@@ -144,7 +143,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
       subElementConfig: {
         elementConfig: this.entities![index],
         index,
-        type: 'indicator',
+        type: 'value',
       },
     });
   }
