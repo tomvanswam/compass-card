@@ -5,8 +5,8 @@ import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from './const';
 import { fireEvent, HomeAssistant } from './utils/ha-helpers';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCIndicatorSensorConfig } from './editorTypes';
-import { repeat } from 'lit/directives/repeat.js';
 import { localize } from './localize/localize';
+import { repeat } from 'lit/directives/repeat.js';
 
 
 declare global {
@@ -73,6 +73,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
                   class="remove-icon"
                   .index=${index}
                   @click=${this._removeRow}
+                  .disabled=${index === INDEX_ELEMENT_0}
                 ></ha-icon-button>
               </div>
             `
@@ -133,6 +134,9 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   private _removeRow(ev: CustomEvent): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { index } = (ev.currentTarget as any);
+    if (index === INDEX_ELEMENT_0) {
+      return;
+    }
     const newConfigEntities = this.entities!.concat();
     newConfigEntities.splice(index, INDEX_ELEMENT_1);
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
