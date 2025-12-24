@@ -94,7 +94,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       <compass-card-value-row-editor
         .hass=${this.hass}
         .entities=${this._config.value_sensors}
-        .label=${localize('editor.secondary.title')}
         @entities-changed=${this._valueChanged}
         @edit-detail-element=${this._editDetailElement}
       ></compass-card-value-row-editor>
@@ -138,20 +137,8 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   // eslint-disable-next-line class-methods-use-this
   private _computeSchema() {
-    // const entityDomains = ['sensor', 'sun', 'input_number', 'input_text'];
     return [
       { name: 'name', selector: { text: {} } },
-      // { name: 'primary_entity', required: true, selector: { entity: { domain: entityDomains } } },
-      // { name: 'secondary_entity', selector: { entity: { domain: entityDomains } } },
-      // {
-      //   name: 'indicator',
-      //   selector: {
-      //     select: {
-      //       mode: 'dropdown',
-      //       options: ICON_VALUES.map((icon) => ({ label: icon, value: icon })),
-      //     },
-      //   },
-      // },
       {
         name: 'language',
         selector: {
@@ -171,7 +158,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     switch (schema.name) {
       case 'name':
         return `${localize('editor.name')} (${localize('editor.optional')})`;
-        return `${localize('editor.secondary entity description')} (${localize('editor.optional')})`;
       case 'language':
         return `${localize('editor.language description')} (${localize('editor.optional')})`;
       case 'offset':
@@ -190,8 +176,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       name: this._config?.header?.title?.value || '',
       north: this._config?.compass?.north?.show || false,
       offset: this._config?.compass?.north?.offset || DEGREES_MIN,
-      // primary_entity: this._config?.indicator_sensors?.[0]?.sensor || '',
-      // secondary_entity: this._config?.value_sensors?.[0]?.sensor || '',
     };
   }
 
@@ -229,18 +213,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         newConfig.value_sensors = ev.detail.entities;
       }
     }
-
-    // Update Indicator Image - Removed as it's now in the sub-editor
-    // if (data.indicator !== undefined) {
-    //   if (!newConfig.indicator_sensors) {
-    //     newConfig.indicator_sensors = [{ indicator: { image: data.indicator }, sensor: '' }];
-    //   } else {
-    //     const sensors = [...newConfig.indicator_sensors];
-    //     const indicator: CCIndicatorConfig = { ...sensors[0].indicator, image: data.indicator };
-    //     sensors[0] = { ...sensors[0], indicator };
-    //     newConfig.indicator_sensors = sensors;
-    //   }
-    // }
 
     // Update Language
     if (data && data.language !== undefined) {
