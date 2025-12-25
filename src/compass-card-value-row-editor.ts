@@ -65,14 +65,14 @@ export class CompassCardValueRowEditor extends LitElement {
                   .path=${mdiPencil}
                   class="edit-icon"
                   .index=${index}
-                  @click=${this._editRow}
+                  @click=${() => this._editRow(index)}
                 ></ha-icon-button>
                 <ha-icon-button
                   .label=${this.hass!.localize('ui.components.entity.entity-picker.clear')}
                   .path=${mdiClose}
                   class="remove-icon"
                   .index=${index}
-                  @click=${this._removeRow}
+                  @click=${() => this._removeRow(index)}
                 ></ha-icon-button>
               </div>
             `
@@ -129,17 +129,13 @@ export class CompassCardValueRowEditor extends LitElement {
     fireEvent(this, 'entities-changed', { entities: newEntities });
   }
 
-  private _removeRow(ev: CustomEvent): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { index } = (ev.currentTarget as any);
+  private _removeRow(index: number): void {
     const newConfigEntities = (this.entities || []).concat();
     newConfigEntities.splice(index, INDEX_ELEMENT_1);
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
 
-  private _editRow(ev: CustomEvent): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { index } = (ev.currentTarget as any);
+  private _editRow(index: number): void {
     fireEvent(this, 'edit-detail-element', {
       subElementConfig: {
         elementConfig: this.entities![index],
