@@ -89,14 +89,14 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         .hass=${this.hass}
         .entities=${this._config.indicator_sensors}
         .language=${this._config.language}
-        @entities-changed=${this._valueChanged}
+        @entities-changed=${this._handleIndicatorEntitiesChanged}
         @language-changed=${this._onLanguageChanged}
         @edit-detail-element=${this._editDetailElement}
       ></compass-card-indicator-row-editor>
       <compass-card-value-row-editor
         .hass=${this.hass}
         .entities=${this._config.value_sensors}
-        @entities-changed=${this._valueChanged}
+        @entities-changed=${this._handleValueEntitiesChanged}
         @edit-detail-element=${this._editDetailElement}
       ></compass-card-value-row-editor>
     `;
@@ -134,6 +134,26 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       elementConfig: value,
     };
 
+    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+  }
+
+  private _handleIndicatorEntitiesChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const { entities } = ev.detail;
+    this._config = { ...this._config, indicator_sensors: entities };
+    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+  }
+
+  private _handleValueEntitiesChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const { entities } = ev.detail;
+    this._config = { ...this._config, value_sensors: entities };
     fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
