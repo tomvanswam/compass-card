@@ -63,8 +63,8 @@
     "compass_west_show": "Show West",
     "compass_ticks_radius": "Ticks Radius",
     "compass_ticks_step": "Ticks Step",
-    "header_conf": "Header Configuration",
-    "circle_conf": "Circle Configuration"
+    "header_conf": "Header",
+    "circle_conf": "Compass"
   },
   "directions": {
     "north": "North",

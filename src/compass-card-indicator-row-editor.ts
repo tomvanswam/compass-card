@@ -38,9 +38,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     const entities = this.entities || [];
 
     return html`
-      <h3>
-        ${localize('editor.indicator_sensors')}
-      </h3>
+
       <ha-form
         .hass=${this.hass}
         .data=${{

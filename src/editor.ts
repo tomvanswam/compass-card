@@ -2,7 +2,7 @@ import './compass-card-indicator-editor';
 import './compass-card-indicator-row-editor';
 import './compass-card-value-editor';
 import './compass-card-value-row-editor';
-import { CCCompassConfig, CCHeaderConfig, CCHeaderItemConfig, CCNorthConfig, CompassCardConfig } from './editorTypes';
+import { CCCompassConfig, CCNorthConfig, CompassCardConfig } from './editorTypes';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEGREES_MAX, DEGREES_MIN, NO_ELEMENTS } from './const';
@@ -85,20 +85,30 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         .computeLabel=${CompassCardEditor._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
-      <compass-card-indicator-row-editor
-        .hass=${this.hass}
-        .entities=${this._config.indicator_sensors}
-        .language=${this._config.language}
-        @entities-changed=${this._handleIndicatorEntitiesChanged}
-        @language-changed=${this._onLanguageChanged}
-        @edit-detail-element=${this._editDetailElement}
-      ></compass-card-indicator-row-editor>
-      <compass-card-value-row-editor
-        .hass=${this.hass}
-        .entities=${this._config.value_sensors}
-        @entities-changed=${this._handleValueEntitiesChanged}
-        @edit-detail-element=${this._editDetailElement}
-      ></compass-card-value-row-editor>
+      <ha-expansion-panel outlined>
+        <h3 slot="header">
+          ${localize('editor.indicator_sensors')}
+        </h3>
+        <compass-card-indicator-row-editor
+          .hass=${this.hass}
+          .entities=${this._config.indicator_sensors}
+          .language=${this._config.language}
+          @entities-changed=${this._handleIndicatorEntitiesChanged}
+          @language-changed=${this._onLanguageChanged}
+          @edit-detail-element=${this._editDetailElement}
+        ></compass-card-indicator-row-editor>
+      </ha-expansion-panel>
+      <ha-expansion-panel outlined>
+        <h3 slot="header">
+          ${localize('editor.value_sensors')}
+        </h3>
+        <compass-card-value-row-editor
+          .hass=${this.hass}
+          .entities=${this._config.value_sensors}
+          @entities-changed=${this._handleValueEntitiesChanged}
+          @edit-detail-element=${this._editDetailElement}
+        ></compass-card-value-row-editor>
+      </ha-expansion-panel>
     `;
   }
 
@@ -261,29 +271,32 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const circleData = data.circle_conf;
 
     // Update Name
-    if (headerData && headerData.name !== undefined) {
-      const titleValue: CCHeaderItemConfig = { ...newConfig.header?.title, value: headerData.name };
-      const headerTitleValue: CCHeaderConfig = { ...newConfig.header, title: titleValue };
-      newConfig.header = headerTitleValue;
-      if (!headerData.name?.trim()) {
-        delete newConfig.header?.title?.value;
-        if (newConfig.header?.title && Object.keys(newConfig.header.title).length === NO_ELEMENTS) {
-          delete newConfig.header.title;
-        }
-        if (newConfig.header && Object.keys(newConfig.header).length === NO_ELEMENTS) {
-          delete newConfig.header;
-        }
+    if (headerData && 'name' in headerData) {
+      const newHeader = { ...newConfig.header };
+      const newTitle = newHeader.title ? { ...newHeader.title } : {};
+
+      if (headerData.name === '' || headerData.name === undefined) {
+        delete newTitle.value;
+        delete newTitle.show;
+      } else {
+        newTitle.value = headerData.name;
+        // Default behavior dictates show is true if value is present, but we can be explicit if needed.
+        // For now, let's leave show undefined to rely on default which is true if value is present.
+        delete newTitle.show;
+      }
+
+      if (Object.keys(newTitle).length === NO_ELEMENTS) {
+        delete newHeader.title;
+      } else {
+        newHeader.title = newTitle;
+      }
+
+      if (Object.keys(newHeader).length === NO_ELEMENTS) {
+        delete newConfig.header;
+      } else {
+        newConfig.header = newHeader;
       }
     }
-
-    // Update Language
-    /* removed from circle group */
-    /* if (circleData && circleData.language !== undefined) {
-      newConfig.language = circleData.language;
-      if (!circleData.language?.trim()) {
-        delete newConfig.language;
-      }
-    } */
 
     // Update Offset
     if (circleData && circleData.offset !== undefined) {
@@ -301,10 +314,29 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // Update Header Icon
-    if (headerData && headerData.header_icon !== undefined) {
-      const iconValue: CCHeaderItemConfig = { ...newConfig.header?.icon, value: headerData.header_icon };
-      const header: CCHeaderConfig = { ...newConfig.header, icon: iconValue };
-      newConfig.header = header;
+    if (headerData && 'header_icon' in headerData) {
+      const newHeader = { ...newConfig.header };
+      const newIcon = newHeader.icon ? { ...newHeader.icon } : {};
+
+      if (headerData.header_icon === '' || headerData.header_icon === undefined) {
+        delete newIcon.value;
+        newIcon.show = false; // Explicitly hide to prevent fallback default icon when title exists
+      } else {
+        newIcon.value = headerData.header_icon;
+        delete newIcon.show; // Allow default behavior (show if value present)
+      }
+
+      if (Object.keys(newIcon).length === NO_ELEMENTS) {
+        delete newHeader.icon;
+      } else {
+        newHeader.icon = newIcon;
+      }
+
+      if (Object.keys(newHeader).length === NO_ELEMENTS) {
+        delete newConfig.header;
+      } else {
+        newConfig.header = newHeader;
+      }
     }
 
 
