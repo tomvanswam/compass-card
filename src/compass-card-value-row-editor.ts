@@ -5,7 +5,7 @@ import { fireEvent, HomeAssistant } from './utils/ha-helpers';
 import { INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from './const';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCValueSensorConfig } from './editorTypes';
-import { localize } from './localize/localize';
+
 import { repeat } from 'lit/directives/repeat.js';
 
 
@@ -37,9 +37,7 @@ export class CompassCardValueRowEditor extends LitElement {
     const entities = this.entities || [];
 
     return html`
-      <h3>
-        ${localize('editor.value_sensors')}
-      </h3>
+
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
         <div class="entities">
           ${repeat(
