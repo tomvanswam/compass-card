@@ -57,7 +57,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
           },
         },
       ]}
-        .computeLabel=${this._computeAbbLabel}
+        .computeLabel=${CompassCardIndicatorRowEditor._computeAbbLabel}
         @value-changed=${this._abbValueChanged}
       ></ha-form>
       <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
@@ -174,8 +174,8 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
 
-  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
-  private _computeAbbLabel(schema: any): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static _computeAbbLabel(schema: any): string {
     return localize(`editor.sensor_config.${schema.name}`);
   }
 
