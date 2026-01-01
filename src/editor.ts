@@ -72,7 +72,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // Force load of ha-entity-picker by using it in a hidden ha-form
-    const forceLoadSchema = [{ name: 'dummy', selector: { entity: {} } }];
+    const forceLoadSchema = [{ name: 'dummy_conf', selector: { entity: {} } }];
 
     return html`
       <div style="display: none">
@@ -187,35 +187,73 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       {
         name: 'header_conf',
         schema: [
-          { name: 'name', selector: { text: {} } },
-          { name: 'header_icon', selector: { icon: {} } },
+          { name: 'header_title_conf', selector: { text: {} } },
+          {
+            name: '',
+            schema: [
+              { name: 'header_title_show_conf', selector: { boolean: {} } },
+              { name: 'header_title_color_conf', selector: { text: {} } },
+            ],
+            type: 'grid',
+          },
+          { name: 'header_icon_conf', selector: { icon: {} } },
+          {
+            name: '',
+            schema: [
+              { name: 'header_icon_show_conf', selector: { boolean: {} } },
+              { name: 'header_icon_color_conf', selector: { text: {} } },
+            ],
+            type: 'grid',
+          },
         ],
         title: localize('editor.header_conf'),
         type: 'expandable',
       },
       {
-        name: 'circle_conf',
+        name: 'compass_conf',
         schema: [
-          { name: 'offset', selector: { number: { max: DEGREES_MAX, min: DEGREES_MIN, mode: 'box' } } },
-          { name: 'compass_north_show', selector: { boolean: {} } },
-          { name: 'compass_east_show', selector: { boolean: {} } },
-          { name: 'compass_south_show', selector: { boolean: {} } },
-          { name: 'compass_west_show', selector: { boolean: {} } },
-          { name: 'compass_circle_stroke', selector: { number: { min: 0, mode: 'box' } } },
-          { name: 'compass_ticks_radius', selector: { number: { min: 0, mode: 'box' } } },
-          { name: 'compass_ticks_step', selector: { number: { max: 180, min: 1, mode: 'box' } } },
+          { name: 'compass_offset_conf', selector: { number: { max: DEGREES_MAX, min: DEGREES_MIN, mode: 'box' } } },
           {
-            name: 'background_image_conf',
+            name: '',
             schema: [
-              { name: 'compass_circle_background_image', selector: { text: {} } },
-              { name: 'compass_circle_background_offset', selector: { boolean: {} } },
-              { name: 'compass_circle_background_opacity', selector: { number: { max: 1, min: 0, mode: 'box', step: 0.05 } } },
+              { name: 'compass_north_show_conf', selector: { boolean: {} } },
+              { name: 'compass_north_color_conf', selector: { text: {} } },
+              { name: 'compass_east_show_conf', selector: { boolean: {} } },
+              { name: 'compass_east_color_conf', selector: { text: {} } },
+              { name: 'compass_south_show_conf', selector: { boolean: {} } },
+              { name: 'compass_south_color_conf', selector: { text: {} } },
+              { name: 'compass_west_show_conf', selector: { boolean: {} } },
+              { name: 'compass_west_color_conf', selector: { text: {} } },
             ],
-            title: 'Background Image',
+            type: 'grid',
+          },
+          { name: 'compass_circle_stroke_conf', selector: { number: { min: 0, mode: 'box' } } },
+          {
+            name: '',
+            schema: [
+              { name: 'compass_ticks_radius_conf', selector: { number: { min: 0, mode: 'box' } } },
+              { name: 'compass_ticks_step_conf', selector: { number: { max: 180, min: 1, mode: 'box' } } },
+            ],
+            type: 'grid',
+          },
+          {
+            name: 'compass_circle_background_conf',
+            schema: [
+              { name: 'compass_circle_background_image_conf', selector: { text: {} } },
+              {
+                name: '',
+                schema: [
+                  { name: 'compass_circle_background_offset_conf', selector: { boolean: {} } },
+                  { name: 'compass_circle_background_opacity_conf', selector: { number: { max: 1, min: 0, mode: 'box', step: 0.05 } } },
+                ],
+                type: 'grid',
+              },
+            ],
+            title: localize('editor.compass_circle_background_conf'),
             type: 'expandable',
           },
         ],
-        title: localize('editor.circle_conf'),
+        title: localize('editor.compass_conf'),
         type: 'expandable',
       },
     ];
@@ -223,38 +261,37 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static _computeLabel = (schema: any) => {
-    if (schema.name === 'name' || schema.name === 'offset') {
-      switch (schema.name) {
-        case 'name':
-          return `${localize('editor.name')} (${localize('editor.optional')})`;
-        case 'offset':
-          return `${localize('editor.offset description')} (${localize('editor.optional')})`;
-        default:
-          return schema.name;
-      }
-    }
     return localize(`editor.${schema.name}`) || schema.name;
   };
 
   private _computeData() {
     return {
-      circle_conf: {
-        background_image_conf: {
-          compass_circle_background_image: this._config?.compass?.circle?.background_image || '',
-          compass_circle_background_offset: this._config?.compass?.circle?.offset_background || false,
-          compass_circle_background_opacity: this._config?.compass?.circle?.background_opacity,
+      compass_conf: {
+        compass_circle_background_conf: {
+          compass_circle_background_image_conf: this._config?.compass?.circle?.background_image || '',
+          compass_circle_background_offset_conf: this._config?.compass?.circle?.offset_background || false,
+          compass_circle_background_opacity_conf: this._config?.compass?.circle?.background_opacity,
         },
-        compass_east_show: this._config?.compass?.east?.show !== false,
-        compass_north_show: this._config?.compass?.north?.show !== false,
-        compass_south_show: this._config?.compass?.south?.show !== false,
-        compass_ticks_radius: this._config?.compass?.ticks?.radius,
-        compass_ticks_step: this._config?.compass?.ticks?.step,
-        compass_west_show: this._config?.compass?.west?.show !== false,
-        offset: this._config?.compass?.north?.offset || DEGREES_MIN,
+        compass_circle_stroke_conf: this._config?.compass?.circle?.stroke_width,
+        compass_east_color_conf: this._config?.compass?.east?.color || '',
+        compass_east_show_conf: this._config?.compass?.east?.show !== false,
+        compass_north_color_conf: this._config?.compass?.north?.color || '',
+        compass_north_show_conf: this._config?.compass?.north?.show !== false,
+        compass_offset_conf: this._config?.compass?.north?.offset || DEGREES_MIN,
+        compass_south_color_conf: this._config?.compass?.south?.color || '',
+        compass_south_show_conf: this._config?.compass?.south?.show !== false,
+        compass_ticks_radius_conf: this._config?.compass?.ticks?.radius,
+        compass_ticks_step_conf: this._config?.compass?.ticks?.step,
+        compass_west_color_conf: this._config?.compass?.west?.color || '',
+        compass_west_show_conf: this._config?.compass?.west?.show !== false,
       },
       header_conf: {
-        header_icon: this._config?.header?.icon?.value || '',
-        name: this._config?.header?.title?.value || '',
+        header_icon_color_conf: this._config?.header?.icon?.color || '',
+        header_icon_conf: this._config?.header?.icon?.value || '',
+        header_icon_show_conf: this._config?.header?.icon?.show !== false,
+        header_title_color_conf: this._config?.header?.title?.color || '',
+        header_title_conf: this._config?.header?.title?.value || '',
+        header_title_show_conf: this._config?.header?.title?.show !== false,
       },
     };
   }
@@ -268,21 +305,30 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const newConfig = { ...config };
 
     const headerData = data.header_conf;
-    const circleData = data.circle_conf;
+    const compassData = data.compass_conf;
 
-    // Update Name
-    if (headerData && 'name' in headerData) {
+    // Update Title
+    if (headerData && 'header_title_conf' in headerData) {
+      console.log(headerData);
       const newHeader = { ...newConfig.header };
       const newTitle = newHeader.title ? { ...newHeader.title } : {};
 
-      if (headerData.name === '' || headerData.name === undefined) {
+      if (headerData.header_title_conf === '' || headerData.header_title_conf === undefined) {
         delete newTitle.value;
-        delete newTitle.show;
       } else {
-        newTitle.value = headerData.name;
-        // Default behavior dictates show is true if value is present, but we can be explicit if needed.
-        // For now, let's leave show undefined to rely on default which is true if value is present.
-        delete newTitle.show;
+        newTitle.value = headerData.header_title_conf;
+      }
+
+      if (headerData.header_title_show_conf !== undefined) {
+        newTitle.show = headerData.header_title_show_conf;
+      }
+
+      if (headerData.header_title_color_conf !== undefined) {
+        newTitle.color = headerData.header_title_color_conf;
+      }
+
+      if (newTitle.color === '') {
+        delete newTitle.color;
       }
 
       if (Object.keys(newTitle).length === NO_ELEMENTS) {
@@ -299,12 +345,12 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // Update Offset
-    if (circleData && circleData.offset !== undefined) {
-      const north: CCNorthConfig = { ...newConfig.compass?.north, offset: Number(circleData.offset) };
+    if (compassData && compassData.compass_offset_conf !== undefined) {
+      const north: CCNorthConfig = { ...newConfig.compass?.north, offset: Number(compassData.compass_offset_conf) };
       const compass: CCCompassConfig = { ...newConfig.compass, north };
       newConfig.compass = compass;
 
-      if (Number(circleData.offset) === DEGREES_MIN) {
+      if (Number(compassData.compass_offset_conf) === DEGREES_MIN) {
         delete newConfig.compass?.north?.offset;
         // Cleanup if empty
         if (newConfig.compass?.north && Object.keys(newConfig.compass.north).length === NO_ELEMENTS) {
@@ -314,16 +360,26 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // Update Header Icon
-    if (headerData && 'header_icon' in headerData) {
+    if (headerData && 'header_icon_conf' in headerData) {
       const newHeader = { ...newConfig.header };
       const newIcon = newHeader.icon ? { ...newHeader.icon } : {};
 
-      if (headerData.header_icon === '' || headerData.header_icon === undefined) {
+      if (headerData.header_icon_conf === '' || headerData.header_icon_conf === undefined) {
         delete newIcon.value;
-        newIcon.show = false; // Explicitly hide to prevent fallback default icon when title exists
       } else {
-        newIcon.value = headerData.header_icon;
-        delete newIcon.show; // Allow default behavior (show if value present)
+        newIcon.value = headerData.header_icon_conf;
+      }
+
+      if (headerData.header_icon_show_conf !== undefined) {
+        newIcon.show = headerData.header_icon_show_conf;
+      }
+
+      if (headerData.header_icon_color_conf !== undefined) {
+        newIcon.color = headerData.header_icon_color_conf;
+      }
+
+      if (newIcon.color === '') {
+        delete newIcon.color;
       }
 
       if (Object.keys(newIcon).length === NO_ELEMENTS) {
@@ -341,42 +397,61 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
 
     // Update Compass Directions
-    if (circleData) {
+    if (compassData) {
       const compass: CCCompassConfig = { ...newConfig.compass };
 
-      // North Show
-      if (circleData.compass_north_show !== undefined) {
-        compass.north = { ...compass.north, show: circleData.compass_north_show };
+      // North
+      if (compassData.compass_north_show_conf !== undefined) {
+        compass.north = { ...compass.north, show: compassData.compass_north_show_conf };
       }
-      // East Show
-      if (circleData.compass_east_show !== undefined) {
-        compass.east = { ...compass.east, show: circleData.compass_east_show };
+      if (compassData.compass_north_color_conf !== undefined) {
+        compass.north = { ...compass.north, color: compassData.compass_north_color_conf };
       }
-      // South Show
-      if (circleData.compass_south_show !== undefined) {
-        compass.south = { ...compass.south, show: circleData.compass_south_show };
+      if (compass.north?.color === '') delete compass.north.color;
+
+      // East
+      if (compassData.compass_east_show_conf !== undefined) {
+        compass.east = { ...compass.east, show: compassData.compass_east_show_conf };
       }
-      // West Show
-      if (circleData.compass_west_show !== undefined) {
-        compass.west = { ...compass.west, show: circleData.compass_west_show };
+      if (compassData.compass_east_color_conf !== undefined) {
+        compass.east = { ...compass.east, color: compassData.compass_east_color_conf };
       }
+      if (compass.east?.color === '') delete compass.east.color;
+
+      // South
+      if (compassData.compass_south_show_conf !== undefined) {
+        compass.south = { ...compass.south, show: compassData.compass_south_show_conf };
+      }
+      if (compassData.compass_south_color_conf !== undefined) {
+        compass.south = { ...compass.south, color: compassData.compass_south_color_conf };
+      }
+      if (compass.south?.color === '') delete compass.south.color;
+
+      // West
+      if (compassData.compass_west_show_conf !== undefined) {
+        compass.west = { ...compass.west, show: compassData.compass_west_show_conf };
+      }
+      if (compassData.compass_west_color_conf !== undefined) {
+        compass.west = { ...compass.west, color: compassData.compass_west_color_conf };
+      }
+      if (compass.west?.color === '') delete compass.west.color;
 
       // Circle
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const circle: any = { ...compass.circle };
-      const backgroundData = circleData.background_image_conf || {};
+      const backgroundData = compassData.compass_circle_background_conf || {};
 
-      if (backgroundData.compass_circle_background_image !== undefined) circle.background_image = backgroundData.compass_circle_background_image;
-      if (backgroundData.compass_circle_background_opacity !== undefined) circle.background_opacity = backgroundData.compass_circle_background_opacity;
-      if (backgroundData.compass_circle_background_offset !== undefined) circle.offset_background = backgroundData.compass_circle_background_offset;
-      if (circleData.compass_circle_stroke !== undefined) circle.stroke_width = circleData.compass_circle_stroke;
+      if (backgroundData.compass_circle_background_image_conf !== undefined) circle.background_image = backgroundData.compass_circle_background_image_conf;
+      if (backgroundData.compass_circle_background_opacity_conf !== undefined) circle.background_opacity = backgroundData.compass_circle_background_opacity_conf;
+      if (backgroundData.compass_circle_background_offset_conf !== undefined) circle.offset_background = backgroundData.compass_circle_background_offset_conf;
+      if (compassData.compass_circle_stroke_conf !== undefined) circle.stroke_width = compassData.compass_circle_stroke_conf;
       compass.circle = circle;
 
       // Ticks
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const ticks: any = { ...compass.ticks };
-      if (circleData.compass_ticks_radius !== undefined) ticks.radius = circleData.compass_ticks_radius;
-      if (circleData.compass_ticks_step !== undefined) ticks.step = circleData.compass_ticks_step;
+      if (compassData.compass_ticks_radius_conf !== undefined) ticks.radius = compassData.compass_ticks_radius_conf;
+      if (compassData.compass_ticks_step_conf !== undefined) ticks.step = compassData.compass_ticks_step_conf;
       compass.ticks = ticks;
 
       newConfig.compass = compass;
@@ -408,6 +483,9 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     return css`
       ha-form {
         width: 100%;
+      }
+      ha-expansion-panel {
+        margin-top: 24px;
       }
     `;
   }
