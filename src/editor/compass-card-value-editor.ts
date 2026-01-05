@@ -1,9 +1,9 @@
 
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { fireEvent, HomeAssistant } from './utils/ha-helpers';
+import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { CCValueSensorConfig } from './editorTypes';
-import { localize } from './localize/localize';
+import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
 
 @customElement('compass-card-value-editor')

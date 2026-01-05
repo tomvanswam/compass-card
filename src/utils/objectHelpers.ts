@@ -1,6 +1,6 @@
 import { ARROW_ART, CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, HALF, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
-import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes.js';
+import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
 export function getBoolean(value: boolean | number | string | undefined, defValue: boolean): boolean {
@@ -193,7 +193,7 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
       radius: ticksRadius,
       show: ticksShow,
       step: ticksStep,
-    },    
+    },
     west: {
       color: westColor,
       dynamic_style: getDynamicStyle(config.compass?.west?.dynamic_style, config, entities, westColor, westShow),

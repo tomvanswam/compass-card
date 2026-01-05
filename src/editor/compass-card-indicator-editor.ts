@@ -2,10 +2,10 @@
 
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, ICON_VALUES } from './const';
-import { fireEvent, HomeAssistant } from './utils/ha-helpers';
+import { DEFAULT_ICON_VALUE, ICON_VALUES } from '../const';
+import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { CCIndicatorSensorConfig } from './editorTypes';
-import { localize } from './localize/localize';
+import { localize } from '../localize/localize';
 
 @customElement('compass-card-indicator-editor')
 export class CompassCardIndicatorEditor extends LitElement {
