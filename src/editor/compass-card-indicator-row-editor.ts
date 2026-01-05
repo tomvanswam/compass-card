@@ -1,9 +1,8 @@
-
-import { COMPASS_LANGUAGES, localize } from './localize/localize';
+import { COMPASS_LANGUAGES, localize } from '../localize/localize';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from './const';
-import { fireEvent, HomeAssistant } from './utils/ha-helpers';
+import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from '../const';
+import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCIndicatorSensorConfig } from './editorTypes';
 import { repeat } from 'lit/directives/repeat.js';
@@ -38,13 +37,13 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     const entities = this.entities || [];
 
     return html`
-
-      <ha-form
-        .hass=${this.hass}
-        .data=${{
+      <ha-expansion-panel outlined .header=${this.label}>
+        <ha-form
+          .hass=${this.hass}
+          .data=${{
         language: this.language || ''
       }}
-        .schema=${[
+          .schema=${[
         {
           name: 'language',
           selector: {
@@ -55,55 +54,56 @@ export class CompassCardIndicatorRowEditor extends LitElement {
           },
         },
       ]}
-        .computeLabel=${CompassCardIndicatorRowEditor._computeAbbLabel}
-        @value-changed=${this._abbValueChanged}
-      ></ha-form>
-      <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
-        <div class="entities">
-          ${repeat(
+          .computeLabel=${CompassCardIndicatorRowEditor._computeAbbLabel}
+          @value-changed=${this._abbValueChanged}
+        ></ha-form>
+        <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
+          <div class="entities">
+            ${repeat(
         entities,
         (entityConf) => this._getKey(entityConf),
         (entityConf, index) => html`
-              <div class="entity">
-                <div class="handle">
-                  <ha-svg-icon .path=${mdiDragHorizontalVariant}></ha-svg-icon>
-                </div>
-                <div class="entity-content">
-                  <ha-entity-picker
-                    allow-custom-entity
-                    hide-clear-icon
-                    .hass=${this.hass}
-                    .value=${entityConf.sensor}
+                <div class="entity">
+                  <div class="handle">
+                    <ha-svg-icon .path=${mdiDragHorizontalVariant}></ha-svg-icon>
+                  </div>
+                  <div class="entity-content">
+                    <ha-entity-picker
+                      allow-custom-entity
+                      hide-clear-icon
+                      .hass=${this.hass}
+                      .value=${entityConf.sensor}
+                      .index=${index}
+                      @value-changed=${this._valueChanged}
+                    ></ha-entity-picker>
+                  </div>
+                  <ha-icon-button
+                    .label=${this.hass!.localize('ui.components.entity.entity-picker.edit')}
+                    .path=${mdiPencil}
+                    class="edit-icon"
                     .index=${index}
-                    @value-changed=${this._valueChanged}
-                  ></ha-entity-picker>
+                    @click=${() => this._editRow(index)}
+                  ></ha-icon-button>
+                  <ha-icon-button
+                    .label=${this.hass!.localize('ui.components.entity.entity-picker.clear')}
+                    .path=${mdiClose}
+                    class="remove-icon"
+                    .index=${index}
+                    @click=${() => this._removeRow(index)}
+                    .disabled=${index === INDEX_ELEMENT_0}
+                  ></ha-icon-button>
                 </div>
-                <ha-icon-button
-                  .label=${this.hass!.localize('ui.components.entity.entity-picker.edit')}
-                  .path=${mdiPencil}
-                  class="edit-icon"
-                  .index=${index}
-                  @click=${() => this._editRow(index)}
-                ></ha-icon-button>
-                <ha-icon-button
-                  .label=${this.hass!.localize('ui.components.entity.entity-picker.clear')}
-                  .path=${mdiClose}
-                  class="remove-icon"
-                  .index=${index}
-                  @click=${() => this._removeRow(index)}
-                  .disabled=${index === INDEX_ELEMENT_0}
-                ></ha-icon-button>
-              </div>
-            `
+              `
       )}
-        </div>
-      </ha-sortable>
-      <ha-entity-picker
-        class="add-entity"
-        .hass=${this.hass}
-        @value-changed=${this._addEntity}
-        add-button
-      ></ha-entity-picker>
+          </div>
+        </ha-sortable>
+        <ha-entity-picker
+          class="add-entity"
+          .hass=${this.hass}
+          @value-changed=${this._addEntity}
+          add-button
+        ></ha-entity-picker>
+      </ha-expansion-panel>
     `;
   }
 

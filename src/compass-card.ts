@@ -1,9 +1,9 @@
-import './editor';
+import './editor/editor';
 import * as MDI from '@mdi/js';
 import { assert, StructError } from 'superstruct';
 import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCValue, CCValueSensor } from './cardTypes.js';
-import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
+import { CompassCardConfig, CompassCardConfigStruct } from './editor/editorTypes.js';
 import { CSSResult, html, LitElement, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';

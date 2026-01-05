@@ -1,4 +1,4 @@
-import { ActionConfig, CompassCardConfig } from '../editorTypes.js';
+import { ActionConfig, CompassCardConfig } from '../editor/editorTypes.js';
 import { CompassCard } from '../compass-card.js';
 import { HomeAssistant } from './ha-helpers.js';
 
