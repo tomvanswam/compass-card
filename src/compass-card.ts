@@ -663,7 +663,7 @@ export class CompassCard extends LitElement {
           .split('.')
           .slice(ATTRIBUTE_PATH_START_INDEX)
           .join('.');
-        const value = resolveAttrPath(entityObj.attributes, attribStr) || UNAVAILABLE;
+        const value = resolveAttrPath(entityObj.attributes, attribStr) ?? UNAVAILABLE;
         return {
           units: entity.units,
           value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value,
