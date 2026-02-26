@@ -270,7 +270,7 @@ export class CompassCard extends LitElement {
     const divs: TemplateResult[] = [];
     let index = 0;
     this.valueSensors.forEach((value) => {
-      if (this.getVisibility(value.state_value)) {
+        if (this.getVisibility(value.state_value)) {
         divs.push(
           html`<div class="sensor-${index} value-sensor">
             <span class="value" style="--compass-card-value-value-color: ${this.getColor(value.state_value)};"
@@ -487,11 +487,11 @@ export class CompassCard extends LitElement {
     const img = this.getIndicatorImage(indicatorSensor.indicator);
     switch (img) {
       case 'arrow_outward':
-        return CompassCard.svgIndicatorArrowOutward();
+        return this.svgIndicatorArrowOutward(indicatorSensor);
       case 'arrow_inward':
-        return CompassCard.svgIndicatorArrowInward();
+        return this.svgIndicatorArrowInward(indicatorSensor);
       case 'circle':
-        return CompassCard.svgIndicatorCircle();
+        return this.svgIndicatorCircle(indicatorSensor);
       default:
         if (img.startsWith('mdi:')) {
           return this.svgIndicatorMdi(indicatorSensor);
@@ -513,9 +513,33 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private static svgIndicatorArrowOutward(): SVGTemplateResult {
+  private svgIndicatorArrowOutward(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const size = this.getSize(indicatorSensor.indicator);
+    const r = this.getRadius(indicatorSensor.indicator);
+    const opacity = this.getOpacity(indicatorSensor.indicator);
+
+    const box = size;
+    const x = CIRCLE.CENTER - box * CENTER_OBJECT_FACTOR;
+    const y = CIRCLE.CENTER - r - box * CENTER_OBJECT_FACTOR;
+
+    // Original exported circle artwork geometry (from original path)
+    const R0 = 9.1809;
+    const S0 = 18.361;   // original diameter used by v18.361
+    const X0 = CIRCLE.CENTER - R0; // original left edge
+    const Y0 = 5.8262;            // original top edge
+
+    // Use BOTH radius + size:
+    // - r controls scale (radius)
+    // - size controls available box (fit)
+    const sByR = r / R0;
+    const sByBox = box / S0;
+    const s = Math.min(sByR, sByBox);
+
+    // Map original artwork top-left (X0,Y0) -> desired (x,y) after scaling
+    const tx = x - s * X0;
+    const ty = y - s * Y0;    
     return svg`
-      <g class="arrow-outward">
+      <g class="arrow-outward" opacity=${opacity} transform="translate(${tx} ${ty}) scale(${s})">
         <path d="M${CIRCLE.CENTER} 0v23l-8 7z" fill="var(--compass-card-indicator-color)" stroke="var(--compass-card-indicator-color)" stroke-width=".5"/>
         <path d="M${CIRCLE.CENTER} 0v23l8 7z" fill="var(--compass-card-indicator-color)" stroke="var(--compass-card-indicator-color)" stroke-width="0"/>
         <path d="M${CIRCLE.CENTER} 0v23l8 7z" fill="white" opacity="0.5" stroke="white" stroke-width=".5"/>
@@ -523,9 +547,28 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private static svgIndicatorArrowInward(): SVGTemplateResult {
+  private svgIndicatorArrowInward(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const size = this.getSize(indicatorSensor.indicator);
+    const r = this.getRadius(indicatorSensor.indicator);
+    const opacity = this.getOpacity(indicatorSensor.indicator);
+
+    const box = size;
+    const x = CIRCLE.CENTER - box * CENTER_OBJECT_FACTOR;
+    const y = CIRCLE.CENTER - r - box * CENTER_OBJECT_FACTOR;
+
+    const R0 = 9.1809;
+    const S0 = 18.361;
+    const X0 = CIRCLE.CENTER - R0;
+    const Y0 = 5.8262;
+
+    const sByR = r / R0;
+    const sByBox = box / S0;
+    const s = Math.min(sByR, sByBox);
+
+    const tx = x - s * X0;
+    const ty = y - s * Y0;    
     return svg`
-      <g class="arrow-inward">
+      <g class="arrow-inward" opacity=${opacity} transform="translate(${tx} ${ty}) scale(${s})">
         <path d="M${CIRCLE.CENTER} 30.664v-23l-8-7z" fill="var(--compass-card-indicator-color)" stroke="var(--compass-card-indicator-color)" stroke-width=".5" />
         <path d="M${CIRCLE.CENTER} 30.664v-23l8-7z" fill="var(--compass-card-indicator-color)" stroke="var(--compass-card-indicator-color)" stroke-width="0" />
         <path d="M${CIRCLE.CENTER} 30.664v-23l8-7z" fill="white" opacity="0.5" stroke="white" stroke-width=".5" />
@@ -533,16 +576,41 @@ export class CompassCard extends LitElement {
     `;
   }
 
-  private static svgIndicatorCircle(): SVGTemplateResult {
+  private svgIndicatorCircle(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
+    const size = this.getSize(indicatorSensor.indicator);
+    const r = this.getRadius(indicatorSensor.indicator);
+    const opacity = this.getOpacity(indicatorSensor.indicator);
+
+    const R0 = 9.1809;
+    const S0 = 18.361;
+    const Y0 = 5.8262;
+
+    const s = size / S0;
+
+    const cx0 = CIRCLE.CENTER;
+    const cy0 = Y0 + R0;
+
+    const cxT = CIRCLE.CENTER;
+    const cyT = CIRCLE.CENTER - r;
+
+    const tx = cxT - s * cx0;
+    const ty = cyT - s * cy0;
+
     return svg`
-      <g class="circle-indicator">
-        <path d="m${CIRCLE.CENTER} 5.8262a9.1809 9.1809 0 0 0-0.0244 0 9.1809 9.1809 0 0 0-9.1813 9.18 9.1809 9.1809 0 0 0 9.1813 9.1813 9.1809 9.1809 0 0 0 0.0244 0z" fill="var(--compass-card-indicator-color)"/>
-        <path d="m${CIRCLE.CENTER} 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="var(--compass-card-indicator-color)"/>
-        <path d="m${CIRCLE.CENTER} 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z" fill="white" opacity="0.5"/>
+      <g class="circle-indicator" opacity=${opacity} transform="translate(${tx} ${ty}) scale(${s})">
+        <!-- Debug: show where we think the center is -->
+        <circle cx="${CIRCLE.CENTER}" cy="${cy0}" r="2" fill="red" opacity="0.8"/>
+        
+        <path d="m${CIRCLE.CENTER} 5.8262a9.1809 9.1809 0 0 0-0.0244 0 9.1809 9.1809 0 0 0-9.1813 9.18 9.1809 9.1813 0 0 0 9.1813 9.1813 9.1809 9.1809 0 0 0 0.0244 0z"
+              fill="var(--compass-card-indicator-color)"/>
+        <path d="m${CIRCLE.CENTER} 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z"
+              fill="var(--compass-card-indicator-color)"/>
+        <path d="m${CIRCLE.CENTER} 5.8262v18.361a9.1809 9.1809 0 0 0 9.1556-9.1813 9.1809 9.1809 0 0 0-9.1556-9.18z"
+              fill="white" opacity="0.5"/>
       </g>
     `;
   }
-
+         
   // svg indicator is using pure SVG to avoid issues in iOS  (no foreignObject ha-icon)
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
     const MDI_MAP: Record<string, string> = MDI as unknown as Record<string, string>;
@@ -677,7 +745,6 @@ export class CompassCard extends LitElement {
       value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value,
     };
   }
-
   private handlePopup(e: { stopPropagation: () => void; }) {
     e.stopPropagation();
     if (this._config.tap_action) {
