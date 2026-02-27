@@ -1,7 +1,7 @@
 import { array, assign, boolean, enums, Infer, number, object, optional, pattern, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE } from './const.js';
+import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, URL_REGEX } from './const.js';
 import { COMPASS_LANGUAGES } from './localize/localize.js';
-import { LovelaceCardConfig } from 'custom-card-helpers';
+import { LovelaceCardConfig } from './utils/ha-helpers.js';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
 export interface CompassCardConfigV1 extends LovelaceCardConfig {
@@ -20,7 +20,7 @@ export const numberBetween = (min: number, max: number) =>
 
 export const percentage = () => refine(number(), 'percentage', (value) => (value >= MIN_PERCENTAGE && value <= MAX_PERCENTAGE ? true : `Expected a percentage between 0 and 100, got ${value}`));
 
-const CCImageStruct = optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), /^(?:https?:\/\/)|(?:\/local\/)/)]));
+const CCImageStruct = optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), URL_REGEX)]));
 
 export const ActionConfigStruct = object({
   action: optional(enums(['more-info', 'navigate', 'call-service', 'url'])),
@@ -34,7 +34,7 @@ export const ActionConfigStruct = object({
 export type ActionConfig = Infer<typeof ActionConfigStruct>;
 
 export const CCStyleConfigStruct = object({
-  background_image: optional(string()),
+  background_image: optional(pattern(string(), URL_REGEX)),
   color: optional(string()),
   image: CCImageStruct,
   opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),

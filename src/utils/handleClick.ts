@@ -1,6 +1,6 @@
 import { ActionConfig, CompassCardConfig } from '../editorTypes.js';
 import { CompassCard } from '../compass-card.js';
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from './ha-helpers.js';
 
 export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: ActionConfig): void => {
   let e;
