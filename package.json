@@ -47,7 +47,7 @@
     "rollup-plugin-serve": "^3.0.0",
     "rollup-plugin-server": "^0.7.0",
     "rollup-plugin-typescript2": "^0.37.0",
-    "typescript-eslint": "^8.58.2"
+    "typescript-eslint": "^8.59.0"
   },
   "resolutions": {
     "lit": "^2.1.2",
