@@ -40,7 +40,7 @@
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-lit": "^2.2.1",
-    "globals": "^17.5.0",
+    "globals": "^17.6.0",
     "jiti": "^2.6.1",
     "rollup": "^4.60.2",
     "rollup-plugin-ignore": "^1.0.10",
