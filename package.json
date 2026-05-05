@@ -37,7 +37,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.2",
-    "eslint": "^9.39.2",
+    "eslint": "^10.3.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-lit": "^2.2.1",
     "globals": "^17.6.0",
