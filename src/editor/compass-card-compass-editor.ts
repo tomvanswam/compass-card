@@ -1,9 +1,11 @@
+import { backgroundOpacityDefault, CONFIG_DEFAULTS } from '../defaults';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEGREES_MAX, DEGREES_MIN, NO_ELEMENTS } from '../const';
-import { CCCompassConfig, CCNorthConfig } from './editorTypes';
-import { localize } from '../localize/localize';
+import { DEGREES_MAX, DEGREES_MIN } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { setOrDelete, updateObject } from './editorHelpers';
+import { CCCompassConfig } from './editorTypes';
+import { localize } from '../localize/localize';
 
 @customElement('compass-card-compass-editor')
 export class CompassCardCompassEditor extends LitElement {
@@ -50,11 +52,11 @@ export class CompassCardCompassEditor extends LitElement {
                         ],
                         type: 'grid',
                     },
-                    { name: 'compass_circle_stroke_conf', selector: { number: { min: 0, mode: 'box' } } },
+                    { name: 'compass_circle_stroke_conf', selector: { number: { min: 1, mode: 'box' } } },
                     {
                         name: '',
                         schema: [
-                            { name: 'compass_ticks_radius_conf', selector: { number: { min: 0, mode: 'box' } } },
+                            { name: 'compass_ticks_radius_conf', selector: { number: { min: 1, mode: 'box' } } },
                             { name: 'compass_ticks_step_conf', selector: { number: { max: 180, min: 1, mode: 'box' } } },
                         ],
                         type: 'grid',
@@ -87,135 +89,62 @@ export class CompassCardCompassEditor extends LitElement {
         return localize(`editor.${schema.name}`) || schema.name;
     }
 
+    // Shows the values the card actually uses, including defaults for options missing from the config
     private _computeData() {
+        const defaults = CONFIG_DEFAULTS.compass;
         return {
             compass_conf: {
                 compass_circle_background_conf: {
                     compass_circle_background_image_conf: this.config?.circle?.background_image || '',
-                    compass_circle_background_offset_conf: this.config?.circle?.offset_background || false,
-                    compass_circle_background_opacity_conf: this.config?.circle?.background_opacity,
+                    compass_circle_background_offset_conf: this.config?.circle?.offset_background ?? defaults.circle.offset_background,
+                    compass_circle_background_opacity_conf: this.config?.circle?.background_opacity || backgroundOpacityDefault(this.config?.circle?.background_image),
                 },
-                compass_circle_stroke_conf: this.config?.circle?.stroke_width,
+                compass_circle_stroke_conf: this.config?.circle?.stroke_width || defaults.circle.stroke_width,
                 compass_east_color_conf: this.config?.east?.color || '',
-                compass_east_show_conf: this.config?.east?.show !== false,
+                compass_east_show_conf: this.config?.east?.show ?? defaults.east.show,
                 compass_north_color_conf: this.config?.north?.color || '',
-                compass_north_show_conf: this.config?.north?.show !== false,
-                compass_offset_conf: this.config?.north?.offset || DEGREES_MIN,
+                compass_north_show_conf: this.config?.north?.show ?? defaults.north.show,
+                compass_offset_conf: this.config?.north?.offset || defaults.north.offset,
                 compass_south_color_conf: this.config?.south?.color || '',
-                compass_south_show_conf: this.config?.south?.show !== false,
-                compass_ticks_radius_conf: this.config?.ticks?.radius,
-                compass_ticks_step_conf: this.config?.ticks?.step,
+                compass_south_show_conf: this.config?.south?.show ?? defaults.south.show,
+                compass_ticks_radius_conf: this.config?.ticks?.radius || defaults.ticks.radius,
+                compass_ticks_step_conf: this.config?.ticks?.step || defaults.ticks.step,
                 compass_west_color_conf: this.config?.west?.color || '',
-                compass_west_show_conf: this.config?.west?.show !== false,
+                compass_west_show_conf: this.config?.west?.show ?? defaults.west.show,
             },
         };
     }
 
     private _valueChanged(ev: CustomEvent): void {
         const compassData = ev.detail.value.compass_conf;
-
-        // Create a new config object based on existing config or empty if undefined
-        // Note: If config is undefined, we start with {}
-        const newConfig: CCCompassConfig = this.config ? { ...this.config } : {};
-
-        if (compassData) {
-            // Offset optimization: check for DEGREES_MIN before creating objects? No, standard flow.
-            const compass: CCCompassConfig = { ...newConfig };
-
-            // Update Offset
-            if (compassData.compass_offset_conf !== undefined) {
-                const north: CCNorthConfig = { ...compass.north, offset: Number(compassData.compass_offset_conf) };
-                compass.north = north;
-
-                if (Number(compassData.compass_offset_conf) === DEGREES_MIN) {
-                    delete north.offset;
-                    if (Object.keys(north).length === NO_ELEMENTS) {
-                        // North is empty
-                        delete compass.north;
-                    } else {
-                        compass.north = north;
-                    }
-                }
-            }
-
-            // North
-            if (compassData.compass_north_show_conf !== undefined) {
-                compass.north = { ...compass.north, show: compassData.compass_north_show_conf };
-            }
-            if (compassData.compass_north_color_conf !== undefined) {
-                compass.north = { ...compass.north, color: compassData.compass_north_color_conf };
-            }
-            if (compass.north?.color === '') {
-                compass.north = { ...compass.north };
-                delete compass.north.color;
-            }
-
-            // East
-            if (compassData.compass_east_show_conf !== undefined) {
-                compass.east = { ...compass.east, show: compassData.compass_east_show_conf };
-            }
-            if (compassData.compass_east_color_conf !== undefined) {
-                compass.east = { ...compass.east, color: compassData.compass_east_color_conf };
-            }
-            if (compass.east?.color === '') {
-                compass.east = { ...compass.east };
-                delete compass.east.color;
-            }
-
-            // South
-            if (compassData.compass_south_show_conf !== undefined) {
-                compass.south = { ...compass.south, show: compassData.compass_south_show_conf };
-            }
-            if (compassData.compass_south_color_conf !== undefined) {
-                compass.south = { ...compass.south, color: compassData.compass_south_color_conf };
-            }
-            if (compass.south?.color === '') {
-                compass.south = { ...compass.south };
-                delete compass.south.color;
-            }
-
-            // West
-            if (compassData.compass_west_show_conf !== undefined) {
-                compass.west = { ...compass.west, show: compassData.compass_west_show_conf };
-            }
-            if (compassData.compass_west_color_conf !== undefined) {
-                compass.west = { ...compass.west, color: compassData.compass_west_color_conf };
-            }
-            if (compass.west?.color === '') {
-                compass.west = { ...compass.west };
-                delete compass.west.color;
-            }
-
-            // Circle
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const circle: any = { ...compass.circle };
-            const backgroundData = compassData.compass_circle_background_conf || {};
-
-            if (backgroundData.compass_circle_background_image_conf !== undefined) circle.background_image = backgroundData.compass_circle_background_image_conf;
-            if (backgroundData.compass_circle_background_opacity_conf !== undefined) circle.background_opacity = backgroundData.compass_circle_background_opacity_conf;
-            if (backgroundData.compass_circle_background_offset_conf !== undefined) circle.offset_background = backgroundData.compass_circle_background_offset_conf;
-            if (compassData.compass_circle_stroke_conf !== undefined) circle.stroke_width = compassData.compass_circle_stroke_conf;
-            compass.circle = circle;
-
-            // Ticks
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const ticks: any = { ...compass.ticks };
-            if (compassData.compass_ticks_radius_conf !== undefined) ticks.radius = compassData.compass_ticks_radius_conf;
-            if (compassData.compass_ticks_step_conf !== undefined) ticks.step = compassData.compass_ticks_step_conf;
-            compass.ticks = ticks;
-
-            // Assign back to newConfig (since we made compass = {...newConfig} initially but typescript might not see it as direct ref)
-            // Actually compass IS newConfig effectively if we cast it, but better be safe:
-            Object.assign(newConfig, compass);
+        if (!compassData) {
+            return;
         }
 
-        // Cleanup items if they become empty? Not strictly required by logic but good practice.
-        // The original logic cleaned up `newConfig.compass` if it was empty. 
-        // Here we are INSIDE the compass editor, so we just return the config for the compass itself.
-        // The parent will decide if it needs to remove 'compass' property from the main config if it's empty, 
-        // or we can return undefined/empty object?
-        // The original logic: `if (newConfig.compass && Object.keys(newConfig.compass).length === NO_ELEMENTS) delete newConfig.compass;`
-        // We should probably just return the Compass Config object.
+        const backgroundData = compassData.compass_circle_background_conf || {};
+        const newConfig: CCCompassConfig = { ...this.config };
+        // Values equal to the card defaults are left out of the YAML
+        const defaults = CONFIG_DEFAULTS.compass;
+
+        setOrDelete(newConfig, 'north', updateObject(newConfig.north, { color: compassData.compass_north_color_conf, offset: compassData.compass_offset_conf, show: compassData.compass_north_show_conf }, defaults.north));
+        setOrDelete(newConfig, 'east', updateObject(newConfig.east, { color: compassData.compass_east_color_conf, show: compassData.compass_east_show_conf }, defaults.east));
+        setOrDelete(newConfig, 'south', updateObject(newConfig.south, { color: compassData.compass_south_color_conf, show: compassData.compass_south_show_conf }, defaults.south));
+        setOrDelete(newConfig, 'west', updateObject(newConfig.west, { color: compassData.compass_west_color_conf, show: compassData.compass_west_show_conf }, defaults.west));
+        setOrDelete(
+            newConfig,
+            'circle',
+            updateObject(
+                newConfig.circle,
+                {
+                    background_image: backgroundData.compass_circle_background_image_conf,
+                    background_opacity: backgroundData.compass_circle_background_opacity_conf,
+                    offset_background: backgroundData.compass_circle_background_offset_conf,
+                    stroke_width: compassData.compass_circle_stroke_conf,
+                },
+                { ...defaults.circle, background_opacity: backgroundOpacityDefault(backgroundData.compass_circle_background_image_conf) },
+            ),
+        );
+        setOrDelete(newConfig, 'ticks', updateObject(newConfig.ticks, { radius: compassData.compass_ticks_radius_conf, step: compassData.compass_ticks_step_conf }, defaults.ticks));
 
         fireEvent(this, 'config-changed', { config: newConfig });
     }

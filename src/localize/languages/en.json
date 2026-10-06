@@ -11,12 +11,23 @@
     "off": "Off"
   },
   "editor": {
+    "indicator_sensor": "Indicator",
     "indicator_sensors": "Indicators",
+    "value_sensor": "Value",
     "value_sensors": "Values",
     "sensor_config": {
       "sensor": "Entity",
       "attribute": "Attribute",
-      "indicator": "Icon",
+      "indicator": "Indicator",
+      "indicator_icon": "Icon",
+      "indicator_url": "Image URL",
+      "indicator_types": {
+        "arrow_inward": "Arrow inward",
+        "arrow_outward": "Arrow outward",
+        "circle": "Circle",
+        "mdi": "Icon (mdi)",
+        "url": "Image URL"
+      },
       "units": "Units",
       "decimals": "Decimals",
       "indicator_color": "Indicator Color",
