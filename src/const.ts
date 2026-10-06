@@ -76,3 +76,7 @@ export const MEDIUM_TICK_INNER_RADIUS_LENGTH = 8;
 export const MAJOR_TICK_INNER_RADIUS_LENGTH = 10;
 export const MAJOR_TICK_ANGLE = 22.5;
 export const URL_REGEX = /^(?:https?:\/\/)|(?:\/local\/)/i;
+
+export const UNKNOWN_DIRECTION_VALUES = ['north', 'last', 'hide'] as const;
+export const DEFAULT_UNKNOWN_DIRECTION = 'north';
+export const UNKNOWN_STATES = ['unknown', 'unavailable', ''];

@@ -94,6 +94,7 @@ export interface CCStyleBand extends CCStyle {
 export interface CCDirectionInfo {
   abbreviation: string;
   degrees: number;
+  unknown: boolean;
 }
 
 export interface CCSensorAttrib {
