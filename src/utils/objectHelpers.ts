@@ -1,6 +1,6 @@
+import { ARROW_ART, CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, HALF, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editorTypes.js';
-import { CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, HALF, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
 export function getBoolean(value: boolean | number | string | undefined, defValue: boolean): boolean {
@@ -38,6 +38,22 @@ function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConf
   return sa;
 }
 
+/**
+ * Scale needed to keep an indicator inside the compass viewbox.
+ * The arrow artwork is scaled by min(radius / ARROW_ART.RADIUS, size / ARROW_ART.SIZE) and is taller than its size box,
+ * so its real outer extent is larger than radius + size / 2 (see svgIndicatorArrowOutward/Inward).
+ */
+export function getIndicatorScale(image: string, size: number, radius: number): number {
+  let extent = radius + size * HALF;
+  if (image === 'arrow_outward' || image === 'arrow_inward') {
+    const s = Math.min(radius / ARROW_ART.RADIUS, size / ARROW_ART.SIZE);
+    const tipExtent = extent + s * ARROW_ART.TOP;
+    const tailExtent = s * (ARROW_ART.HEIGHT - ARROW_ART.TOP) - extent;
+    extent = Math.max(tipExtent, tailExtent);
+  }
+  return DEFAULT_INDICATOR_RADIUS / Math.max(DEFAULT_INDICATOR_RADIUS, extent);
+}
+
 function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, startVisibility: boolean, startBgImage: string, startImage: string, startSize: number, startRadius: number, startOpacity: number): CCStyleBand[] {
   const styleBands: CCStyleBand[] = [];
   const newBands = [...(bands || [])];
@@ -53,7 +69,7 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
       const size = band.size || (i === INDEX_ELEMENT_0 ? startSize : styleBands[i + LENGTH_TO_INDEX].size) || startSize;
       const radius = band.radius || (i === INDEX_ELEMENT_0 ? startRadius : styleBands[i + LENGTH_TO_INDEX].radius) || startRadius;
       const opacity = band.opacity || (i === INDEX_ELEMENT_0 ? startOpacity : styleBands[i + LENGTH_TO_INDEX].opacity) || startOpacity;
-      const scale = (DEFAULT_INDICATOR_RADIUS / Math.max(radius, DEFAULT_INDICATOR_RADIUS, radius + size * HALF ));
+      const scale = getIndicatorScale(image, size, radius);
       const show = getBoolean(band.show, prevVisibility);
       styleBands.push({ background_image: background_image, color: color, from_value: band.from_value, image: image, opacity: opacity, radius: radius, scale: scale, show: show, size: size });
     });
@@ -94,7 +110,7 @@ function getDynamicStyle(
       image: dynamicStyle?.unknown?.image || startImage,
       opacity: dynamicStyle?.unknown?.opacity || startOpacity,
       radius: dynamicStyle?.unknown?.radius || startRadius,
-      scale: (DEFAULT_INDICATOR_RADIUS / Math.max(dynamicStyle?.unknown?.radius || startRadius, DEFAULT_INDICATOR_RADIUS)),
+      scale: getIndicatorScale(dynamicStyle?.unknown?.image || startImage, dynamicStyle?.unknown?.size || startSize, dynamicStyle?.unknown?.radius || startRadius),
       show: dynamicStyle?.unknown?.show || startVisibility,
       size: dynamicStyle?.unknown?.size || startSize,
     },
@@ -202,7 +218,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const size = indicatorSensor.indicator?.size || DEFAULT_INDICATOR_SIZE;
   const radius = indicatorSensor.indicator?.radius ?? DEFAULT_INDICATOR_RADIUS;
   const opacity = indicatorSensor.indicator?.opacity ?? OPACITY_VISIBLE;
-  const scale = DEFAULT_INDICATOR_RADIUS / Math.max(radius, DEFAULT_INDICATOR_RADIUS, radius + size * HALF);
+  const scale = getIndicatorScale(indIconImage, size, radius);
   const sensor: CCIndicatorSensor = {
     decimals: indicatorSensor.decimals || DEFAULT_DECIMALS,
     entity: entities[sens],
