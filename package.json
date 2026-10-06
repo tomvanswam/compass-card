@@ -12,7 +12,7 @@
     "custom-cards"
   ],
   "module": "compass-card.js",
-  "repository": "git@github.com:custom_cards/compass-card.git",
+  "repository": "git+https://github.com/tomvanswam/compass-card.git",
   "author": "Tom van Swam <tom@vanswam.com>",
   "license": "MIT",
   "dependencies": {
@@ -48,12 +48,6 @@
     "rollup-plugin-server": "^0.7.0",
     "rollup-plugin-typescript2": "^0.37.0",
     "typescript-eslint": "^8.71.0"
-  },
-  "resolutions": {
-    "lit": "^2.1.2",
-    "lit-html": "2.1.2",
-    "lit-element": "3.1.2",
-    "@lit/reactive-element": "1.2.1"
   },
   "scripts": {
     "start": "rollup -c --watch",
