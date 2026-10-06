@@ -1,9 +1,9 @@
 import './editor';
 import * as MDI from '@mdi/js';
+import { ActionConfig, CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
 import { assert, StructError } from 'superstruct';
 import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCValue, CCValueSensor } from './cardTypes.js';
-import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
 import { CSSResult, html, LitElement, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
@@ -229,10 +229,11 @@ export class CompassCard extends LitElement {
     const divs: TemplateResult[] = [];
     let index = 0;
 
-    this.indicatorSensors.forEach((indicator) => {
+    this.indicatorSensors.forEach((indicator, sensorIndex) => {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
+        const action = this.getSensorAction('indicator_sensors', sensorIndex);
         divs.push(
-          html`<div class="sensor-${index} indicator-sensor">
+          html`<div class="sensor-${index} indicator-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicator.sensor)}>
             ${this.getVisibility(indicator.state_abbreviation) ? this.getIndicatorAbbreviation(indicator) : ''}
             ${this.getVisibility(indicator.state_value) ? this.getIndicatorValue(indicator) : ''}
             ${this.getVisibility(indicator.state_units) ? this.getIndicatorUnits(indicator) : ''}
@@ -269,10 +270,11 @@ export class CompassCard extends LitElement {
   private renderValues(): TemplateResult[] {
     const divs: TemplateResult[] = [];
     let index = 0;
-    this.valueSensors.forEach((value) => {
+    this.valueSensors.forEach((value, sensorIndex) => {
       if (this.getVisibility(value.state_value)) {
+        const action = this.getSensorAction('value_sensors', sensorIndex);
         divs.push(
-          html`<div class="sensor-${index} value-sensor">
+          html`<div class="sensor-${index} value-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, value.sensor)}>
             <span class="value" style="--compass-card-value-value-color: ${this.getColor(value.state_value)};"
               >${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span
             >
@@ -504,10 +506,11 @@ export class CompassCard extends LitElement {
   private svgSingleIndicator(indicatorSensor: CCIndicatorSensor, index = INDEX_ELEMENT_0): SVGTemplateResult {
     const indicatorPath = this.svgIndicator(indicatorSensor);
     const { degrees } = this.computeIndicator(indicatorSensor);
+    const action = this.getSensorAction('indicator_sensors', this.indicatorSensors.indexOf(indicatorSensor));
 
     // set per-indicator color via CSS variable so presentational attributes move to CSS
     return svg`
-      <g class="indicator-${index}" transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
+      <g class="indicator-${index} ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicatorSensor.sensor)} transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
         ${indicatorPath}
       </g>
     `;
@@ -742,6 +745,21 @@ export class CompassCard extends LitElement {
       value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value,
     };
   }
+  /**
+   * tap_action of the n-th rendered sensor. Rendered sensors skip config entries whose entity is missing,
+   * so the same filter is applied to the configuration.
+   */
+  private getSensorAction(kind: 'indicator_sensors' | 'value_sensors', renderedIndex: number): ActionConfig | undefined {
+    const configured = (this._config[kind] ?? []).filter((sensor) => sensor.sensor && this.entities[sensor.sensor]);
+    return configured[renderedIndex]?.tap_action;
+  }
+
+  private handleSensorClick(e: Event, action: ActionConfig | undefined, entity: string) {
+    if (!action) return;
+    e.stopPropagation();
+    handleClick(this, this._config, action, entity);
+  }
+
   private handlePopup(e: { stopPropagation: () => void; }) {
     e.stopPropagation();
     if (this._config.tap_action) {

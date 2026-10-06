@@ -32,7 +32,7 @@ export function toHaAction(actionConfig: ActionConfig): Record<string, unknown> 
   }
 }
 
-export default (node: CompassCard, config: CompassCardConfig, actionConfig: ActionConfig): void => {
+export default (node: CompassCard, config: CompassCardConfig, actionConfig: ActionConfig, entity?: string): void => {
   const tapAction = toHaAction(actionConfig);
   if (!tapAction) return;
   // the url action in Home Assistant always opens a new tab, keep same-tab behaviour for new_tab: false
@@ -42,6 +42,6 @@ export default (node: CompassCard, config: CompassCardConfig, actionConfig: Acti
   }
   fireEvent(node, 'hass-action', {
     action: 'tap',
-    config: { entity: config.indicator_sensors[0]?.sensor, tap_action: tapAction },
+    config: { entity: entity ?? config.indicator_sensors[0]?.sensor, tap_action: tapAction },
   });
 };

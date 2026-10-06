@@ -114,6 +114,7 @@ export const CCSensorConfigStruct = assign(
   object({
     state_units: optional(CCPropertiesConfigStruct),
     state_value: optional(CCPropertiesConfigStruct),
+    tap_action: optional(ActionConfigStruct),
   }),
 );
 
