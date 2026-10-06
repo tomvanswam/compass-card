@@ -52,7 +52,7 @@ export class CompassCardCompassEditor extends LitElement {
                         ],
                         type: 'grid',
                     },
-                    { name: 'compass_circle_stroke_conf', selector: { number: { min: 1, mode: 'box' } } },
+                    { name: 'compass_circle_stroke_conf', selector: { number: { min: 0.5, mode: 'box', step: 0.5 } } },
                     {
                         name: '',
                         schema: [
