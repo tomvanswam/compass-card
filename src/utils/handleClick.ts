@@ -1,48 +1,47 @@
 import { ActionConfig, CompassCardConfig } from '../editorTypes.js';
 import { CompassCard } from '../compass-card.js';
-import { HomeAssistant } from './ha-helpers.js';
+import { fireEvent } from './ha-helpers.js';
 
-export default (node: CompassCard, hass: HomeAssistant, config: CompassCardConfig, actionConfig: ActionConfig): void => {
-  let e;
-  switch (actionConfig.action || 'more-info') {
-    case 'more-info': {
-      e = new Event('hass-more-info', { composed: true });
-      e.detail = {
-        entityId: actionConfig.entity || config?.tap_action,
-      };
-      node.dispatchEvent(e);
-      break;
-    }
-    case 'navigate': {
-      if (!actionConfig.navigation_path) return;
-      if (actionConfig.new_tab || actionConfig.new_tab === undefined) {
-        window.open(actionConfig.navigation_path, '_blank');
-        break;
-      }
-      window.history.pushState(null, '', actionConfig.navigation_path);
-      e = new Event('location-changed', { composed: true });
-      e.detail = { replace: false };
-      window.dispatchEvent(e);
-      break;
-    }
-    case 'call-service': {
-      if (!actionConfig.service) return;
-      const MAX_SERVICE_LENGTH = 2;
-      const [domain, service] = actionConfig.service.split('.', MAX_SERVICE_LENGTH);
-      const serviceData = actionConfig.service_data ? { ...JSON.parse(actionConfig.service_data) } : '';
-      hass.callService(domain, service, serviceData);
-      break;
-    }
+/**
+ * Translate the card's tap_action into a Home Assistant action config, so the
+ * frontend's own action handling (confirmation, perform-action, toggle, ...) is used.
+ * Legacy options (call-service + service_data, new_tab) are converted for backwards compatibility.
+ */
+export function toHaAction(actionConfig: ActionConfig): Record<string, unknown> | undefined {
+  const { action = 'more-info', entity, navigation_path, new_tab, service, service_data, url, ...rest } = actionConfig;
+  const newTab = new_tab === undefined || new_tab;
+  switch (action) {
+    case 'more-info':
+      return { action, entity, ...rest };
+    case 'navigate':
+      if (!navigation_path) return undefined;
+      return newTab ? { action: 'url', url_path: navigation_path, ...rest } : { action, navigation_path, ...rest };
     case 'url': {
-      if (!actionConfig.url) return;
-      if (actionConfig.new_tab || actionConfig.new_tab === undefined) {
-        window.open(actionConfig.url, '_blank');
-        break;
-      }
-      window.location.href = actionConfig.url;
-      break;
+      const urlPath = rest.url_path ?? url;
+      if (!urlPath) return undefined;
+      return { action, ...rest, url_path: urlPath };
+    }
+    case 'call-service':
+    case 'perform-action': {
+      const performAction = rest.perform_action ?? service;
+      if (!performAction) return undefined;
+      return { action: 'perform-action', data: service_data ? JSON.parse(service_data) : undefined, ...rest, perform_action: performAction };
     }
     default:
-
+      return { action, ...rest };
   }
+}
+
+export default (node: CompassCard, config: CompassCardConfig, actionConfig: ActionConfig): void => {
+  const tapAction = toHaAction(actionConfig);
+  if (!tapAction) return;
+  // the url action in Home Assistant always opens a new tab, keep same-tab behaviour for new_tab: false
+  if (tapAction.action === 'url' && actionConfig.new_tab === false) {
+    window.location.href = tapAction.url_path as string;
+    return;
+  }
+  fireEvent(node, 'hass-action', {
+    action: 'tap',
+    config: { entity: config.indicator_sensors[0]?.sensor, tap_action: tapAction },
+  });
 };

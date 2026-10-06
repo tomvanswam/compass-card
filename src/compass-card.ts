@@ -745,7 +745,7 @@ export class CompassCard extends LitElement {
   private handlePopup(e: { stopPropagation: () => void; }) {
     e.stopPropagation();
     if (this._config.tap_action) {
-      handleClick(this, this._hass, this._config, this._config.tap_action);
+      handleClick(this, this._config, this._config.tap_action);
     }
   }
 
