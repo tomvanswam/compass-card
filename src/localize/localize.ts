@@ -53,6 +53,12 @@ export function getLocalLanguage(): string {
   return 'en'; // fallback for non-browser environments
 }
 
+function lookup(string: string, language: string): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const value = string.split('.').reduce((o: any, i) => o?.[i], languages[language]);
+  return typeof value === 'string' ? value : undefined;
+}
+
 export function localize(string: string, search = '', replace = '', language = ''): string {
   let translated: string;
   let translateTo: string;
@@ -62,13 +68,8 @@ export function localize(string: string, search = '', replace = '', language = '
   } else {
     translateTo = language;
   }
-  try {
-    translated = string.split('.').reduce((o, i) => o[i], languages[translateTo]);
-  } catch {
-    translated = string.split('.').reduce((o, i) => o[i], languages.en);
-  }
-
-  if (translated === undefined) translated = string.split('.').reduce((o, i) => o[i], languages.en);
+  // Empty or missing translations (also for unknown languages or missing parent keys) fall back to English
+  translated = lookup(string, translateTo) || lookup(string, 'en') || '';
 
   if (search !== '' && replace !== '') {
     translated = translated.replace(search, replace);
