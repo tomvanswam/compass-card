@@ -41,7 +41,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
         <ha-form
           .hass=${this.hass}
           .data=${{
-        language: this.language || ''
+        language: this.language
       }}
           .schema=${[
         {
@@ -49,13 +49,13 @@ export class CompassCardIndicatorRowEditor extends LitElement {
           selector: {
             select: {
               mode: 'dropdown',
-              options: COMPASS_LANGUAGES.map((lang) => ({ label: lang, value: lang })),
+              options: COMPASS_LANGUAGES.filter((lang) => lang !== '').map((lang) => ({ label: lang, value: lang })),
             },
           },
         },
       ]}
-          .computeLabel=${CompassCardIndicatorRowEditor._computeAbbLabel}
-          @value-changed=${this._abbValueChanged}
+          .computeLabel=${CompassCardIndicatorRowEditor._computeLanguageLabel}
+          @value-changed=${this._languageChanged}
         ></ha-form>
         <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
           <div class="entities">
@@ -126,35 +126,12 @@ export class CompassCardIndicatorRowEditor extends LitElement {
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
 
-  private _abbValueChanged(ev: CustomEvent): void {
-    const data = ev.detail.value;
-
-    if (data.language !== this.language) {
-      fireEvent(this, 'language-changed', { language: data.language });
+  private _languageChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    const { language } = ev.detail.value;
+    if (language !== this.language) {
+      fireEvent(this, 'language-changed', { language });
     }
-
-    const newEntities = [...(this.entities || [])];
-    if (!newEntities[INDEX_ELEMENT_0]) {
-      newEntities[INDEX_ELEMENT_0] = {
-        indicator: { image: DEFAULT_ICON_VALUE },
-        sensor: '',
-      };
-    }
-
-    newEntities[INDEX_ELEMENT_0] = {
-      ...newEntities[INDEX_ELEMENT_0],
-      state_abbreviation: {
-        ...newEntities[INDEX_ELEMENT_0].state_abbreviation,
-        color: data.state_abbreviation_color,
-        show: data.state_abbreviation_show,
-      },
-    };
-
-    if (!newEntities[INDEX_ELEMENT_0].state_abbreviation!.color) {
-      delete newEntities[INDEX_ELEMENT_0].state_abbreviation!.color;
-    }
-
-    fireEvent(this, 'entities-changed', { entities: newEntities });
   }
 
   private _addEntity(ev: CustomEvent): void {
@@ -173,7 +150,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeAbbLabel(schema: any): string {
+  private static _computeLanguageLabel(schema: any): string {
     return localize(`editor.sensor_config.${schema.name}`);
   }
 

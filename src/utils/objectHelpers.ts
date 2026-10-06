@@ -1,6 +1,7 @@
+import { abbreviationShowDefault, backgroundOpacityDefault, CONFIG_DEFAULTS, headerIconShowDefault, headerTitleShowDefault } from '../defaults.js';
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
-import { CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_START_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, ICON_VALUES, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
+import { DEFAULT_DECIMALS, DEFAULT_INDICATOR_RADIUS, DEFAULT_START_SIZE, HALF, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
 export function getBoolean(value: boolean | number | string | undefined, defValue: boolean): boolean {
@@ -104,9 +105,9 @@ function getDynamicStyle(
 
 export function getHeader(config: CompassCardConfig, colors: CCColors, indicatorEntity: HassEntity, entities: HassEntities): CCHeader {
   const titleColor = config.header?.title?.color || colors.secondaryText;
-  const titleShow = getBoolean(config.header?.title?.show, getBoolean(config.header?.title?.value !== undefined, false));
+  const titleShow = getBoolean(config.header?.title?.show, headerTitleShowDefault(config.header?.title?.value));
   const iconColor = config.header?.icon?.color || colors.stateIcon;
-  const iconShow = getBoolean(config.header?.icon?.show, getBoolean(config.header?.icon?.value, false) || getBoolean(config.header?.title?.value, false));
+  const iconShow = getBoolean(config.header?.icon?.show, headerIconShowDefault(config.header?.icon?.value, config.header?.title?.value));
   const header: CCHeader = {
     icon: {
       color: iconColor,
@@ -127,23 +128,23 @@ export function getHeader(config: CompassCardConfig, colors: CCColors, indicator
 
 export function getCompass(config: CompassCardConfig, colors: CCColors, entities: HassEntities): CCCompass {
   const circleColor = config.compass?.circle?.color || colors.primary;
-  const circleShow = getBoolean(config.compass?.circle?.show, true);
+  const circleShow = getBoolean(config.compass?.circle?.show, CONFIG_DEFAULTS.compass.circle.show);
   const northColor = config.compass?.north?.color || colors.primary;
-  const northShow = getBoolean(config.compass?.north?.show, false);
+  const northShow = getBoolean(config.compass?.north?.show, CONFIG_DEFAULTS.compass.north.show);
   const eastColor = config.compass?.east?.color || colors.primary;
-  const eastShow = getBoolean(config.compass?.east?.show, false);
+  const eastShow = getBoolean(config.compass?.east?.show, CONFIG_DEFAULTS.compass.east.show);
   const southColor = config.compass?.south?.color || colors.primary;
-  const southShow = getBoolean(config.compass?.south?.show, false);
+  const southShow = getBoolean(config.compass?.south?.show, CONFIG_DEFAULTS.compass.south.show);
   const westColor = config.compass?.west?.color || colors.primary;
-  const westShow = getBoolean(config.compass?.west?.show, false);
+  const westShow = getBoolean(config.compass?.west?.show, CONFIG_DEFAULTS.compass.west.show);
   const ticksColor = config.compass?.ticks?.color || colors.primary;
-  const ticksShow = getBoolean(config.compass?.ticks?.show, false);
-  const ticksRadius = config.compass?.ticks?.radius || CIRCLE.RADIUS;
-  const ticksStep = config.compass?.ticks?.step || DEFAULT_TICK_STEP;
+  const ticksShow = getBoolean(config.compass?.ticks?.show, CONFIG_DEFAULTS.compass.ticks.show);
+  const ticksRadius = config.compass?.ticks?.radius || CONFIG_DEFAULTS.compass.ticks.radius;
+  const ticksStep = config.compass?.ticks?.step || CONFIG_DEFAULTS.compass.ticks.step;
   const bgImage = config.compass?.circle?.background_image || '';
-  const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : config.compass?.circle?.background_image ? OPACITY_VISIBLE : OPACITY_TRANSPARENT;
-  const bgOffset = getBoolean(config.compass?.circle?.offset_background, true);
-  const circleStrokeWidth = config.compass?.circle?.stroke_width || DEFAULT_CIRCLE_STROKE_WIDTH;
+  const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : backgroundOpacityDefault(config.compass?.circle?.background_image);
+  const bgOffset = getBoolean(config.compass?.circle?.offset_background, CONFIG_DEFAULTS.compass.circle.offset_background);
+  const circleStrokeWidth = config.compass?.circle?.stroke_width || CONFIG_DEFAULTS.compass.circle.stroke_width;
   const compass: CCCompass = {
     circle: {
       background_image: bgImage,
@@ -162,7 +163,7 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
     north: {
       color: northColor,
       dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, northColor, northShow),
-      offset: config.compass?.north?.offset || DEGREES_MIN,
+      offset: config.compass?.north?.offset || CONFIG_DEFAULTS.compass.north.offset,
       show: northShow,
     },
     scale: config.compass?.scale || SVG_SCALE_MIN,
@@ -191,20 +192,20 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const sens = indicatorSensor.sensor || '';
   const attrib = indicatorSensor.attribute || '';
   const indColor = indicatorSensor.indicator?.color || colors.accent;
-  const indShow = getBoolean(indicatorSensor.indicator?.show, true);
-  const indIconImage = indicatorSensor.indicator?.image || ICON_VALUES[DEFAULT_ICON_VALUE];
+  const indShow = getBoolean(indicatorSensor.indicator?.show, CONFIG_DEFAULTS.indicator_sensor.indicator.show);
+  const indIconImage = indicatorSensor.indicator?.image || CONFIG_DEFAULTS.indicator_sensor.indicator.image;
   const abbrColor = indicatorSensor.state_abbreviation?.color || colors.secondaryText;
-  const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, validIndex === INDEX_ELEMENT_0);
+  const abbrShow = getBoolean(indicatorSensor.state_abbreviation?.show, abbreviationShowDefault(validIndex));
   const valueColor = indicatorSensor.state_value?.color || colors.secondaryText;
-  const valueShow = getBoolean(indicatorSensor.state_value?.show, false);
+  const valueShow = getBoolean(indicatorSensor.state_value?.show, CONFIG_DEFAULTS.indicator_sensor.state_value.show);
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
-  const unitsShow = getBoolean(indicatorSensor.state_units?.show, false);
-  const size = indicatorSensor.indicator?.size || DEFAULT_INDICATOR_SIZE;
-  const radius = indicatorSensor.indicator?.radius ?? DEFAULT_INDICATOR_RADIUS;
-  const opacity = indicatorSensor.indicator?.opacity ?? OPACITY_VISIBLE;
+  const unitsShow = getBoolean(indicatorSensor.state_units?.show, CONFIG_DEFAULTS.indicator_sensor.state_units.show);
+  const size = indicatorSensor.indicator?.size || CONFIG_DEFAULTS.indicator_sensor.indicator.size;
+  const radius = indicatorSensor.indicator?.radius ?? CONFIG_DEFAULTS.indicator_sensor.indicator.radius;
+  const opacity = indicatorSensor.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity;
   const scale = DEFAULT_INDICATOR_RADIUS / Math.max(radius, DEFAULT_INDICATOR_RADIUS, radius + size * HALF);
   const sensor: CCIndicatorSensor = {
-    decimals: indicatorSensor.decimals || DEFAULT_DECIMALS,
+    decimals: indicatorSensor.decimals || CONFIG_DEFAULTS.indicator_sensor.decimals,
     entity: entities[sens],
     indicator: {
       color: indColor,
@@ -252,11 +253,11 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
   const sens = valueSensor.sensor || '';
   const attrib = valueSensor.attribute || '';
   const valueColor = valueSensor.state_value?.color || colors.primaryText;
-  const valueShow = getBoolean(valueSensor.state_value?.show, true);
+  const valueShow = getBoolean(valueSensor.state_value?.show, CONFIG_DEFAULTS.value_sensor.state_value.show);
   const unitsColor = valueSensor.state_units?.color || colors.secondaryText;
-  const unitsShow = getBoolean(valueSensor.state_units?.show, true);
+  const unitsShow = getBoolean(valueSensor.state_units?.show, CONFIG_DEFAULTS.value_sensor.state_units.show);
   const sensor: CCValueSensor = {
-    decimals: valueSensor.decimals || DEFAULT_DECIMALS,
+    decimals: valueSensor.decimals || CONFIG_DEFAULTS.value_sensor.decimals,
     entity: entities[sens],
     is_attribute: attrib !== '',
     sensor: attrib === '' ? sens : `${sens}.${attrib}`,

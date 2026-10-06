@@ -1,8 +1,10 @@
 
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { setOrDelete, updateObject } from './editorHelpers';
 import { CCValueSensorConfig } from './editorTypes';
+import { CONFIG_DEFAULTS } from '../defaults';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
 
@@ -10,12 +12,6 @@ import { mdiArrowLeft } from '@mdi/js';
 export class CompassCardValueEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @property({ attribute: false }) public config?: CCValueSensorConfig;
-
-  @state() private _config?: CCValueSensorConfig;
-
-  public setConfig(config: CCValueSensorConfig): void {
-    this._config = config;
-  }
 
   protected render(): TemplateResult {
     if (!this.hass || !this.config) {
@@ -41,17 +37,18 @@ export class CompassCardValueEditor extends LitElement {
             .path=${mdiArrowLeft}
             @click=${this._goBack}
           ></ha-icon-button>
-          <span slot="title">${localize('editor.secondary.title')}</span>
+          <span slot="title">${localize('editor.value_sensor')}</span>
         </div>
       </div>
       <ha-form
         .hass=${this.hass}
         .data=${{
         ...this.config,
+        decimals: this.config.decimals || CONFIG_DEFAULTS.value_sensor.decimals,
         state_units_color: this.config.state_units?.color || '',
-        state_units_show: this.config.state_units?.show !== false,
+        state_units_show: this.config.state_units?.show ?? CONFIG_DEFAULTS.value_sensor.state_units.show,
         state_value_color: this.config.state_value?.color || '',
-        state_value_show: this.config.state_value?.show !== false,
+        state_value_show: this.config.state_value?.show ?? CONFIG_DEFAULTS.value_sensor.state_value.show,
       }}
         .schema=${schema}
         .computeLabel=${CompassCardValueEditor._computeLabel}
@@ -62,30 +59,15 @@ export class CompassCardValueEditor extends LitElement {
 
   private _valueChanged(ev: CustomEvent): void {
     const data = ev.detail.value;
-    const newConfig = {
-      ...this.config,
-      attribute: data.attribute,
-      decimals: data.decimals,
-      sensor: data.sensor,
-      state_units: {
-        ...this.config?.state_units,
-        color: data.state_units_color,
-        show: data.state_units_show,
-      },
-      state_value: {
-        ...this.config?.state_value,
-        color: data.state_value_color,
-        show: data.state_value_show,
-      },
-      units: data.units,
-    };
+    // Values equal to the card defaults are left out of the YAML
+    const defaults = CONFIG_DEFAULTS.value_sensor;
+    const newConfig: CCValueSensorConfig = { ...this.config, sensor: data.sensor || '' };
 
-    if (!data.attribute) delete newConfig.attribute;
-    if (!data.units) delete newConfig.units;
-    if (data.decimals === undefined) delete newConfig.decimals;
-
-    if (!newConfig.state_value.color) delete newConfig.state_value.color;
-    if (!newConfig.state_units.color) delete newConfig.state_units.color;
+    setOrDelete(newConfig, 'attribute', data.attribute);
+    setOrDelete(newConfig, 'units', data.units);
+    setOrDelete(newConfig, 'decimals', data.decimals, defaults.decimals);
+    setOrDelete(newConfig, 'state_value', updateObject(this.config?.state_value, { color: data.state_value_color, show: data.state_value_show }, defaults.state_value));
+    setOrDelete(newConfig, 'state_units', updateObject(this.config?.state_units, { color: data.state_units_color, show: data.state_units_show }, defaults.state_units));
 
     fireEvent(this, 'config-changed', { config: newConfig });
   }

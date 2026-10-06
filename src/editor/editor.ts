@@ -13,7 +13,6 @@ import './compass-card-indicator-row-editor';
 import './compass-card-value-editor';
 import './compass-card-value-row-editor';
 
-
 interface CardHelpers {
   // eslint-disable-next-line no-unused-vars
   importMoreInfoControl(type: string): void;
@@ -55,6 +54,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           <compass-card-indicator-editor
             .hass=${this.hass}
             .config=${this._subElementEditorConfig.elementConfig}
+            .index=${this._subElementEditorConfig.index}
             @go-back=${this._goBack}
             @config-changed=${this._handleSubElementChanged}
           ></compass-card-indicator-editor>
@@ -205,14 +205,6 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
-
-
-
-
-
-
-
-
   private _initialize(): void {
     if (this.hass === undefined) return;
     if (this._config === undefined) return;
@@ -227,6 +219,12 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
 
   static get styles(): CSSResult {
     return css`
+      /* small space between the Header, Compass, Indicators and Values groups */
+      :host {
+        display: flex;
+        flex-direction: column;
+        gap: var(--ha-space-2, 8px);
+      }
       ha-form {
         width: 100%;
       }
