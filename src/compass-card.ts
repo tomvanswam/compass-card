@@ -4,10 +4,10 @@ import { assert, StructError } from 'superstruct';
 import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCStyleBand, CCValue, CCValueSensor } from './cardTypes.js';
 import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
-import { CSSResult, html, LitElement, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
+import { CSSResult, html, LitElement, nothing, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
-import { getLovelace, HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
+import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { localize } from './localize/localize.js';
@@ -75,9 +75,6 @@ export class CompassCard extends LitElement {
       throw new Error(localize('common.missing_direction_entity'));
     }
 
-    if (config.test_gui) {
-      getLovelace().setEditMode(true);
-    }
     try {
       assert(config, CompassCardConfigStruct);
     } catch (e) {
@@ -186,7 +183,14 @@ export class CompassCard extends LitElement {
     }
 
     return html`
-      <ha-card tabindex="0" .label=${`Compass: ${this.header.label}`} class="flex compass-card" @click=${(e) => this.handlePopup(e)}>
+      <ha-card
+        tabindex=${this._config.tap_action ? '0' : nothing}
+        role=${this._config.tap_action ? 'button' : nothing}
+        .label=${`Compass: ${this.header.label}`}
+        class="flex compass-card"
+        @click=${(e) => this.handlePopup(e)}
+        @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e)}
+      >
         ${this.showHeader() ? this.renderHeader() : ''}
         <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
         <div class="sensors">${this.renderDirections()} ${this.renderValues()}</div>
@@ -704,6 +708,13 @@ export class CompassCard extends LitElement {
       value: isNumeric(value) ? Number(value).toFixed(entity.decimals) : value,
     };
   }
+  private handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this.handlePopup(e);
+    }
+  }
+
   private handlePopup(e: { stopPropagation: () => void; }) {
     e.stopPropagation();
     if (this._config.tap_action) {

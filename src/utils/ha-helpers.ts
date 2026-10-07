@@ -66,20 +66,3 @@ export const fireEvent = (
     node.dispatchEvent(event);
     return event;
 };
-
-export const getLovelace = () => {
-    // This is a minimal stub to satisfy usage in existing code if possible.
-    // In many cases custom-card-helpers tried to find the lovelace object on the window or DOM.
-    // For now we might return a dummy or try to find it if we really need it.
-    // The previous usage was `getLovelace().setEditMode(true);`
-    // We can try to shim it.
-    return {
-        setEditMode: (mode: boolean) => {
-
-            const root: any = document.querySelector('home-assistant') as any;
-            if (root && root._lovelace) {
-                root._lovelace.setEditMode(mode);
-            }
-        }
-    };
-};
