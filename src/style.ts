@@ -21,6 +21,10 @@ const style: CSSResult = css`
   :host ::slotted(.card-content) {
     padding: 16px;
   }
+  .clickable {
+    cursor: pointer;
+  }
+
   ha-card {
     min-height: var(--compass-card-section-min-height, var(--compass-card-masonry-min-height, 200px));
     position: relative;

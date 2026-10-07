@@ -1,4 +1,4 @@
-import { array, assign, boolean, enums, Infer, number, object, optional, pattern, refine, size, string, type, union } from 'superstruct';
+import { any, array, assign, boolean, enums, Infer, number, object, optional, pattern, record, refine, size, string, type, union } from 'superstruct';
 import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './const.js';
 import { COMPASS_LANGUAGES } from './localize/localize.js';
 import { LovelaceCardConfig } from './utils/ha-helpers.js';
@@ -23,13 +23,21 @@ export const percentage = () => refine(number(), 'percentage', (value) => (value
 const CCImageStruct = optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), URL_REGEX)]));
 
 export const ActionConfigStruct = object({
-  action: optional(enums(['more-info', 'navigate', 'call-service', 'url'])),
+  action: optional(enums(['more-info', 'navigate', 'call-service', 'perform-action', 'url', 'toggle', 'assist', 'none'])),
+  confirmation: optional(any()),
+  data: optional(record(string(), any())),
   entity: optional(string()),
   navigation_path: optional(string()),
+  navigation_replace: optional(boolean()),
   new_tab: optional(boolean()),
+  perform_action: optional(string()),
+  pipeline_id: optional(string()),
   service: optional(string()),
   service_data: optional(string()),
+  start_listening: optional(boolean()),
+  target: optional(record(string(), any())),
   url: optional(string()),
+  url_path: optional(string()),
 });
 export type ActionConfig = Infer<typeof ActionConfigStruct>;
 
@@ -106,6 +114,7 @@ export const CCSensorConfigStruct = assign(
   object({
     state_units: optional(CCPropertiesConfigStruct),
     state_value: optional(CCPropertiesConfigStruct),
+    tap_action: optional(ActionConfigStruct),
   }),
 );
 
