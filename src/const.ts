@@ -1,7 +1,8 @@
 /* eslint-disable sort-keys */
 import { localize } from './localize/localize.js';
+import { version } from '../package.json';
 
-export const CARD_VERSION = '3.4.0';
+export const CARD_VERSION = version;
 export const ICONS = {
   compass: 'mdi:compass',
 };
