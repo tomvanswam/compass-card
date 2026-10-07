@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
-    "@babel/eslint-parser": "^7.29.9",
+    "@babel/eslint-parser": "^8.0.6",
     "@babel/plugin-proposal-decorators": "^7.29.7",
     "@babel/plugin-transform-class-properties": "^7.29.7",
     "@eslint/css": "^2.0.0",
