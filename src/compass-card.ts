@@ -2,7 +2,7 @@ import './editor';
 import * as MDI from '@mdi/js';
 import { assert, StructError } from 'superstruct';
 import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE, UNKNOWN_STATES } from './const.js';
-import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCValue, CCValueSensor } from './cardTypes.js';
+import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCStyleBand, CCValue, CCValueSensor } from './cardTypes.js';
 import { CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
 import { CSSResult, html, LitElement, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -88,14 +88,16 @@ export class CompassCard extends LitElement {
         throw new Error(
           `Compass Card: incompatible v2.0.0+ configuration. 
           Edit this card in code editor (YAML mode) and replace 'type' with 'image' for indicator sensor indicators to fix this error. More info: https://github.com/tomvanswam/compass-card/wiki/Upgrade-from-version-v2.x.x-to-v3.0.0#indicator-type-becomes-indicator-image`,
+          { cause: e },
         );
       }
       if (last === 'image' && secondLast === 'indicator') {
         throw new Error(
           `Compass Card: ${err.path.join('.')} should be either ${ICON_VALUES.join(', ')}, an mdi: icon (e.g. mdi:compass) or an image URL (e.g. https://example.com/image.png or /local/image.png). More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration#indicator-object`,
+          { cause: e },
         );
       }
-      throw new Error(`Compass Card: invalid yaml configuration. ${err.message} More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`);
+      throw new Error(`Compass Card: invalid yaml configuration. ${err.message} More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`, { cause: e });
     }
 
     this.colors = {
@@ -117,12 +119,12 @@ export class CompassCard extends LitElement {
     return DEFAULT_CARD_SIZE + +this.showHeader();
   }
 
-  public getLayoutOptions() {
+  public getGridOptions() {
     return {
-      grid_columns: DEFAULT_SECTIONS_SIZE.COLUMNS_DEFAULT,
-      grid_min_columns: DEFAULT_SECTIONS_SIZE.COLUMNS_MIN,
-      grid_min_rows: DEFAULT_SECTIONS_SIZE.ROWS_MIN,
-      grid_rows: DEFAULT_SECTIONS_SIZE.ROWS_DEFAULT + +this.showHeader(),
+      columns: DEFAULT_SECTIONS_SIZE.COLUMNS_DEFAULT,
+      min_columns: DEFAULT_SECTIONS_SIZE.COLUMNS_MIN,
+      min_rows: DEFAULT_SECTIONS_SIZE.ROWS_MIN,
+      rows: DEFAULT_SECTIONS_SIZE.ROWS_DEFAULT + +this.showHeader(),
     };
   }
 
@@ -293,75 +295,43 @@ export class CompassCard extends LitElement {
     return divs;
   }
 
-  private getVisibility(properties: CCProperties): boolean {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.show;
+  /**
+   * Returns the dynamic style band matching the current sensor value (highest from_value <= value), if any.
+   */
+  private getActiveBand(properties: CCProperties): CCStyleBand | undefined {
+    const { bands } = properties.dynamic_style;
+    if (bands.length === NO_ELEMENTS) {
+      return undefined;
     }
     const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return getBoolean(usableBands[usableBands.length + LENGTH_TO_INDEX]?.show, properties.show);
+    if (!isNumeric(value.value)) {
+      return undefined;
     }
-    return properties.show;
+    const usableBands = bands.filter((band) => band.from_value <= Number(value.value));
+    return usableBands[usableBands.length + LENGTH_TO_INDEX];
+  }
+
+  private getVisibility(properties: CCProperties): boolean {
+    return getBoolean(this.getActiveBand(properties)?.show, properties.show);
   }
 
   private getColor(properties: CCProperties): string {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.color;
-    }
-    const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return usableBands[usableBands.length + LENGTH_TO_INDEX]?.color || properties.color;
-    }
-    return properties.color;
+    return this.getActiveBand(properties)?.color || properties.color;
   }
   private getSize(properties: CCIndicator): number {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.size;
-    }
-    const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return usableBands[usableBands.length + LENGTH_TO_INDEX]?.size || properties.size;
-    }
-    return properties.size;
+    return this.getActiveBand(properties)?.size || properties.size;
   }
 
   private getRadius(properties: CCIndicator): number {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.radius;
-    }
-    const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return usableBands[usableBands.length + LENGTH_TO_INDEX]?.radius || properties.radius;
-    }
-    return properties.radius;
+    return this.getActiveBand(properties)?.radius || properties.radius;
   }
 
   private getOpacity(properties: CCIndicator): number {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.opacity;
-    }
-    const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return usableBands[usableBands.length + LENGTH_TO_INDEX]?.opacity || properties.opacity;
-    }
-    return properties.opacity;
+    return this.getActiveBand(properties)?.opacity || properties.opacity;
   }
 
   private getBackgroundImage(properties: CCCircle): string {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.background_image;
-    }
-    const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return usableBands[usableBands.length + LENGTH_TO_INDEX]?.background_image || properties.background_image;
-    }
-    return properties.background_image;
+    return this.getActiveBand(properties)?.background_image || properties.background_image;
   }
   /**
    * Draw compass with indicators
@@ -478,15 +448,7 @@ export class CompassCard extends LitElement {
   }
 
   private getIndicatorImage(properties: CCIndicator): string {
-    if (properties.dynamic_style.bands.length === NO_ELEMENTS) {
-      return properties.image;
-    }
-    const value = this.getValue(properties.dynamic_style);
-    if (isNumeric(value.value)) {
-      const usableBands = properties.dynamic_style.bands.filter((band) => band.from_value <= Number(value.value));
-      return usableBands[usableBands.length + LENGTH_TO_INDEX]?.image || properties.image;
-    }
-    return properties.image;
+    return this.getActiveBand(properties)?.image || properties.image;
   }
 
   private svgIndicator(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {

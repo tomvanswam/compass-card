@@ -1,7 +1,8 @@
 /* eslint-disable sort-keys */
 import { localize } from './localize/localize.js';
+import { version } from '../package.json';
 
-export const CARD_VERSION = '3.4.0';
+export const CARD_VERSION = version;
 export const ICONS = {
   compass: 'mdi:compass',
 };
@@ -39,11 +40,18 @@ export const DEFAULT_CARD_SIZE = 4;
 export const DEFAULT_CIRCLE_STROKE_WIDTH = 2;
 export const DEFAULT_DECIMALS = 0;
 export const DEFAULT_INDICATOR_RADIUS = 62;
+// Geometry of the original arrow artwork: radius/size used to fit it, top edge offset and total height
+export const ARROW_ART = {
+  HEIGHT: 30.664,
+  RADIUS: 9.1809,
+  SIZE: 18.361,
+  TOP: 5.8262,
+};
 export const DEFAULT_INDICATOR_SIZE = 19;
 export const DEFAULT_TICK_STEP = 15;
 export const DEFAULT_SECTIONS_SIZE = {
   COLUMNS_DEFAULT: 12,
-  COLUMNS_MIN: 1,
+  COLUMNS_MIN: 3,
   ROWS_DEFAULT: 3,
   ROWS_MIN: 1,
 };

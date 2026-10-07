@@ -8,6 +8,8 @@ jobs:
   release:
     name: Prepare release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         # REPLACE <SHA_FOR_actions_checkout> with the 40-char commit SHA for actions/checkout you want to pin
@@ -18,6 +20,7 @@ jobs:
         run: |
           cd /home/runner/work/compass-card/compass-card
           npm ci
+          npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
           npm run build
 
       # Upload build file to the release as an asset.
@@ -30,3 +33,18 @@ jobs:
           asset_name: compass-card.js
           tag: ${{ github.ref }}
           overwrite: true
+
+      # Commit the release version back to the default branch
+      - name: Sync version to ${{ github.event.repository.default_branch }}
+        run: |
+          cd /home/runner/work/compass-card/compass-card
+          BRANCH="${{ github.event.repository.default_branch }}"
+          git checkout -- package.json package-lock.json
+          git fetch origin "$BRANCH"
+          git checkout "$BRANCH"
+          npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Bump version to ${GITHUB_REF_NAME#v}"
+          git push origin "$BRANCH"
