@@ -72,7 +72,36 @@
     "compass_circle_background_conf": "",
     "compass_circle_background_image_conf": "",
     "compass_circle_background_offset_conf": "",
-    "compass_circle_background_opacity_conf": ""
+    "compass_circle_background_opacity_conf": "",
+    "card_conf": "",
+    "debug": "",
+    "tap_action": {
+      "title": "",
+      "action": "",
+      "entity": "",
+      "navigation_path": "",
+      "new_tab": "",
+      "navigation_replace": "",
+      "url": "",
+      "perform_action": "",
+      "target": "",
+      "data": "",
+      "service": "",
+      "service_data": "",
+      "pipeline_id": "",
+      "start_listening": "",
+      "confirmation": "",
+      "actions": {
+        "more-info": "",
+        "navigate": "",
+        "url": "",
+        "perform-action": "",
+        "toggle": "",
+        "assist": "",
+        "none": "",
+        "call-service": ""
+      }
+    }
   },
   "directions": {
     "north": "Север",

@@ -1,4 +1,5 @@
 
+import { actionData, actionFromData, actionSchema } from './actionForm';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
@@ -18,6 +19,7 @@ export class CompassCardValueEditor extends LitElement {
       return html``;
     }
 
+    const tapAction = actionData(this.config.tap_action);
     const schema = [
       { name: 'sensor', selector: { entity: {} } },
       { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
@@ -27,6 +29,7 @@ export class CompassCardValueEditor extends LitElement {
       { name: 'state_value_color', selector: { text: {} } },
       { name: 'state_units_show', selector: { boolean: {} } },
       { name: 'state_units_color', selector: { text: {} } },
+      { name: 'tap_action', schema: actionSchema(tapAction), title: localize('editor.tap_action.title'), type: 'expandable' },
     ];
 
     return html`
@@ -49,6 +52,7 @@ export class CompassCardValueEditor extends LitElement {
         state_units_show: this.config.state_units?.show ?? CONFIG_DEFAULTS.value_sensor.state_units.show,
         state_value_color: this.config.state_value?.color || '',
         state_value_show: this.config.state_value?.show ?? CONFIG_DEFAULTS.value_sensor.state_value.show,
+        tap_action: tapAction,
       }}
         .schema=${schema}
         .computeLabel=${CompassCardValueEditor._computeLabel}
@@ -68,13 +72,14 @@ export class CompassCardValueEditor extends LitElement {
     setOrDelete(newConfig, 'decimals', data.decimals, defaults.decimals);
     setOrDelete(newConfig, 'state_value', updateObject(this.config?.state_value, { color: data.state_value_color, show: data.state_value_show }, defaults.state_value));
     setOrDelete(newConfig, 'state_units', updateObject(this.config?.state_units, { color: data.state_units_color, show: data.state_units_show }, defaults.state_units));
+    setOrDelete(newConfig, 'tap_action', actionFromData(data.tap_action, this.config?.tap_action));
 
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static _computeLabel(schema: any): string {
-    return localize(`editor.sensor_config.${schema.name}`);
+    return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
   }
 
   private _goBack(): void {

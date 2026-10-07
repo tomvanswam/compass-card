@@ -72,7 +72,36 @@
     "compass_circle_background_conf": "Background",
     "compass_circle_background_image_conf": "Image URL",
     "compass_circle_background_offset_conf": "Use Compass Offset For Background",
-    "compass_circle_background_opacity_conf": "Background Opacity"
+    "compass_circle_background_opacity_conf": "Background Opacity",
+    "card_conf": "Card",
+    "debug": "Debug logging",
+    "tap_action": {
+      "title": "Tap action",
+      "action": "Action",
+      "entity": "Entity",
+      "navigation_path": "Navigation path",
+      "new_tab": "Open in new tab",
+      "navigation_replace": "Replace current page",
+      "url": "URL",
+      "perform_action": "Action to perform",
+      "target": "Target",
+      "data": "Data",
+      "service": "Service",
+      "service_data": "Service data (JSON)",
+      "pipeline_id": "Assist pipeline",
+      "start_listening": "Start listening",
+      "confirmation": "Require confirmation",
+      "actions": {
+        "more-info": "More info",
+        "navigate": "Navigate",
+        "url": "URL",
+        "perform-action": "Perform action",
+        "toggle": "Toggle",
+        "assist": "Assist",
+        "none": "Nothing",
+        "call-service": "Call service (legacy)"
+      }
+    }
   },
   "directions": {
     "north": "North",

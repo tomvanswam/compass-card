@@ -1,9 +1,11 @@
+import { actionData, actionFromData, actionSchema } from './actionForm';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_UNKNOWN_DIRECTION, NO_ELEMENTS } from '../const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
 import { CompassCardConfig } from './editorTypes';
 import { localize } from '../localize/localize.js';
+import { setOrDelete } from './editorHelpers';
 
 // eslint-disable-next-line sort-imports
 import './compass-card-compass-editor';
@@ -107,7 +109,56 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         @entities-changed=${this._handleValueEntitiesChanged}
         @edit-detail-element=${this._editDetailElement}
       ></compass-card-value-row-editor>
+      <ha-form
+        .hass=${this.hass}
+        .data=${this._computeCardData()}
+        .schema=${this._computeCardSchema()}
+        .computeLabel=${CompassCardEditor._computeCardLabel}
+        @value-changed=${this._handleCardConfigChanged}
+      ></ha-form>
     `;
+  }
+
+  // Card level options: tap action and debug logging
+  private _computeCardData() {
+    return {
+      card_conf: {
+        debug: this._config?.debug === true,
+        tap_action: actionData(this._config?.tap_action),
+      },
+    };
+  }
+
+  private _computeCardSchema() {
+    return [
+      {
+        name: 'card_conf',
+        schema: [
+          { name: 'tap_action', schema: actionSchema(actionData(this._config?.tap_action)), title: localize('editor.tap_action.title'), type: 'expandable' },
+          { name: 'debug', selector: { boolean: {} } },
+        ],
+        title: localize('editor.card_conf'),
+        type: 'expandable',
+      },
+    ];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static _computeCardLabel(schema: any): string {
+    return localize(`editor.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
+  }
+
+  private _handleCardConfigChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    const cardData = ev.detail.value.card_conf;
+    if (!this._config || !this.hass || !cardData) {
+      return;
+    }
+    const newConfig: CompassCardConfig = { ...this._config };
+    setOrDelete(newConfig, 'tap_action', actionFromData(cardData.tap_action, this._config.tap_action));
+    setOrDelete(newConfig, 'debug', cardData.debug, false);
+    this._config = newConfig;
+    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
   private _editDetailElement(ev: CustomEvent): void {
