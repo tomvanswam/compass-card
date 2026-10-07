@@ -1,4 +1,4 @@
-import { CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, INDEX_ELEMENT_0, OPACITY_TRANSPARENT, OPACITY_VISIBLE } from './const.js';
+import { CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_RADIUS, DEFAULT_INDICATOR_SIZE, DEFAULT_TICK_STEP, DEGREES_MIN, INDEX_ELEMENT_0, OPACITY_TRANSPARENT, OPACITY_VISIBLE, SVG_SCALE_MIN } from './const.js';
 
 /*
  * Single source of truth for the defaults the card applies to options that are missing from the config.
@@ -10,6 +10,8 @@ export const CONFIG_DEFAULTS = {
     circle: { offset_background: true, show: true, stroke_width: DEFAULT_CIRCLE_STROKE_WIDTH },
     east: { show: false },
     north: { offset: DEGREES_MIN, show: false },
+    // 0 lets the card pick the scale that fits all indicators
+    scale: SVG_SCALE_MIN,
     south: { show: false },
     ticks: { radius: CIRCLE.RADIUS, show: false, step: DEFAULT_TICK_STEP },
     west: { show: false },

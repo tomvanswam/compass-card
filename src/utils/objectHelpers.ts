@@ -1,5 +1,5 @@
 import { abbreviationShowDefault, backgroundOpacityDefault, CONFIG_DEFAULTS, headerIconShowDefault, headerTitleShowDefault } from '../defaults.js';
-import { ARROW_ART, DEFAULT_DECIMALS, DEFAULT_INDICATOR_RADIUS, DEFAULT_START_SIZE, HALF, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_VISIBLE, SVG_SCALE_MIN } from '../const.js';
+import { ARROW_ART, DEFAULT_DECIMALS, DEFAULT_INDICATOR_RADIUS, DEFAULT_START_SIZE, HALF, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_VISIBLE } from '../const.js';
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
 import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
@@ -182,7 +182,7 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
       offset: config.compass?.north?.offset || CONFIG_DEFAULTS.compass.north.offset,
       show: northShow,
     },
-    scale: config.compass?.scale || SVG_SCALE_MIN,
+    scale: config.compass?.scale || CONFIG_DEFAULTS.compass.scale,
     south: {
       color: southColor,
       dynamic_style: getDynamicStyle(config.compass?.south?.dynamic_style, config, entities, southColor, southShow),

@@ -1,7 +1,7 @@
 import { COMPASS_LANGUAGES, localize } from '../localize/localize';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, INDEX_ELEMENT_1, UNKNOWN_DIRECTION_VALUES } from '../const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, INDEX_ELEMENT_1, MAX_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCIndicatorSensorConfig } from './editorTypes';
@@ -108,12 +108,14 @@ export class CompassCardIndicatorRowEditor extends LitElement {
       )}
           </div>
         </ha-sortable>
-        <ha-entity-picker
-          class="add-entity"
-          .hass=${this.hass}
-          @value-changed=${this._addEntity}
-          add-button
-        ></ha-entity-picker>
+        ${entities.length < MAX_INDICATOR_ARRAY_SIZE
+          ? html`<ha-entity-picker
+              class="add-entity"
+              .hass=${this.hass}
+              @value-changed=${this._addEntity}
+              add-button
+            ></ha-entity-picker>`
+          : html`<div class="secondary">${localize('editor.indicator_limit', '{max}', String(MAX_INDICATOR_ARRAY_SIZE))}</div>`}
       </ha-expansion-panel>
     `;
   }
@@ -150,7 +152,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
 
   private _addEntity(ev: CustomEvent): void {
     const { value } = ev.detail;
-    if (value === '') {
+    if (value === '' || (this.entities?.length ?? INDEX_ELEMENT_0) >= MAX_INDICATOR_ARRAY_SIZE) {
       return;
     }
     const newConfigEntities = this.entities!.concat({

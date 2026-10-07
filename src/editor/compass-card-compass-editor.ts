@@ -52,7 +52,24 @@ export class CompassCardCompassEditor extends LitElement {
                         ],
                         type: 'grid',
                     },
+                    { name: 'compass_scale_conf', selector: { number: { min: 0, mode: 'box', step: 0.05 } } },
+                    {
+                        name: '',
+                        schema: [
+                            { name: 'compass_circle_show_conf', selector: { boolean: {} } },
+                            { name: 'compass_circle_color_conf', selector: { text: {} } },
+                        ],
+                        type: 'grid',
+                    },
                     { name: 'compass_circle_stroke_conf', selector: { number: { min: 0.5, mode: 'box', step: 0.5 } } },
+                    {
+                        name: '',
+                        schema: [
+                            { name: 'compass_ticks_show_conf', selector: { boolean: {} } },
+                            { name: 'compass_ticks_color_conf', selector: { text: {} } },
+                        ],
+                        type: 'grid',
+                    },
                     {
                         name: '',
                         schema: [
@@ -99,15 +116,20 @@ export class CompassCardCompassEditor extends LitElement {
                     compass_circle_background_offset_conf: this.config?.circle?.offset_background ?? defaults.circle.offset_background,
                     compass_circle_background_opacity_conf: this.config?.circle?.background_opacity || backgroundOpacityDefault(this.config?.circle?.background_image),
                 },
+                compass_circle_color_conf: this.config?.circle?.color || '',
+                compass_circle_show_conf: this.config?.circle?.show ?? defaults.circle.show,
                 compass_circle_stroke_conf: this.config?.circle?.stroke_width || defaults.circle.stroke_width,
                 compass_east_color_conf: this.config?.east?.color || '',
                 compass_east_show_conf: this.config?.east?.show ?? defaults.east.show,
                 compass_north_color_conf: this.config?.north?.color || '',
                 compass_north_show_conf: this.config?.north?.show ?? defaults.north.show,
                 compass_offset_conf: this.config?.north?.offset || defaults.north.offset,
+                compass_scale_conf: this.config?.scale || defaults.scale,
                 compass_south_color_conf: this.config?.south?.color || '',
                 compass_south_show_conf: this.config?.south?.show ?? defaults.south.show,
+                compass_ticks_color_conf: this.config?.ticks?.color || '',
                 compass_ticks_radius_conf: this.config?.ticks?.radius || defaults.ticks.radius,
+                compass_ticks_show_conf: this.config?.ticks?.show ?? defaults.ticks.show,
                 compass_ticks_step_conf: this.config?.ticks?.step || defaults.ticks.step,
                 compass_west_color_conf: this.config?.west?.color || '',
                 compass_west_show_conf: this.config?.west?.show ?? defaults.west.show,
@@ -138,13 +160,16 @@ export class CompassCardCompassEditor extends LitElement {
                 {
                     background_image: backgroundData.compass_circle_background_image_conf,
                     background_opacity: backgroundData.compass_circle_background_opacity_conf,
+                    color: compassData.compass_circle_color_conf,
                     offset_background: backgroundData.compass_circle_background_offset_conf,
+                    show: compassData.compass_circle_show_conf,
                     stroke_width: compassData.compass_circle_stroke_conf,
                 },
                 { ...defaults.circle, background_opacity: backgroundOpacityDefault(backgroundData.compass_circle_background_image_conf) },
             ),
         );
-        setOrDelete(newConfig, 'ticks', updateObject(newConfig.ticks, { radius: compassData.compass_ticks_radius_conf, step: compassData.compass_ticks_step_conf }, defaults.ticks));
+        setOrDelete(newConfig, 'ticks', updateObject(newConfig.ticks, { color: compassData.compass_ticks_color_conf, radius: compassData.compass_ticks_radius_conf, show: compassData.compass_ticks_show_conf, step: compassData.compass_ticks_step_conf }, defaults.ticks));
+        setOrDelete(newConfig, 'scale', compassData.compass_scale_conf, defaults.scale);
 
         fireEvent(this, 'config-changed', { config: newConfig });
     }

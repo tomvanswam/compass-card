@@ -101,7 +101,13 @@
         "none": "",
         "call-service": ""
       }
-    }
+    },
+    "indicator_limit": "",
+    "compass_scale_conf": "",
+    "compass_circle_show_conf": "",
+    "compass_circle_color_conf": "",
+    "compass_ticks_show_conf": "",
+    "compass_ticks_color_conf": ""
   },
   "directions": {
     "north": "Norte",

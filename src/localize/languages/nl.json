@@ -101,7 +101,13 @@
         "none": "Niets",
         "call-service": "Service aanroepen (verouderd)"
       }
-    }
+    },
+    "indicator_limit": "Maximum van {max} wijzers bereikt",
+    "compass_scale_conf": "Schaal (0 = automatisch)",
+    "compass_circle_show_conf": "Cirkel tonen",
+    "compass_circle_color_conf": "Cirkelkleur",
+    "compass_ticks_show_conf": "Streepjes tonen",
+    "compass_ticks_color_conf": "Kleur streepjes"
   },
   "directions": {
     "north": "Noorden",
