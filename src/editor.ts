@@ -2,7 +2,7 @@ import { CCCompassConfig, CCHeaderConfig, CCHeaderItemConfig, CCIndicatorConfig,
 import { COMPASS_LANGUAGES, localize } from './localize/localize.js';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEGREES_MAX, DEGREES_MIN, ICON_VALUES, NO_ELEMENTS } from './const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MIN, ICON_VALUES, NO_ELEMENTS, UNKNOWN_DIRECTION_VALUES } from './const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from './utils/ha-helpers';
 
 
@@ -78,6 +78,15 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
           },
         },
       },
+      {
+        name: 'unknown_direction',
+        selector: {
+          select: {
+            mode: 'dropdown',
+            options: UNKNOWN_DIRECTION_VALUES.map((value) => ({ label: localize(`editor.unknown direction ${value}`), value })),
+          },
+        },
+      },
       { name: 'offset', selector: { number: { max: DEGREES_MAX, min: DEGREES_MIN, mode: 'box' } } },
       { name: 'north', selector: { boolean: {} } },
     ];
@@ -96,6 +105,8 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         return `${localize('editor.indicator')} (${localize('editor.optional')})`;
       case 'language':
         return `${localize('editor.language description')} (${localize('editor.optional')})`;
+      case 'unknown_direction':
+        return `${localize('editor.unknown direction description')} (${localize('editor.optional')})`;
       case 'offset':
         return `${localize('editor.offset description')} (${localize('editor.optional')})`;
       case 'north':
@@ -114,6 +125,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       offset: this._config?.compass?.north?.offset || DEGREES_MIN,
       primary_entity: this._config?.indicator_sensors?.[0]?.sensor || '',
       secondary_entity: this._config?.value_sensors?.[0]?.sensor || '',
+      unknown_direction: this._config?.unknown_direction || DEFAULT_UNKNOWN_DIRECTION,
     };
   }
 
@@ -186,6 +198,14 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       newConfig.language = data.language;
       if (!data.language?.trim()) {
         delete newConfig.language;
+      }
+    }
+
+    // Update Unknown Direction fallback
+    if (data.unknown_direction !== undefined) {
+      newConfig.unknown_direction = data.unknown_direction;
+      if (!data.unknown_direction || data.unknown_direction === DEFAULT_UNKNOWN_DIRECTION) {
+        delete newConfig.unknown_direction;
       }
     }
 

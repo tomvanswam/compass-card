@@ -1,5 +1,5 @@
 import { array, assign, boolean, enums, Infer, number, object, optional, pattern, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, URL_REGEX } from './const.js';
+import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './const.js';
 import { COMPASS_LANGUAGES } from './localize/localize.js';
 import { LovelaceCardConfig } from './utils/ha-helpers.js';
 
@@ -167,6 +167,7 @@ export const CompassCardConfigStruct = type({
   // deprecated, ignored; kept so existing configurations stay valid
   test_gui: optional(boolean()),
   type: string(),
+  unknown_direction: optional(enums([...UNKNOWN_DIRECTION_VALUES])),
   value_sensors: optional(array(CCValueSensorConfigStruct)),
 });
 
