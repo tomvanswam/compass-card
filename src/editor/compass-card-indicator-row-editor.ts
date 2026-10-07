@@ -1,7 +1,7 @@
 import { COMPASS_LANGUAGES, localize } from '../localize/localize';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_0, INDEX_ELEMENT_1 } from '../const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, INDEX_ELEMENT_1, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
 import { CCIndicatorSensorConfig } from './editorTypes';
@@ -20,6 +20,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   @property({ attribute: false }) public entities?: CCIndicatorSensorConfig[];
   @property() public label?: string;
   @property() public language?: string;
+  @property({ attribute: false }) public unknownDirection?: string;
 
   private _entityKeys = new WeakMap<CCIndicatorSensorConfig, string>();
 
@@ -41,7 +42,8 @@ export class CompassCardIndicatorRowEditor extends LitElement {
         <ha-form
           .hass=${this.hass}
           .data=${{
-        language: this.language
+        language: this.language,
+        unknown_direction: this.unknownDirection || DEFAULT_UNKNOWN_DIRECTION,
       }}
           .schema=${[
         {
@@ -50,6 +52,15 @@ export class CompassCardIndicatorRowEditor extends LitElement {
             select: {
               mode: 'dropdown',
               options: COMPASS_LANGUAGES.filter((lang) => lang !== '').map((lang) => ({ label: lang, value: lang })),
+            },
+          },
+        },
+        {
+          name: 'unknown_direction',
+          selector: {
+            select: {
+              mode: 'dropdown',
+              options: UNKNOWN_DIRECTION_VALUES.map((value) => ({ label: localize(`editor.sensor_config.unknown_direction_types.${value}`), value })),
             },
           },
         },
@@ -128,9 +139,12 @@ export class CompassCardIndicatorRowEditor extends LitElement {
 
   private _languageChanged(ev: CustomEvent): void {
     ev.stopPropagation();
-    const { language } = ev.detail.value;
+    const { language, unknown_direction: unknownDirection } = ev.detail.value;
     if (language !== this.language) {
       fireEvent(this, 'language-changed', { language });
+    }
+    if (unknownDirection !== (this.unknownDirection || DEFAULT_UNKNOWN_DIRECTION)) {
+      fireEvent(this, 'unknown-direction-changed', { unknownDirection });
     }
   }
 

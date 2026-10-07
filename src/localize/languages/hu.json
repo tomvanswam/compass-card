@@ -41,7 +41,13 @@
             "state_units_color": "",
             "state_abbreviation_show": "",
             "state_abbreviation_color": "",
-            "language": "nyelv"
+            "language": "nyelv",
+            "unknown_direction": "",
+            "unknown_direction_types": {
+                "north": "",
+                "last": "",
+                "hide": ""
+            }
         },
         "header_conf": "",
         "header_title_conf": "",

@@ -1,9 +1,9 @@
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { DEFAULT_UNKNOWN_DIRECTION, NO_ELEMENTS } from '../const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
 import { CompassCardConfig } from './editorTypes';
 import { localize } from '../localize/localize.js';
-import { NO_ELEMENTS } from '../const';
 
 // eslint-disable-next-line sort-imports
 import './compass-card-compass-editor';
@@ -93,9 +93,11 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         .hass=${this.hass}
         .entities=${this._config.indicator_sensors}
         .language=${this._config.language}
+        .unknownDirection=${this._config.unknown_direction}
         .label=${localize('editor.indicator_sensors')}
         @entities-changed=${this._handleIndicatorEntitiesChanged}
         @language-changed=${this._onLanguageChanged}
+        @unknown-direction-changed=${this._onUnknownDirectionChanged}
         @edit-detail-element=${this._editDetailElement}
       ></compass-card-indicator-row-editor>
       <compass-card-value-row-editor
@@ -174,6 +176,18 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       language,
     };
     if (!language) delete this._config.language;
+    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+  }
+
+  private _onUnknownDirectionChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this._config || !this.hass) {
+      return;
+    }
+    const { unknownDirection } = ev.detail;
+    this._config = { ...this._config, unknown_direction: unknownDirection };
+    // The default fallback is left out of the YAML
+    if (!unknownDirection || unknownDirection === DEFAULT_UNKNOWN_DIRECTION) delete this._config.unknown_direction;
     fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 

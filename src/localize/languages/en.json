@@ -41,7 +41,13 @@
       "state_units_color": "Units Color",
       "state_abbreviation_show": "Show Abbreviation",
       "state_abbreviation_color": "Abbreviation Color",
-      "language": "Language"
+      "language": "Language",
+      "unknown_direction": "Fallback when direction is unknown",
+      "unknown_direction_types": {
+        "north": "Point north",
+        "last": "Keep last known direction",
+        "hide": "Hide indicator"
+      }
     },
     "header_conf": "Header",
     "header_title_conf": "Title",
