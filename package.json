@@ -22,14 +22,10 @@
     "superstruct": "^2.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
-    "@babel/plugin-proposal-decorators": "^7.29.7",
-    "@babel/plugin-transform-class-properties": "^7.29.7",
     "@eslint/css": "^2.0.0",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^2.1.0",
     "@eslint/markdown": "^8.0.3",
-    "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
