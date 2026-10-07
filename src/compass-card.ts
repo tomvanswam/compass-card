@@ -64,6 +64,7 @@ export class CompassCard extends LitElement {
   @state() protected indicatorSensors!: CCIndicatorSensor[];
   @state() protected entities: HassEntities = {};
   @state() protected valueSensors!: CCValueSensor[];
+  @state() protected iconsLoaded = NO_ELEMENTS;
   @property({ attribute: false }) protected svgScale!: number;
 
   public setConfig(config: CompassCardConfig): void {
@@ -131,7 +132,7 @@ export class CompassCard extends LitElement {
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    if (changedProps.has('_config')) {
+    if (changedProps.has('_config') || changedProps.has('iconsLoaded')) {
       return true;
     }
     if (changedProps.has('_hass')) {
@@ -627,7 +628,7 @@ export class CompassCard extends LitElement {
       CompassCard.iconRequests.set(icon, CompassCard.loadIconPath(icon));
     }
     CompassCard.iconRequests.get(icon)?.then((path) => {
-      if (path) this.requestUpdate();
+      if (path) this.iconsLoaded++;
     });
     return undefined;
   }
