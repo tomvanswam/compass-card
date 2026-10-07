@@ -3,7 +3,7 @@
     "declaration": true,
     "declarationMap": true,    
     "experimentalDecorators": true,
-    "lib": ["ES2021", "dom", "dom.iterable", "dom.asynciterable"],
+    "lib": ["ES2022", "dom", "dom.iterable", "dom.asynciterable"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
