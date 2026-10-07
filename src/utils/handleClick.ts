@@ -8,7 +8,9 @@ import { fireEvent } from './ha-helpers.js';
  * Legacy options (call-service + service_data, new_tab) are converted for backwards compatibility.
  */
 export function toHaAction(actionConfig: ActionConfig): Record<string, unknown> | undefined {
-  const { action = 'more-info', entity, navigation_path, new_tab, service, service_data, url, ...rest } = actionConfig;
+  const { action: configuredAction, entity, navigation_path, new_tab, service, service_data, url, ...rest } = actionConfig;
+  // without an explicit action, infer it from the options that are set
+  const action = configuredAction ?? (navigation_path ? 'navigate' : url || rest.url_path ? 'url' : service || rest.perform_action ? 'perform-action' : 'more-info');
   const newTab = new_tab === undefined || new_tab;
   switch (action) {
     case 'more-info':
