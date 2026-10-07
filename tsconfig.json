@@ -12,6 +12,7 @@
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "outDir": "./dist",
+    "rootDir": "./src",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
