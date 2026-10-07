@@ -22,3 +22,4 @@ ha-frontend/*
 .idea
 
 .env
+todo.md
