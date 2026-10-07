@@ -87,14 +87,16 @@ export class CompassCard extends LitElement {
         throw new Error(
           `Compass Card: incompatible v2.0.0+ configuration. 
           Edit this card in code editor (YAML mode) and replace 'type' with 'image' for indicator sensor indicators to fix this error. More info: https://github.com/tomvanswam/compass-card/wiki/Upgrade-from-version-v2.x.x-to-v3.0.0#indicator-type-becomes-indicator-image`,
+          { cause: e },
         );
       }
       if (last === 'image' && secondLast === 'indicator') {
         throw new Error(
           `Compass Card: ${err.path.join('.')} should be either ${ICON_VALUES.join(', ')}, an mdi: icon (e.g. mdi:compass) or an image URL (e.g. https://example.com/image.png or /local/image.png). More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration#indicator-object`,
+          { cause: e },
         );
       }
-      throw new Error(`Compass Card: invalid yaml configuration. ${err.message} More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`);
+      throw new Error(`Compass Card: invalid yaml configuration. ${err.message} More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`, { cause: e });
     }
 
     this.colors = {
