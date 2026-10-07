@@ -173,6 +173,7 @@ export const CompassCardConfigStruct = type({
   indicator_sensors: size(array(CCIndicatorSensorConfigStruct), MIN_INDICATOR_ARRAY_SIZE, MAX_INDICATOR_ARRAY_SIZE),
   language: optional(enums([...COMPASS_LANGUAGES])),
   tap_action: optional(ActionConfigStruct),
+  // deprecated, ignored; kept so existing configurations stay valid
   test_gui: optional(boolean()),
   type: string(),
   value_sensors: optional(array(CCValueSensorConfigStruct)),
