@@ -1,5 +1,4 @@
 import './editor';
-import * as MDI from '@mdi/js';
 import { assert, StructError } from 'superstruct';
 import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCStyleBand, CCValue, CCValueSensor } from './cardTypes.js';
@@ -11,6 +10,7 @@ import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-help
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { localize } from './localize/localize.js';
+import { mdiCompass } from '@mdi/js';
 import style from './style.js';
 
 declare global {
@@ -64,6 +64,7 @@ export class CompassCard extends LitElement {
   @state() protected indicatorSensors!: CCIndicatorSensor[];
   @state() protected entities: HassEntities = {};
   @state() protected valueSensors!: CCValueSensor[];
+  @state() protected iconsLoaded = NO_ELEMENTS;
   @property({ attribute: false }) protected svgScale!: number;
 
   public setConfig(config: CompassCardConfig): void {
@@ -130,13 +131,16 @@ export class CompassCard extends LitElement {
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    if (changedProps.has('_config')) {
+    if (changedProps.has('_config') || changedProps.has('iconsLoaded')) {
       return true;
     }
     if (changedProps.has('_hass')) {
-      const newHass = changedProps.get('_hass') as HomeAssistant;
+      const oldHass = changedProps.get('_hass') as HomeAssistant | undefined;
+      if (!oldHass) {
+        return true;
+      }
       for (const entity in this.entities) {
-        if (newHass.states[entity].last_updated !== this._hass.states[entity].last_updated) {
+        if (oldHass.states[entity] !== this._hass.states[entity]) {
           return true;
         }
       }
@@ -149,12 +153,13 @@ export class CompassCard extends LitElement {
       return;
     }
     const stringEntities = findValues(this._config, hass.states, getBoolean(this._config.debug, false));
+    const entities: HassEntities = {};
     stringEntities.forEach((stringEntity) => {
-      if (this._hass.states[stringEntity]) {
-        const entity = this._hass.states[stringEntity];
-        this.entities[entity.entity_id] = this._hass.states[stringEntity];
+      if (hass.states[stringEntity]) {
+        entities[stringEntity] = hass.states[stringEntity];
       }
     });
+    this.entities = entities;
     this.header = getHeader(this._config, this.colors, this.entities[this._config?.indicator_sensors[0].sensor], this.entities);
     this.compass = getCompass(this._config, this.colors, this.entities);
     this.indicatorSensors = getIndicatorSensors(this._config, this.colors, this.entities);
@@ -574,28 +579,55 @@ export class CompassCard extends LitElement {
     `;
   }
 
+  private static readonly iconPaths = new Map<string, string>();
+  private static readonly iconRequests = new Map<string, Promise<string | undefined>>();
+
+  /**
+   * Resolve an icon (mdi: or any other HA iconset) to its SVG path through Home Assistant's own
+   * ha-icon, so the card does not have to bundle the full @mdi/js set. Returns undefined while loading.
+   */
+  private resolveIconPath(icon: string): string | undefined {
+    if (!icon?.includes(':')) return undefined;
+    const cached = CompassCard.iconPaths.get(icon);
+    if (cached) return cached;
+    if (!CompassCard.iconRequests.has(icon)) {
+      CompassCard.iconRequests.set(icon, CompassCard.loadIconPath(icon));
+    }
+    CompassCard.iconRequests.get(icon)?.then((path) => {
+      if (path) this.iconsLoaded++;
+    });
+    return undefined;
+  }
+
+  private static async loadIconPath(icon: string): Promise<string | undefined> {
+    const ICON_POLL_MS = 50;
+    const ICON_POLL_TRIES = 100;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const el = document.createElement('ha-icon') as any;
+    el.icon = icon;
+    el.style.display = 'none';
+    document.body.appendChild(el);
+    try {
+      for (let i = 0; i < ICON_POLL_TRIES; i++) {
+        await el.updateComplete;
+        const path = el.shadowRoot?.querySelector('ha-svg-icon')?.path as string | undefined;
+        if (path) {
+          CompassCard.iconPaths.set(icon, path);
+          return path;
+        }
+        await new Promise((resolve) => setTimeout(resolve, ICON_POLL_MS));
+      }
+      return undefined;
+    } finally {
+      el.remove();
+    }
+  }
+
   // svg indicator is using pure SVG to avoid issues in iOS  (no foreignObject ha-icon)
   private svgIndicatorMdi(indicatorSensor: CCIndicatorSensor): SVGTemplateResult {
-    const MDI_MAP: Record<string, string> = MDI as unknown as Record<string, string>;
     const MDI_BOX_MIN_SIZE = 24;
-    const ICON_PREFIX = 'mdi:';
-    const PREFIX_LENGTH = ICON_PREFIX.length;
-    const FIRST_CHAR_INDEX = 0;
-    const CHARS_AFTER_FIRST = 1;
-
-    const toPascal = (s: string) =>
-      s
-        .split('-')
-        .map((p) => p[FIRST_CHAR_INDEX]?.toUpperCase() + p.slice(CHARS_AFTER_FIRST))
-        .join('');
-
-    const mdiPath = (icon: string): string | null => {
-      if (!icon?.startsWith(ICON_PREFIX)) return null;
-      const key = `mdi${toPascal(icon.slice(PREFIX_LENGTH))}`;
-      return MDI_MAP[key] ?? null;
-    };
     const icon_v = this.getIndicatorImage(indicatorSensor.indicator) as string;
-    const d = mdiPath(icon_v) ?? MDI.mdiCompass;
+    const d = this.resolveIconPath(icon_v) ?? mdiCompass;
     const size = this.getSize(indicatorSensor.indicator);
     const r = this.getRadius(indicatorSensor.indicator);
     const opacity = this.getOpacity(indicatorSensor.indicator);
