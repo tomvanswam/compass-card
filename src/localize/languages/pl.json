@@ -107,7 +107,37 @@
     "compass_circle_show_conf": "",
     "compass_circle_color_conf": "",
     "compass_ticks_show_conf": "",
-    "compass_ticks_color_conf": ""
+    "compass_ticks_color_conf": "",
+    "compass_circle_conf": "",
+    "compass_ticks_conf": "",
+    "dynamic_style": {
+      "title": "",
+      "sensor": "",
+      "sensor_helper": "",
+      "attribute": "",
+      "bands": "",
+      "from_value": "",
+      "add_band": "",
+      "remove_band": "",
+      "unknown": "",
+      "color": "",
+      "show": "",
+      "visibility": {
+        "show": "",
+        "hide": ""
+      },
+      "image": "",
+      "background_image": "",
+      "opacity": "",
+      "size": "",
+      "radius": "",
+      "parts": {
+        "indicator": "",
+        "state_value": "",
+        "state_units": "",
+        "state_abbreviation": ""
+      }
+    }
   },
   "directions": {
     "north": "Północ",

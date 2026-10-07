@@ -10,11 +10,20 @@ import { setOrDelete, updateObject } from './editorHelpers';
 import { CCIndicatorSensorConfig } from './editorTypes';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
+import { StyleField } from './compass-card-dynamic-style-editor';
 
 // Indicator types besides the built-in shapes in ICON_VALUES
 const IMAGE_TYPE_MDI = 'mdi';
 const IMAGE_TYPE_URL = 'url';
 const IMAGE_TYPES = [...ICON_VALUES, IMAGE_TYPE_MDI, IMAGE_TYPE_URL];
+
+// Parts of an indicator sensor with a dynamic style, and the style options the card uses for each of them
+const INDICATOR_STYLE_PARTS: { part: 'indicator' | 'state_abbreviation' | 'state_units' | 'state_value'; fields: StyleField[] }[] = [
+  { fields: ['color', 'show', 'image', 'opacity', 'size', 'radius'], part: 'indicator' },
+  { fields: ['color', 'show'], part: 'state_value' },
+  { fields: ['color', 'show'], part: 'state_units' },
+  { fields: ['color', 'show'], part: 'state_abbreviation' },
+];
 
 @customElement('compass-card-indicator-editor')
 export class CompassCardIndicatorEditor extends LitElement {
@@ -104,6 +113,21 @@ export class CompassCardIndicatorEditor extends LitElement {
         .computeLabel=${CompassCardIndicatorEditor._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
+      <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
+        <div class="content">
+          ${INDICATOR_STYLE_PARTS.map(
+            ({ part, fields }) => html`
+              <compass-card-dynamic-style-editor
+                .hass=${this.hass}
+                .config=${this.config?.[part]?.dynamic_style}
+                .fields=${fields}
+                .label=${localize(`editor.dynamic_style.parts.${part}`)}
+                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+              ></compass-card-dynamic-style-editor>
+            `,
+          )}
+        </div>
+      </ha-expansion-panel>
     `;
   }
 
@@ -153,6 +177,21 @@ export class CompassCardIndicatorEditor extends LitElement {
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
+  private _dynamicStyleChanged(part: (typeof INDICATOR_STYLE_PARTS)[number]['part'], ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this.config) {
+      return;
+    }
+    const newConfig: CCIndicatorSensorConfig = { ...this.config };
+    const updated = updateObject(newConfig[part], { dynamic_style: ev.detail.value });
+    if (part === 'indicator') {
+      newConfig.indicator = updated || {};
+    } else {
+      setOrDelete(newConfig, part, updated);
+    }
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
   private _goBack(): void {
     fireEvent(this, 'go-back');
   }
@@ -168,6 +207,12 @@ export class CompassCardIndicatorEditor extends LitElement {
         display: flex;
         align-items: center;
         font-size: 18px;
+      }
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px 0;
       }
     `;
   }

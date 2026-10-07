@@ -107,7 +107,37 @@
     "compass_circle_show_conf": "Cirkel tonen",
     "compass_circle_color_conf": "Cirkelkleur",
     "compass_ticks_show_conf": "Streepjes tonen",
-    "compass_ticks_color_conf": "Kleur streepjes"
+    "compass_ticks_color_conf": "Kleur streepjes",
+    "compass_circle_conf": "Cirkel",
+    "compass_ticks_conf": "Streepjes",
+    "dynamic_style": {
+      "title": "Dynamische stijlen",
+      "sensor": "Entiteit",
+      "sensor_helper": "Leeg laten om de entiteit van de eerste wijzer te gebruiken",
+      "attribute": "Attribuut",
+      "bands": "Banden (gelden vanaf de waarde)",
+      "from_value": "Vanaf waarde",
+      "add_band": "Band toevoegen",
+      "remove_band": "Band verwijderen",
+      "unknown": "Stijl bij onbekende waarde",
+      "color": "Kleur",
+      "show": "Zichtbaarheid",
+      "visibility": {
+        "show": "Tonen",
+        "hide": "Verbergen"
+      },
+      "image": "Afbeelding (wijzernaam, mdi:-icoon of URL)",
+      "background_image": "URL achtergrondafbeelding",
+      "opacity": "Doorzichtigheid",
+      "size": "Grootte",
+      "radius": "Straal",
+      "parts": {
+        "indicator": "Wijzer",
+        "state_value": "Waarde",
+        "state_units": "Eenheden",
+        "state_abbreviation": "Afkorting"
+      }
+    }
   },
   "directions": {
     "north": "Noorden",

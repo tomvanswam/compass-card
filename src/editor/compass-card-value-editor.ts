@@ -8,6 +8,13 @@ import { CCValueSensorConfig } from './editorTypes';
 import { CONFIG_DEFAULTS } from '../defaults';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
+import { StyleField } from './compass-card-dynamic-style-editor';
+
+// Parts of a value sensor with a dynamic style, and the style options the card uses for each of them
+const VALUE_STYLE_PARTS: { part: 'state_units' | 'state_value'; fields: StyleField[] }[] = [
+  { fields: ['color', 'show'], part: 'state_value' },
+  { fields: ['color', 'show'], part: 'state_units' },
+];
 
 @customElement('compass-card-value-editor')
 export class CompassCardValueEditor extends LitElement {
@@ -58,6 +65,21 @@ export class CompassCardValueEditor extends LitElement {
         .computeLabel=${CompassCardValueEditor._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
+      <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
+        <div class="content">
+          ${VALUE_STYLE_PARTS.map(
+            ({ part, fields }) => html`
+              <compass-card-dynamic-style-editor
+                .hass=${this.hass}
+                .config=${this.config?.[part]?.dynamic_style}
+                .fields=${fields}
+                .label=${localize(`editor.dynamic_style.parts.${part}`)}
+                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+              ></compass-card-dynamic-style-editor>
+            `,
+          )}
+        </div>
+      </ha-expansion-panel>
     `;
   }
 
@@ -82,6 +104,16 @@ export class CompassCardValueEditor extends LitElement {
     return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
   }
 
+  private _dynamicStyleChanged(part: (typeof VALUE_STYLE_PARTS)[number]['part'], ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this.config) {
+      return;
+    }
+    const newConfig: CCValueSensorConfig = { ...this.config };
+    setOrDelete(newConfig, part, updateObject(newConfig[part], { dynamic_style: ev.detail.value }));
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
   private _goBack(): void {
     fireEvent(this, 'go-back');
   }
@@ -97,6 +129,12 @@ export class CompassCardValueEditor extends LitElement {
         display: flex;
         align-items: center;
         font-size: 18px;
+      }
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px 0;
       }
     `;
   }

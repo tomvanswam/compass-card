@@ -107,7 +107,37 @@
     "compass_circle_show_conf": "Show Circle",
     "compass_circle_color_conf": "Circle Color",
     "compass_ticks_show_conf": "Show Ticks",
-    "compass_ticks_color_conf": "Tick Color"
+    "compass_ticks_color_conf": "Tick Color",
+    "compass_circle_conf": "Circle",
+    "compass_ticks_conf": "Ticks",
+    "dynamic_style": {
+      "title": "Dynamic styles",
+      "sensor": "Entity",
+      "sensor_helper": "Leave empty to use the entity of the first indicator",
+      "attribute": "Attribute",
+      "bands": "Bands (applied from the value up)",
+      "from_value": "From value",
+      "add_band": "Add band",
+      "remove_band": "Remove band",
+      "unknown": "Style when the value is unknown",
+      "color": "Color",
+      "show": "Visibility",
+      "visibility": {
+        "show": "Show",
+        "hide": "Hide"
+      },
+      "image": "Image (indicator name, mdi: icon or URL)",
+      "background_image": "Background image URL",
+      "opacity": "Opacity",
+      "size": "Size",
+      "radius": "Radius",
+      "parts": {
+        "indicator": "Indicator",
+        "state_value": "Value",
+        "state_units": "Units",
+        "state_abbreviation": "Abbreviation"
+      }
+    }
   },
   "directions": {
     "north": "North",

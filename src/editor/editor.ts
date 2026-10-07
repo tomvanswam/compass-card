@@ -9,6 +9,7 @@ import { setOrDelete } from './editorHelpers';
 
 // eslint-disable-next-line sort-imports
 import './compass-card-compass-editor';
+import './compass-card-dynamic-style-editor';
 import './compass-card-header-editor';
 import './compass-card-indicator-editor';
 import './compass-card-indicator-row-editor';
