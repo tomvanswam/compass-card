@@ -27,7 +27,11 @@
     "primary entity description": "Direction entity",
     "secondary entity description": "Secondary entity",
     "language description": "Direction abbreviation language",
-    "offset description": "Direction offset"
+    "offset description": "Direction offset",
+    "unknown direction description": "Fallback when direction is unknown",
+    "unknown direction north": "Point north",
+    "unknown direction last": "Keep last known direction",
+    "unknown direction hide": "Hide indicator"
   },
   "directions": {
     "north": "North",

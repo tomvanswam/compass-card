@@ -1,7 +1,7 @@
 import './editor';
 import { ActionConfig, CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
 import { assert, StructError } from 'superstruct';
-import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE } from './const.js';
+import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE, UNKNOWN_STATES } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCStyleBand, CCValue, CCValueSensor } from './cardTypes.js';
 import { CSSResult, html, LitElement, nothing, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -61,6 +61,7 @@ export class CompassCard extends LitElement {
   @state() protected colors!: CCColors;
   @state() protected header!: CCHeader;
   @state() protected compass!: CCCompass;
+  private lastKnownDirections = new Map<string, CCDirectionInfo>();
   @state() protected indicatorSensors!: CCIndicatorSensor[];
   @state() protected entities: HassEntities = {};
   @state() protected valueSensors!: CCValueSensor[];
@@ -258,14 +259,19 @@ export class CompassCard extends LitElement {
 
   private getIndicatorAbbreviation(indicator: CCIndicatorSensor): TemplateResult {
     return html`
-      <span class="abbr" style="--compass-card-indicator-abbr-color: ${this.getColor(indicator.state_abbreviation)};">${this.computeIndicator(indicator).abbreviation}</span>
+      <span class="abbr" style="--compass-card-indicator-abbr-color: ${this.getColor(indicator.state_abbreviation)};">${this.visibleIndicator(indicator)?.abbreviation ?? ''}</span>
     `;
+  }
+
+  private visibleIndicator(indicator: CCIndicatorSensor): CCDirectionInfo | undefined {
+    const info = this.computeIndicator(indicator);
+    return this.hideUnknown(info) ? undefined : info;
   }
 
   private getIndicatorValue(indicator: CCIndicatorSensor): TemplateResult {
     return html`
       <span class="value" style="--compass-card-indicator-value-color: ${this.getColor(indicator.state_value)};"
-        >${this.computeIndicator(indicator).degrees.toFixed(indicator.decimals)}</span
+        >${this.visibleIndicator(indicator)?.degrees.toFixed(indicator.decimals) ?? ''}</span
       >
     `;
   }
@@ -476,7 +482,9 @@ export class CompassCard extends LitElement {
 
   private svgSingleIndicator(indicatorSensor: CCIndicatorSensor, index = INDEX_ELEMENT_0): SVGTemplateResult {
     const indicatorPath = this.svgIndicator(indicatorSensor);
-    const { degrees } = this.computeIndicator(indicatorSensor);
+    const info = this.computeIndicator(indicatorSensor);
+    if (this.hideUnknown(info)) return svg``;
+    const { degrees } = info;
     const action = this.getSensorAction('indicator_sensors', this.indicatorSensors.indexOf(indicatorSensor));
 
     // set per-indicator color via CSS variable so presentational attributes move to CSS
@@ -773,8 +781,23 @@ export class CompassCard extends LitElement {
   }
 
   private computeIndicator(entity: CCEntity): CCDirectionInfo {
+    const info = this.parseIndicator(entity);
+    const mode = this._config.unknown_direction || DEFAULT_UNKNOWN_DIRECTION;
+    if (!info.unknown) {
+      this.lastKnownDirections.set(entity.sensor, info);
+      return info;
+    }
+    if (mode === 'last') {
+      const last = this.lastKnownDirections.get(entity.sensor);
+      if (last) return { ...last, unknown: true };
+    }
+    return info;
+  }
+
+  private parseIndicator(entity: CCEntity): CCDirectionInfo {
     let degrees: number;
     let abbreviation: string | number;
+    let unknown = false;
 
     /* The direction entity may either return degrees or a named abbreviations, thus
            determine the degrees and abbreviation with whichever data was returned. */
@@ -788,6 +811,7 @@ export class CompassCard extends LitElement {
           degrees = CompassCard.positiveDegrees(parseFloat(matches[0]));
         } else {
           degrees = DEGREES_MIN;
+          unknown = true;
         }
         abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.language);
       } else {
@@ -797,7 +821,14 @@ export class CompassCard extends LitElement {
       degrees = CompassCard.positiveDegrees(parseFloat(directionStr.value));
       abbreviation = CompassCard.getCompassAbbreviation(degrees, this._config.language);
     }
-    return { abbreviation, degrees: Math.round(degrees) };
+    if (UNKNOWN_STATES.includes(String(directionStr.value).toLowerCase())) {
+      unknown = true;
+    }
+    return { abbreviation, degrees: Math.round(degrees), unknown };
+  }
+
+  private hideUnknown(info: CCDirectionInfo): boolean {
+    return info.unknown && this._config.unknown_direction === 'hide';
   }
 
   static get styles(): CSSResult {

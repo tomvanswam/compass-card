@@ -26,7 +26,11 @@
     "primary entity description": "Richtings entiteit",
     "secondary entity description": "Secundaire entiteit",
     "language description": "Richting afkortings taal",
-    "offset description": "Richtingsafwijking"
+    "offset description": "Richtingsafwijking",
+    "unknown direction description": "Terugval bij onbekende richting",
+    "unknown direction north": "Wijs naar noord",
+    "unknown direction last": "Laatst bekende richting behouden",
+    "unknown direction hide": "Indicator verbergen"
   },
   "directions": {
     "north": "Noorden",
