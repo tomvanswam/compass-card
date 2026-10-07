@@ -118,12 +118,12 @@ export class CompassCard extends LitElement {
     return DEFAULT_CARD_SIZE + +this.showHeader();
   }
 
-  public getLayoutOptions() {
+  public getGridOptions() {
     return {
-      grid_columns: DEFAULT_SECTIONS_SIZE.COLUMNS_DEFAULT,
-      grid_min_columns: DEFAULT_SECTIONS_SIZE.COLUMNS_MIN,
-      grid_min_rows: DEFAULT_SECTIONS_SIZE.ROWS_MIN,
-      grid_rows: DEFAULT_SECTIONS_SIZE.ROWS_DEFAULT + +this.showHeader(),
+      columns: DEFAULT_SECTIONS_SIZE.COLUMNS_DEFAULT,
+      min_columns: DEFAULT_SECTIONS_SIZE.COLUMNS_MIN,
+      min_rows: DEFAULT_SECTIONS_SIZE.ROWS_MIN,
+      rows: DEFAULT_SECTIONS_SIZE.ROWS_DEFAULT + +this.showHeader(),
     };
   }
 
