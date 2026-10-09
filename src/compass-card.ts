@@ -1,12 +1,13 @@
-import './editor';
-import { ActionConfig, CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
+import './editor/editor';
+import { ActionConfig, CompassCardConfig, CompassCardConfigStruct } from './editor/editorTypes.js';
 import { assert, StructError } from 'superstruct';
-import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE, UNKNOWN_STATES } from './const.js';
+import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE, UNKNOWN_STATES } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCStyleBand, CCValue, CCValueSensor } from './cardTypes.js';
 import { CSSResult, html, LitElement, nothing, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
 import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
+import { CONFIG_DEFAULTS } from './defaults.js';
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { localize } from './localize/localize.js';
@@ -43,13 +44,15 @@ export class CompassCard extends LitElement {
     return document.createElement('compass-card-editor');
   }
 
-  public static getStubConfig(): CompassCardConfig {
+  // Only the entity and image are written explicitly; everything else uses CONFIG_DEFAULTS, which the editor displays as well
+  public static getStubConfig(hass?: HomeAssistant): CompassCardConfig {
+    const windDirection = Object.keys(hass?.states || {}).find((entityId) => entityId.startsWith('sensor.') && hass?.states[entityId].attributes?.device_class === 'wind_direction');
+    const source = windDirection ? { sensor: windDirection } : { attribute: 'azimuth', sensor: 'sun.sun' };
     return {
       indicator_sensors: [
         {
-          attribute: 'azimuth',
-          indicator: { image: DEFAULT_ICON_VALUE },
-          sensor: 'sun.sun',
+          ...source,
+          indicator: { image: CONFIG_DEFAULTS.indicator_sensor.indicator.image },
         },
       ],
       type: 'custom:compass-card',

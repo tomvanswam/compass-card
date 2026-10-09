@@ -1,7 +1,7 @@
 import { any, array, assign, boolean, enums, Infer, number, object, optional, pattern, record, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './const.js';
-import { COMPASS_LANGUAGES } from './localize/localize.js';
-import { LovelaceCardConfig } from './utils/ha-helpers.js';
+import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './../const.js';
+import { COMPASS_LANGUAGES } from './../localize/localize.js';
+import { LovelaceCardConfig } from './../utils/ha-helpers.js';
 
 /* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
 export interface CompassCardConfigV1 extends LovelaceCardConfig {
