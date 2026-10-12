@@ -30,17 +30,6 @@
       },
       "units": "Units",
       "decimals": "Decimals",
-      "indicator_color": "Indicator Color",
-      "indicator_opacity": "Indicator Opacity",
-      "indicator_radius": "Indicator Radius",
-      "indicator_size": "Indicator Size",
-      "indicator_show": "Show Indicator",
-      "state_value_show": "Show Value",
-      "state_value_color": "Value Color",
-      "state_units_show": "Show Units",
-      "state_units_color": "Units Color",
-      "state_abbreviation_show": "Show Abbreviation",
-      "state_abbreviation_color": "Abbreviation Color",
       "language": "Language",
       "unknown_direction": "Fallback when direction is unknown",
       "unknown_direction_types": {
@@ -51,13 +40,9 @@
     },
     "header_conf": "Header",
     "header_title_conf": "Title",
-    "header_title_show_conf": "Show Title",
-    "header_title_color_conf": "Title Color",
     "header_icon_conf": "Icon",
-    "header_icon_show_conf": "Show Icon",
-    "header_icon_color_conf": "Icon Color",
     "compass_conf": "Compass",
-    "compass_fields": {
+    "fields": {
       "show": "Show",
       "color": "Color",
       "stroke_width": "Line Width",
@@ -65,7 +50,9 @@
       "step": "Step",
       "background_image": "Image URL",
       "offset_background": "Use Compass Offset For Background",
-      "background_opacity": "Background Opacity"
+      "background_opacity": "Background Opacity",
+      "opacity": "Opacity",
+      "size": "Size"
     },
     "compass_offset_conf": "Offset",
     "compass_circle_background_conf": "Background",

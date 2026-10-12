@@ -6,7 +6,7 @@ import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, ICON_VALUES, INDEX_ELEMENT_0 } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
-import { setOrDelete, updateObject } from './editorHelpers';
+import { setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { CCIndicatorSensorConfig } from './editorTypes';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
@@ -17,8 +17,9 @@ const IMAGE_TYPE_MDI = 'mdi';
 const IMAGE_TYPE_URL = 'url';
 const IMAGE_TYPES = [...ICON_VALUES, IMAGE_TYPE_MDI, IMAGE_TYPE_URL];
 
-// Parts of an indicator sensor with a dynamic style, and the style options the card uses for each of them
-const INDICATOR_STYLE_PARTS: { part: 'indicator' | 'state_abbreviation' | 'state_units' | 'state_value'; fields: StyleField[] }[] = [
+// Parts of an indicator sensor, each with its own block; fields are the dynamic style options the card uses for it
+type IndicatorPart = 'indicator' | 'state_abbreviation' | 'state_units' | 'state_value';
+const INDICATOR_STYLE_PARTS: { part: IndicatorPart; fields: StyleField[] }[] = [
   { fields: ['color', 'show', 'image', 'opacity', 'size', 'radius'], part: 'indicator' },
   { fields: ['color', 'show'], part: 'state_value' },
   { fields: ['color', 'show'], part: 'state_units' },
@@ -46,55 +47,9 @@ export class CompassCardIndicatorEditor extends LitElement {
       return html``;
     }
 
-    const imageType = this._getImageType();
-    const image = this.config.indicator?.image || '';
-    const tapAction = actionData(this.config.tap_action);
-    const schema = [
-      { name: 'sensor', selector: { entity: {} } },
-      { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
-      { name: 'indicator', required: true, selector: { select: { mode: 'dropdown', options: IMAGE_TYPES.map((type) => ({ label: localize(`editor.sensor_config.indicator_types.${type}`), value: type })) } } },
-      ...(imageType === IMAGE_TYPE_MDI ? [{ name: 'indicator_icon', selector: { icon: {} } }] : []),
-      ...(imageType === IMAGE_TYPE_URL ? [{ name: 'indicator_url', selector: { text: { type: 'url' } } }] : []),
-      { name: 'units', selector: { text: {} } },
-      { name: 'decimals', selector: { number: { min: 0, max: 10, mode: 'box' } } },
-      { name: 'indicator_show', selector: { boolean: {} } },
-      { name: 'indicator_color', selector: { text: {} } },
-      { name: 'indicator_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
-      { name: 'indicator_size', selector: { number: { min: 1, mode: 'box' } } },
-      { name: 'indicator_radius', selector: { number: { min: 0, mode: 'box' } } },
-      { name: 'state_value_show', selector: { boolean: {} } },
-      { name: 'state_value_color', selector: { text: {} } },
-      { name: 'state_units_show', selector: { boolean: {} } },
-      { name: 'state_units_color', selector: { text: {} } },
-      { name: 'state_abbreviation_show', selector: { boolean: {} } },
-      { name: 'state_abbreviation_color', selector: { text: {} } },
-      { name: 'tap_action', schema: actionSchema(tapAction), title: localize('editor.tap_action.title'), type: 'expandable' },
-    ];
-
     // Shows the values the card actually uses, including defaults for options missing from the config
     const defaults = CONFIG_DEFAULTS.indicator_sensor;
-    const data = {
-      sensor: this.config.sensor || '',
-      attribute: this.config.attribute || '',
-      indicator: imageType,
-      indicator_icon: imageType === IMAGE_TYPE_MDI ? image : '',
-      indicator_url: imageType === IMAGE_TYPE_URL ? image : '',
-      units: this.config.units || '',
-      decimals: this.config.decimals || defaults.decimals,
-      indicator_show: this.config.indicator?.show ?? defaults.indicator.show,
-      indicator_color: this.config.indicator?.color || '',
-      indicator_opacity: this.config.indicator?.opacity ?? defaults.indicator.opacity,
-      indicator_size: this.config.indicator?.size || defaults.indicator.size,
-      indicator_radius: this.config.indicator?.radius ?? defaults.indicator.radius,
-      state_value_show: this.config.state_value?.show ?? defaults.state_value.show,
-      state_value_color: this.config.state_value?.color || '',
-      state_units_show: this.config.state_units?.show ?? defaults.state_units.show,
-      state_units_color: this.config.state_units?.color || '',
-      state_abbreviation_show: this.config.state_abbreviation?.show ?? abbreviationShowDefault(this.index),
-      state_abbreviation_color: this.config.state_abbreviation?.color || '',
-      tap_action: tapAction,
-    };
-
+    const tapAction = actionData(this.config.tap_action);
     return html`
       <div class="header">
         <div class="back-title">
@@ -109,86 +64,151 @@ export class CompassCardIndicatorEditor extends LitElement {
       <div class="groups">
         <ha-form
           .hass=${this.hass}
-          .data=${data}
-          .schema=${schema}
+          .data=${{ attribute: this.config.attribute || '', decimals: this.config.decimals || defaults.decimals, sensor: this.config.sensor || '', units: this.config.units || '' }}
+          .schema=${[
+            { name: 'sensor', selector: { entity: {} } },
+            { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
+            { name: 'units', selector: { text: {} } },
+            { name: 'decimals', selector: { number: { min: 0, max: 10, mode: 'box' } } },
+          ]}
           .computeLabel=${CompassCardIndicatorEditor._computeLabel}
-          @value-changed=${this._valueChanged}
+          @value-changed=${this._generalChanged}
         ></ha-form>
-        <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
-          <div class="content">
-            ${INDICATOR_STYLE_PARTS.map(
-              ({ part, fields }) => html`
-                <compass-card-dynamic-style-editor
-                  .hass=${this.hass}
-                  .config=${this.config?.[part]?.dynamic_style}
-                  .baseShow=${this._baseShow(part)}
-                  .fields=${fields}
-                  .label=${localize(`editor.dynamic_style.parts.${part}`)}
-                  @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-                ></compass-card-dynamic-style-editor>
-              `,
-            )}
-          </div>
-        </ha-expansion-panel>
+        ${INDICATOR_STYLE_PARTS.map(({ part, fields }) => this._renderPart(part, fields))}
+        <ha-form
+          .hass=${this.hass}
+          .data=${{ tap_action: tapAction }}
+          .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction), title: localize('editor.tap_action.title'), type: 'expandable' }]}
+          .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+          @value-changed=${this._tapActionChanged}
+        ></ha-form>
       </div>
     `;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLabel(schema: any): string {
-    return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
+  // One block per part: show and color on one row (plus the indicator's own options) and its dynamic style
+  private _renderPart(part: IndicatorPart, fields: StyleField[]): TemplateResult {
+    return html`
+      <ha-expansion-panel outlined .header=${localize(`editor.dynamic_style.parts.${part}`)}>
+        <div class="content">
+          <ha-form
+            .hass=${this.hass}
+            .data=${this._computePartData(part)}
+            .schema=${this._computePartSchema(part)}
+            .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+            @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
+          ></ha-form>
+          <compass-card-dynamic-style-editor
+            .hass=${this.hass}
+            .config=${this.config?.[part]?.dynamic_style}
+            .baseShow=${this._baseShow(part)}
+            .fields=${fields}
+            .label=${localize('editor.dynamic_style.title')}
+            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+          ></compass-card-dynamic-style-editor>
+        </div>
+      </ha-expansion-panel>
+    `;
   }
 
-  private _valueChanged(ev: CustomEvent): void {
+  private _computePartSchema(part: IndicatorPart) {
+    if (part !== 'indicator') {
+      return [showColorRow()];
+    }
+    const imageType = this._getImageType();
+    return [
+      { name: 'indicator', required: true, selector: { select: { mode: 'dropdown', options: IMAGE_TYPES.map((type) => ({ label: localize(`editor.sensor_config.indicator_types.${type}`), value: type })) } } },
+      ...(imageType === IMAGE_TYPE_MDI ? [{ name: 'indicator_icon', selector: { icon: {} } }] : []),
+      ...(imageType === IMAGE_TYPE_URL ? [{ name: 'indicator_url', selector: { text: { type: 'url' } } }] : []),
+      showColorRow(),
+      { name: 'opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
+      { name: 'size', selector: { number: { min: 1, mode: 'box' } } },
+      { name: 'radius', selector: { number: { min: 0, mode: 'box' } } },
+    ];
+  }
+
+  private _computePartData(part: IndicatorPart) {
+    const data = { color: this.config?.[part]?.color || '', show: this._baseShow(part) };
+    if (part !== 'indicator') {
+      return data;
+    }
+    const defaults = CONFIG_DEFAULTS.indicator_sensor.indicator;
+    const imageType = this._getImageType();
+    const image = this.config?.indicator?.image || '';
+    return {
+      ...data,
+      indicator: imageType,
+      indicator_icon: imageType === IMAGE_TYPE_MDI ? image : '',
+      indicator_url: imageType === IMAGE_TYPE_URL ? image : '',
+      opacity: this.config?.indicator?.opacity ?? defaults.opacity,
+      radius: this.config?.indicator?.radius ?? defaults.radius,
+      size: this.config?.indicator?.size || defaults.size,
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static _computeLabel(schema: any): string {
+    return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.fields.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
+  }
+
+  private _fire(newConfig: CCIndicatorSensorConfig): void {
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _generalChanged(ev: CustomEvent): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
     }
-
     const data = ev.detail.value;
-    this._imageType = data.indicator;
-    const imageByType: Record<string, string | undefined> = { [IMAGE_TYPE_MDI]: data.indicator_icon, [IMAGE_TYPE_URL]: data.indicator_url };
-    const image = data.indicator in imageByType ? imageByType[data.indicator] : data.indicator;
-    // Values equal to the card defaults are left out of the YAML; the image is always kept explicit
-    const defaults = CONFIG_DEFAULTS.indicator_sensor;
-    const indicatorDefaults = { opacity: defaults.indicator.opacity, radius: defaults.indicator.radius, show: defaults.indicator.show, size: defaults.indicator.size };
-    const newConfig: CCIndicatorSensorConfig = {
-      ...this.config,
-      sensor: data.sensor || '',
-      indicator: updateObject(
-        this.config.indicator,
-        {
-          image,
-          show: data.indicator_show,
-          color: data.indicator_color,
-          opacity: data.indicator_opacity,
-          size: data.indicator_size,
-          radius: data.indicator_radius,
-        },
-        indicatorDefaults,
-      ) || {},
-    };
-
+    const newConfig: CCIndicatorSensorConfig = { ...this.config, sensor: data.sensor || '' };
     setOrDelete(newConfig, 'attribute', data.attribute);
     setOrDelete(newConfig, 'units', data.units);
-    setOrDelete(newConfig, 'decimals', data.decimals, defaults.decimals);
-    setOrDelete(newConfig, 'state_value', updateObject(this.config.state_value, { show: data.state_value_show, color: data.state_value_color }, defaults.state_value));
-    setOrDelete(newConfig, 'state_units', updateObject(this.config.state_units, { show: data.state_units_show, color: data.state_units_color }, defaults.state_units));
-    setOrDelete(newConfig, 'state_abbreviation', updateObject(this.config.state_abbreviation, { show: data.state_abbreviation_show, color: data.state_abbreviation_color }, { show: abbreviationShowDefault(this.index) }));
-    setOrDelete(newConfig, 'tap_action', actionFromData(data.tap_action, this.config.tap_action));
-
-    fireEvent(this, 'config-changed', { config: newConfig });
+    setOrDelete(newConfig, 'decimals', data.decimals, CONFIG_DEFAULTS.indicator_sensor.decimals);
+    this._fire(newConfig);
   }
 
-  // Effective visibility of a part without dynamic style, as in getIndicatorSensor() in objectHelpers.ts
-  private _baseShow(part: (typeof INDICATOR_STYLE_PARTS)[number]['part']): boolean {
-    if (part === 'state_abbreviation') {
-      return this.config?.state_abbreviation?.show ?? abbreviationShowDefault(this.index);
+  // Values equal to the card defaults are left out of the YAML; the image is always kept explicit
+  private _partChanged(part: IndicatorPart, ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this.config) {
+      return;
     }
-    return this.config?.[part]?.show ?? CONFIG_DEFAULTS.indicator_sensor[part].show;
+    const data = ev.detail.value;
+    const newConfig: CCIndicatorSensorConfig = { ...this.config };
+    if (part === 'indicator') {
+      this._imageType = data.indicator;
+      const imageByType: Record<string, string | undefined> = { [IMAGE_TYPE_MDI]: data.indicator_icon, [IMAGE_TYPE_URL]: data.indicator_url };
+      const image = data.indicator in imageByType ? imageByType[data.indicator] : data.indicator;
+      const { opacity, radius, show, size } = CONFIG_DEFAULTS.indicator_sensor.indicator;
+      newConfig.indicator = updateObject(this.config.indicator, { image, show: data.show, color: data.color, opacity: data.opacity, size: data.size, radius: data.radius }, { opacity, radius, show, size }) || {};
+    } else {
+      setOrDelete(newConfig, part, updateObject(this.config[part], { show: data.show, color: data.color }, { show: this._showDefault(part) }));
+    }
+    this._fire(newConfig);
   }
 
-  private _dynamicStyleChanged(part: (typeof INDICATOR_STYLE_PARTS)[number]['part'], ev: CustomEvent): void {
+  private _tapActionChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
+    if (!this.config) {
+      return;
+    }
+    const newConfig: CCIndicatorSensorConfig = { ...this.config };
+    setOrDelete(newConfig, 'tap_action', actionFromData(ev.detail.value.tap_action, this.config.tap_action));
+    this._fire(newConfig);
+  }
+
+  // Default visibility of a part, as in getIndicatorSensor() in objectHelpers.ts
+  private _showDefault(part: IndicatorPart): boolean {
+    return part === 'state_abbreviation' ? abbreviationShowDefault(this.index) : CONFIG_DEFAULTS.indicator_sensor[part].show;
+  }
+
+  // Effective visibility of a part without dynamic style
+  private _baseShow(part: IndicatorPart): boolean {
+    return this.config?.[part]?.show ?? this._showDefault(part);
+  }
+
+  private _dynamicStyleChanged(part: IndicatorPart, ev: CustomEvent): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -200,7 +220,7 @@ export class CompassCardIndicatorEditor extends LitElement {
     } else {
       setOrDelete(newConfig, part, updated);
     }
-    fireEvent(this, 'config-changed', { config: newConfig });
+    this._fire(newConfig);
   }
 
   private _goBack(): void {
@@ -219,7 +239,7 @@ export class CompassCardIndicatorEditor extends LitElement {
         align-items: center;
         font-size: 18px;
       }
-      /* the form (ending with the tap action) and the dynamic styles panel, spaced like the main editor groups */
+      /* general settings, one block per part and the tap action, spaced like the main editor groups */
       .groups {
         display: flex;
         flex-direction: column;
@@ -228,7 +248,7 @@ export class CompassCardIndicatorEditor extends LitElement {
       .content {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: var(--ha-space-2, 8px);
         padding: 8px 0;
       }
     `;

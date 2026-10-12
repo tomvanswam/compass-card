@@ -2,9 +2,11 @@ import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { headerIconShowDefault, headerTitleShowDefault } from '../defaults';
-import { setOrDelete, updateObject } from './editorHelpers';
+import { setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { CCHeaderConfig } from './editorTypes';
 import { localize } from '../localize/localize';
+
+type HeaderPart = 'icon' | 'title';
 
 @customElement('compass-card-header-editor')
 export class CompassCardHeaderEditor extends LitElement {
@@ -16,105 +18,65 @@ export class CompassCardHeaderEditor extends LitElement {
             return html``;
         }
 
-        const schema = this._computeSchema();
-        const data = this._computeData();
-
         return html`
       <ha-expansion-panel outlined .header=${localize('editor.header_conf')}>
         <div class="content">
-          <ha-form
-            .hass=${this.hass}
-            .data=${data}
-            .schema=${schema}
-            .computeLabel=${CompassCardHeaderEditor._computeLabel}
-            @value-changed=${this._valueChanged}
-          ></ha-form>
-          <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
-            <div class="content">
-              <compass-card-dynamic-style-editor
-                .hass=${this.hass}
-                .config=${this.config?.title?.dynamic_style}
-                .baseShow=${this.config?.title?.show ?? headerTitleShowDefault(this.config?.title?.value)}
-                .label=${localize('editor.header_title_conf')}
-                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged('title', ev)}
-              ></compass-card-dynamic-style-editor>
-              <compass-card-dynamic-style-editor
-                .hass=${this.hass}
-                .config=${this.config?.icon?.dynamic_style}
-                .baseShow=${this.config?.icon?.show ?? headerIconShowDefault(this.config?.icon?.value, this.config?.title?.value)}
-                .label=${localize('editor.header_icon_conf')}
-                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged('icon', ev)}
-              ></compass-card-dynamic-style-editor>
-            </div>
-          </ha-expansion-panel>
+          ${this._renderPart('title', 'editor.header_title_conf', { text: {} })}
+          ${this._renderPart('icon', 'editor.header_icon_conf', { icon: {} })}
         </div>
       </ha-expansion-panel>
     `;
     }
 
+    // One block per header item: its value, show and color on one row, and its dynamic style
+    private _renderPart(part: HeaderPart, label: string, valueSelector: object): TemplateResult {
+        return html`
+      <ha-expansion-panel outlined .header=${localize(label)}>
+        <div class="content">
+          <ha-form
+            .hass=${this.hass}
+            .data=${{ color: this.config?.[part]?.color || '', show: this._show(part), value: this.config?.[part]?.value || '' }}
+            .schema=${[{ name: 'value', selector: valueSelector }, showColorRow()]}
+            .computeLabel=${(schema: { name: string }) => (schema.name === 'value' ? localize(label) : localize(`editor.fields.${schema.name}`) || schema.name)}
+            @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
+          ></ha-form>
+          <compass-card-dynamic-style-editor
+            .hass=${this.hass}
+            .config=${this.config?.[part]?.dynamic_style}
+            .baseShow=${this._show(part)}
+            .label=${localize('editor.dynamic_style.title')}
+            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+          ></compass-card-dynamic-style-editor>
+        </div>
+      </ha-expansion-panel>
+    `;
+    }
+
+    // Effective visibility, as in getHeader() in objectHelpers.ts
+    private _show(part: HeaderPart): boolean {
+        return this.config?.[part]?.show ?? this._showDefault(part, this.config?.icon?.value, this.config?.title?.value);
+    }
+
     // eslint-disable-next-line class-methods-use-this
-    private _computeSchema() {
-        return [
-            { name: 'header_title_conf', selector: { text: {} } },
-            {
-                name: '',
-                schema: [
-                    { name: 'header_title_show_conf', selector: { boolean: {} } },
-                    { name: 'header_title_color_conf', selector: { text: {} } },
-                ],
-                type: 'grid',
-            },
-            { name: 'header_icon_conf', selector: { icon: {} } },
-            {
-                name: '',
-                schema: [
-                    { name: 'header_icon_show_conf', selector: { boolean: {} } },
-                    { name: 'header_icon_color_conf', selector: { text: {} } },
-                ],
-                type: 'grid',
-            },
-        ];
+    private _showDefault(part: HeaderPart, icon: string | undefined, title: string | undefined): boolean {
+        return part === 'title' ? headerTitleShowDefault(title) : headerIconShowDefault(icon, title);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private static _computeLabel(schema: any): string {
-        return localize(`editor.${schema.name}`) || schema.name;
-    }
-
-    private _computeData() {
-        return {
-            header_icon_color_conf: this.config?.icon?.color || '',
-            header_icon_conf: this.config?.icon?.value || '',
-            header_icon_show_conf: this.config?.icon?.show ?? headerIconShowDefault(this.config?.icon?.value, this.config?.title?.value),
-            header_title_color_conf: this.config?.title?.color || '',
-            header_title_conf: this.config?.title?.value || '',
-            header_title_show_conf: this.config?.title?.show ?? headerTitleShowDefault(this.config?.title?.value),
-        };
-    }
-
-    private _dynamicStyleChanged(part: 'icon' | 'title', ev: CustomEvent): void {
+    private _partChanged(part: HeaderPart, ev: CustomEvent): void {
         ev.stopPropagation();
+        const data = ev.detail.value;
         const newConfig: CCHeaderConfig = { ...this.config };
-        setOrDelete(newConfig, part, updateObject(newConfig[part], { dynamic_style: ev.detail.value }));
+        const value = data.value || undefined;
+        const icon = part === 'icon' ? value : this.config?.icon?.value;
+        const title = part === 'title' ? value : this.config?.title?.value;
+        setOrDelete(newConfig, part, updateObject(newConfig[part], { color: data.color, show: data.show, value }, { show: this._showDefault(part, icon, title) }));
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
-    private _valueChanged(ev: CustomEvent): void {
+    private _dynamicStyleChanged(part: HeaderPart, ev: CustomEvent): void {
         ev.stopPropagation();
-        const headerData = ev.detail.value;
-        if (!headerData) {
-            return;
-        }
-
         const newConfig: CCHeaderConfig = { ...this.config };
-        const title = updateObject(newConfig.title, { color: headerData.header_title_color_conf, show: headerData.header_title_show_conf, value: headerData.header_title_conf }, { show: headerTitleShowDefault(headerData.header_title_conf || undefined) });
-        const icon = updateObject(newConfig.icon, { color: headerData.header_icon_color_conf, show: headerData.header_icon_show_conf, value: headerData.header_icon_conf }, { show: headerIconShowDefault(headerData.header_icon_conf, headerData.header_title_conf) });
-
-        if (title) newConfig.title = title;
-        else delete newConfig.title;
-        if (icon) newConfig.icon = icon;
-        else delete newConfig.icon;
-
+        setOrDelete(newConfig, part, updateObject(newConfig[part], { dynamic_style: ev.detail.value }));
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
@@ -126,7 +88,7 @@ export class CompassCardHeaderEditor extends LitElement {
       .content {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: var(--ha-space-2, 8px);
         padding: 8px 0;
       }
     `;

@@ -33,7 +33,7 @@ function fieldSchema(field: StyleField) {
 function styleSchema(fields: StyleField[]) {
   const row = (['show', 'color'] as StyleField[]).filter((field) => fields.includes(field));
   const rest = fields.filter((field) => !row.includes(field));
-  return [...(row.length ? [{ name: '', schema: row.map(fieldSchema), type: 'grid' }] : []), ...rest.map(fieldSchema)];
+  return [...(row.length ? [{ column_min_width: '120px', name: '', schema: row.map(fieldSchema), type: 'grid' }] : []), ...rest.map(fieldSchema)];
 }
 
 // A missing show inherits the visibility of the previous band (or of the element itself); the switch shows that value

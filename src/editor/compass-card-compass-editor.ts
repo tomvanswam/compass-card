@@ -3,7 +3,7 @@ import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DEGREES_MAX, DEGREES_MIN } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
-import { setOrDelete, updateObject } from './editorHelpers';
+import { setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { CCCompassConfig } from './editorTypes';
 import { localize } from '../localize/localize';
 import { StyleField } from './compass-card-dynamic-style-editor';
@@ -84,11 +84,9 @@ export class CompassCardCompassEditor extends LitElement {
     }
 
     private static _computePartSchema(part: CompassPart) {
-        const showField = { name: 'show', selector: { boolean: {} } };
-        const colorField = { name: 'color', selector: { text: {} } };
         if (part === 'circle') {
             return [
-                { name: '', schema: [showField, colorField], type: 'grid' },
+                showColorRow(),
                 { name: 'stroke_width', selector: { number: { min: 0.5, mode: 'box', step: 0.5 } } },
                 {
                     name: 'background',
@@ -110,7 +108,7 @@ export class CompassCardCompassEditor extends LitElement {
         }
         if (part === 'ticks') {
             return [
-                { name: '', schema: [showField, colorField], type: 'grid' },
+                showColorRow(),
                 {
                     name: '',
                     schema: [
@@ -121,12 +119,12 @@ export class CompassCardCompassEditor extends LitElement {
                 },
             ];
         }
-        return [{ name: '', schema: [showField, colorField], type: 'grid' }];
+        return [showColorRow()];
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private static _computeLabel(schema: any): string {
-        return localize(`editor.compass_fields.${schema.name}`) || localize(`editor.${schema.name}`) || schema.name;
+        return localize(`editor.fields.${schema.name}`) || localize(`editor.${schema.name}`) || schema.name;
     }
 
     // Shows the values the card actually uses, including defaults for options missing from the config

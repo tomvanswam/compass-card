@@ -30,17 +30,6 @@
       },
       "units": "",
       "decimals": "",
-      "indicator_color": "",
-      "indicator_opacity": "",
-      "indicator_radius": "",
-      "indicator_size": "",
-      "indicator_show": "",
-      "state_value_show": "",
-      "state_value_color": "",
-      "state_units_show": "",
-      "state_units_color": "",
-      "state_abbreviation_show": "",
-      "state_abbreviation_color": "",
       "language": "Taal",
       "unknown_direction": "Terugval bij onbekende richting",
       "unknown_direction_types": {
@@ -51,13 +40,9 @@
     },
     "header_conf": "",
     "header_title_conf": "",
-    "header_title_show_conf": "",
-    "header_title_color_conf": "",
     "header_icon_conf": "",
-    "header_icon_show_conf": "",
-    "header_icon_color_conf": "",
     "compass_conf": "",
-    "compass_fields": {
+    "fields": {
       "show": "Tonen",
       "color": "Kleur",
       "stroke_width": "Lijndikte",
@@ -65,7 +50,9 @@
       "step": "Stap",
       "background_image": "Afbeeldings-URL",
       "offset_background": "Kompasafwijking ook voor achtergrond gebruiken",
-      "background_opacity": "Doorzichtigheid achtergrond"
+      "background_opacity": "Doorzichtigheid achtergrond",
+      "opacity": "Doorzichtigheid",
+      "size": "Grootte"
     },
     "compass_offset_conf": "Afwijking",
     "compass_circle_background_conf": "",

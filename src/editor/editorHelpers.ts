@@ -25,3 +25,16 @@ export function updateObject<T extends object>(base: T | undefined, updates: Par
   (Object.keys(updates) as (keyof T)[]).forEach((key) => setOrDelete(result, key, updates[key], defaults[key]));
   return Object.keys(result).length === NO_ELEMENTS ? undefined : result;
 }
+
+// Show switch with the color field to its right on one row; the minimum column width keeps them side by side
+export function showColorRow() {
+  return {
+    column_min_width: '120px',
+    name: '',
+    schema: [
+      { name: 'show', selector: { boolean: {} } },
+      { name: 'color', selector: { text: {} } },
+    ],
+    type: 'grid',
+  };
+}
