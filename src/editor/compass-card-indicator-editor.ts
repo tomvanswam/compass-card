@@ -4,18 +4,14 @@ import { abbreviationShowDefault, CONFIG_DEFAULTS } from '../defaults';
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, ICON_VALUES, INDEX_ELEMENT_0 } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
 import { opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { CCIndicatorSensorConfig } from './editorTypes';
+import { INDEX_ELEMENT_0 } from '../const';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
 import { StyleField } from './compass-card-dynamic-style-editor';
-
-// Indicator types besides the built-in shapes in ICON_VALUES
-const IMAGE_TYPE_MDI = 'mdi';
-const IMAGE_TYPE_URL = 'url';
-const IMAGE_TYPES = [...ICON_VALUES, IMAGE_TYPE_MDI, IMAGE_TYPE_URL];
 
 // Parts of an indicator sensor, each with its own block; fields are the dynamic style options the card uses for it
 type IndicatorPart = 'indicator' | 'state_abbreviation' | 'state_units' | 'state_value';
@@ -35,11 +31,7 @@ export class CompassCardIndicatorEditor extends LitElement {
   @state() private _imageType?: string;
 
   private _getImageType(): string {
-    const image = this.config?.indicator?.image;
-    if (!image) return this._imageType || DEFAULT_ICON_VALUE;
-    if (image.startsWith('mdi:')) return IMAGE_TYPE_MDI;
-    if ((ICON_VALUES as readonly string[]).includes(image)) return image;
-    return IMAGE_TYPE_URL;
+    return imageType(this.config?.indicator?.image, this._imageType);
   }
 
   protected render(): TemplateResult {
@@ -104,6 +96,7 @@ export class CompassCardIndicatorEditor extends LitElement {
             .config=${this.config?.[part]?.dynamic_style}
             .baseShow=${this._baseShow(part)}
             .baseOpacity=${this.config?.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity}
+            .baseImage=${this.config?.indicator?.image || CONFIG_DEFAULTS.indicator_sensor.indicator.image}
             .fields=${fields}
             .label=${localize('editor.dynamic_style.title')}
             @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
@@ -117,11 +110,8 @@ export class CompassCardIndicatorEditor extends LitElement {
     if (part !== 'indicator') {
       return [showColorRow()];
     }
-    const imageType = this._getImageType();
     return [
-      { name: 'indicator', required: true, selector: { select: { mode: 'dropdown', options: IMAGE_TYPES.map((type) => ({ label: localize(`editor.sensor_config.indicator_types.${type}`), value: type })) } } },
-      ...(imageType === IMAGE_TYPE_MDI ? [{ name: 'indicator_icon', selector: { icon: {} } }] : []),
-      ...(imageType === IMAGE_TYPE_URL ? [{ name: 'indicator_url', selector: { text: { type: 'url' } } }] : []),
+      ...imageSchema(this._getImageType()),
       showColorRow(),
       { name: 'opacity', selector: opacitySelector() },
       { name: 'size', selector: { number: { min: 1, mode: 'box' } } },
@@ -135,13 +125,9 @@ export class CompassCardIndicatorEditor extends LitElement {
       return data;
     }
     const defaults = CONFIG_DEFAULTS.indicator_sensor.indicator;
-    const imageType = this._getImageType();
-    const image = this.config?.indicator?.image || '';
     return {
       ...data,
-      indicator: imageType,
-      indicator_icon: imageType === IMAGE_TYPE_MDI ? image : '',
-      indicator_url: imageType === IMAGE_TYPE_URL ? image : '',
+      ...imageData(this.config?.indicator?.image, this._getImageType()),
       opacity: opacityToPercent(this.config?.indicator?.opacity ?? defaults.opacity),
       radius: this.config?.indicator?.radius ?? defaults.radius,
       size: this.config?.indicator?.size || defaults.size,
@@ -180,8 +166,7 @@ export class CompassCardIndicatorEditor extends LitElement {
     const newConfig: CCIndicatorSensorConfig = { ...this.config };
     if (part === 'indicator') {
       this._imageType = data.indicator;
-      const imageByType: Record<string, string | undefined> = { [IMAGE_TYPE_MDI]: data.indicator_icon, [IMAGE_TYPE_URL]: data.indicator_url };
-      const image = data.indicator in imageByType ? imageByType[data.indicator] : data.indicator;
+      const image = imageFromData(data);
       const { opacity, radius, show, size } = CONFIG_DEFAULTS.indicator_sensor.indicator;
       newConfig.indicator = updateObject(this.config.indicator, { image, show: data.show, color: data.color, opacity: opacityFromPercent(data.opacity, this.config.indicator?.opacity ?? opacity), size: data.size, radius: data.radius }, { opacity, radius, show, size }) || {};
     } else {

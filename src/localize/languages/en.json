@@ -103,7 +103,6 @@
       "unknown": "Style when the value is unknown",
       "color": "Color",
       "show": "Show",
-      "image": "Image (indicator name, mdi: icon or URL)",
       "background_image": "Background image URL",
       "opacity": "Opacity",
       "size": "Size",

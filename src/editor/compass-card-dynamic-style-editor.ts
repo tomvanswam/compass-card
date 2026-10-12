@@ -1,8 +1,9 @@
 import { CCDynamicStyleConfig, CCStyleBandConfig } from './editorTypes';
 import { css, html, LitElement, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
+import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_1, OPACITY_VISIBLE } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
-import { INDEX_ELEMENT_1, OPACITY_VISIBLE } from '../const';
+import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
 import { mdiClose, mdiPlus } from '@mdi/js';
 import { opacityFromPercent, opacitySelector, opacityToPercent, updateObject } from './editorHelpers';
 import { localize } from '../localize/localize';
@@ -29,33 +30,47 @@ function fieldSchema(field: StyleField) {
   }
 }
 
-// Visibility switch with the color to its right, like the regular settings; other fields below
-function styleSchema(fields: StyleField[]) {
+// Visibility switch with the color to its right, like the regular settings; other fields below.
+// The indicator image uses the same type selection as the indicator settings (imageForm.ts).
+function styleSchema(fields: StyleField[], type: string) {
   const row = (['show', 'color'] as StyleField[]).filter((field) => fields.includes(field));
   const rest = fields.filter((field) => !row.includes(field));
-  return [...(row.length ? [{ column_min_width: '120px', name: '', schema: row.map(fieldSchema), type: 'grid' }] : []), ...rest.map(fieldSchema)];
+  return [
+    ...(row.length ? [{ column_min_width: '120px', name: '', schema: row.map(fieldSchema), type: 'grid' }] : []),
+    ...rest.flatMap((field): object[] => (field === 'image' ? imageSchema(type) : [fieldSchema(field)])),
+  ];
 }
 
 // What a band (or the unknown style) inherits for options it does not set itself
 interface Inherited {
+  image: string;
   opacity: number;
   show: boolean;
 }
 
+// Image type shown for a style: its own image, else a type picked while its icon/URL is still empty, else the inherited image
+function styleImageType(style: StyleConfig | undefined, inherited: Inherited, chosenType: string | undefined): string {
+  return imageType(style?.image || (chosenType ? undefined : inherited.image), chosenType);
+}
+
 // A missing show or opacity inherits from the previous band (or the element itself); the form shows that value
-function toFormStyle(style: StyleConfig | undefined, inherited: Inherited) {
-  return { ...style, opacity: opacityToPercent(style?.opacity || inherited.opacity), show: style?.show ?? inherited.show };
+function toFormStyle(style: StyleConfig | undefined, inherited: Inherited, type: string) {
+  const image = style?.image || (imageType(inherited.image) === type ? inherited.image : undefined);
+  return { ...style, ...imageData(image, type), opacity: opacityToPercent(style?.opacity || inherited.opacity), show: style?.show ?? inherited.show };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous: StyleConfig | undefined, inherited: Inherited): StyleConfig | undefined {
   const updates: Partial<StyleConfig> = {};
   fields.forEach((field) => {
+    let value = data[field];
+    if (field === 'opacity') value = opacityFromPercent(data.opacity, previous?.opacity || inherited.opacity);
+    if (field === 'image') value = imageFromData(data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (updates as any)[field] = field === 'opacity' ? opacityFromPercent(data.opacity, previous?.opacity || inherited.opacity) : data[field];
+    (updates as any)[field] = value;
   });
-  // a visibility equal to the inherited one is left out, so the band keeps following it
-  return updateObject(previous, updates, { opacity: inherited.opacity, show: inherited.show });
+  // values equal to the inherited ones are left out, so the band keeps following them
+  return updateObject(previous, updates, { image: inherited.image, opacity: inherited.opacity, show: inherited.show });
 }
 
 declare global {
@@ -78,6 +93,10 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   @property({ attribute: false }) public baseShow = true;
   // Effective opacity of the element without dynamic style (only used when the fields include opacity)
   @property({ attribute: false }) public baseOpacity = OPACITY_VISIBLE;
+  // Effective image of the indicator without dynamic style (only used when the fields include image)
+  @property({ attribute: false }) public baseImage = DEFAULT_ICON_VALUE;
+  // Image type picked per style ('unknown' or the band index) while its icon/URL is still empty
+  @state() private _imageTypes: Record<string, string> = {};
   @property() public label?: string;
 
   protected render(): TemplateResult {
@@ -85,7 +104,6 @@ export class CompassCardDynamicStyleEditor extends LitElement {
       return html``;
     }
     const bands = this.config?.bands || [];
-    const schema = styleSchema(this.fields);
     const inherited = this._inherited(bands);
 
     return html`
@@ -105,8 +123,8 @@ export class CompassCardDynamicStyleEditor extends LitElement {
           <div class="title">${localize('editor.dynamic_style.unknown')}</div>
           <ha-form
             .hass=${this.hass}
-            .data=${toFormStyle(this.config?.unknown, this._base())}
-            .schema=${schema}
+            .data=${toFormStyle(this.config?.unknown, this._base(), this._type('unknown', this.config?.unknown, this._base()))}
+            .schema=${styleSchema(this.fields, this._type('unknown', this.config?.unknown, this._base()))}
             .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
             @value-changed=${this._unknownChanged}
           ></ha-form>
@@ -116,8 +134,8 @@ export class CompassCardDynamicStyleEditor extends LitElement {
               <div class="band">
                 <ha-form
                   .hass=${this.hass}
-                  .data=${toFormStyle(band, inherited[index])}
-                  .schema=${[{ name: 'from_value', required: true, selector: { number: { mode: 'box' } } }, ...schema]}
+                  .data=${toFormStyle(band, inherited[index], this._type(String(index), band, inherited[index]))}
+                  .schema=${[{ name: 'from_value', required: true, selector: { number: { mode: 'box' } } }, ...styleSchema(this.fields, this._type(String(index), band, inherited[index]))]}
                   .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
                   @value-changed=${(ev: CustomEvent) => this._bandChanged(index, ev)}
                 ></ha-form>
@@ -136,7 +154,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static _computeLabel(schema: any): string {
-    return localize(`editor.dynamic_style.${schema.name}`) || schema.name;
+    return localize(`editor.dynamic_style.${schema.name}`) || localize(`editor.sensor_config.${schema.name}`) || schema.name;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,9 +162,20 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     return schema.name === 'sensor' ? localize('editor.dynamic_style.sensor_helper') : '';
   }
 
+  private _type(key: string, style: StyleConfig | undefined, inherited: Inherited): string {
+    return styleImageType(style, inherited, this._imageTypes[key]);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _rememberType(key: string, data: Record<string, any>): void {
+    if (this.fields.includes('image') && data.indicator) {
+      this._imageTypes = { ...this._imageTypes, [key]: data.indicator };
+    }
+  }
+
   // The element's own values, inherited by the first band and by the unknown style
   private _base(): Inherited {
-    return { opacity: this.baseOpacity, show: this.baseShow };
+    return { image: this.baseImage, opacity: this.baseOpacity, show: this.baseShow };
   }
 
   // What each band inherits, per index in the config's band order (bands apply in from_value order, as in getBands())
@@ -156,7 +185,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     let previous = this._base();
     order.forEach(({ band, index }) => {
       inherited[index] = previous;
-      previous = { opacity: band.opacity || previous.opacity, show: band.show ?? previous.show };
+      previous = { image: band.image || previous.image, opacity: band.opacity || previous.opacity, show: band.show ?? previous.show };
     });
     return inherited;
   }
@@ -180,6 +209,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   private _bandChanged(index: number, ev: CustomEvent): void {
     ev.stopPropagation();
     const bands = [...(this.config?.bands || [])];
+    this._rememberType(String(index), ev.detail.value);
     const style = fromFormStyle(ev.detail.value, this.fields, bands[index], this._inherited(bands)[index]);
     bands[index] = { ...style, from_value: ev.detail.value.from_value ?? bands[index].from_value };
     this._update({ bands });
@@ -194,11 +224,13 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   private _removeBand(index: number): void {
     const bands = [...(this.config?.bands || [])];
     bands.splice(index, INDEX_ELEMENT_1);
+    this._imageTypes = {};
     this._update({ bands });
   }
 
   private _unknownChanged(ev: CustomEvent): void {
     ev.stopPropagation();
+    this._rememberType('unknown', ev.detail.value);
     this._update({ unknown: fromFormStyle(ev.detail.value, this.fields, this.config?.unknown, this._base()) });
   }
 
