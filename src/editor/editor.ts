@@ -3,9 +3,9 @@ import { CCIndicatorSensorConfig, CompassCardConfig } from './editorTypes';
 import { COMPASS_LANGUAGES, localize } from '../localize/localize.js';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, NO_ELEMENTS, UNKNOWN_DIRECTION_VALUES } from '../const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
-import { setOrDelete } from './editorHelpers';
+import { setOrDelete, withoutEmpty } from './editorHelpers';
 
 // eslint-disable-next-line sort-imports
 import './compass-card-compass-editor';
@@ -161,16 +161,14 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   private _handleCardConfigChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
     const cardData = ev.detail.value.card_conf;
-    if (!this._config || !this.hass || !cardData) {
+    if (!cardData) {
       return;
     }
-    const newConfig: CompassCardConfig = { ...this._config };
-    setOrDelete(newConfig, 'tap_action', actionFromData(cardData.tap_action, this._config.tap_action));
-    setOrDelete(newConfig, 'debug', cardData.debug, false);
-    this._config = newConfig;
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+    this._updateConfig(ev, (config) => {
+      setOrDelete(config, 'tap_action', actionFromData(cardData.tap_action, config.tap_action));
+      setOrDelete(config, 'debug', cardData.debug, false);
+    });
   }
 
   private _editDetailElement(ev: CustomEvent): void {
@@ -182,50 +180,26 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   private _handleSubElementChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-
-    const configValue = this._subElementEditorConfig.type;
+    const { index, type } = this._subElementEditorConfig;
     const value = ev.detail.config;
-
-    if (configValue === 'indicator') {
-      const newConfigEntities = [...(this._config.indicator_sensors || [])];
-      newConfigEntities[this._subElementEditorConfig.index] = value;
-      this._config = { ...this._config, indicator_sensors: newConfigEntities };
-    } else if (configValue === 'value') {
-      const newConfigEntities = [...(this._config.value_sensors || [])];
-      newConfigEntities[this._subElementEditorConfig.index] = value;
-      this._config = { ...this._config, value_sensors: newConfigEntities };
-    }
-
-    this._subElementEditorConfig = {
-      ...this._subElementEditorConfig,
-      elementConfig: value,
-    };
-
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+    // replace the edited sensor in a copy of its list
+    const replaced = <T,>(sensors: T[] | undefined): T[] => Object.assign([...(sensors || [])], { [index]: value });
+    this._updateConfig(ev, (config) => {
+      if (type === 'indicator') {
+        config.indicator_sensors = replaced(config.indicator_sensors);
+      } else {
+        config.value_sensors = replaced(config.value_sensors);
+      }
+    });
+    this._subElementEditorConfig = { ...this._subElementEditorConfig, elementConfig: value };
   }
 
   private _handleIndicatorEntitiesChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-    const { entities } = ev.detail;
-    this._config = { ...this._config, indicator_sensors: entities };
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+    this._setConfigKey(ev, 'indicator_sensors', ev.detail.entities);
   }
 
   private _handleValueEntitiesChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-    const { entities } = ev.detail;
-    this._config = { ...this._config, value_sensors: entities };
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+    this._setConfigKey(ev, 'value_sensors', ev.detail.entities);
   }
 
   // Options shown above the indicator list: abbreviation language and the fallback for an unknown direction
@@ -244,45 +218,38 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   private _indicatorOptionsChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
     const { language, unknown_direction: unknownDirection } = ev.detail.value;
-    const newConfig: CompassCardConfig = { ...this._config };
-    setOrDelete(newConfig, 'language', language);
-    // The default fallback is left out of the YAML
-    setOrDelete(newConfig, 'unknown_direction', unknownDirection, DEFAULT_UNKNOWN_DIRECTION);
-    this._config = newConfig;
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+    this._updateConfig(ev, (config) => {
+      setOrDelete(config, 'language', language);
+      // The default fallback is left out of the YAML
+      setOrDelete(config, 'unknown_direction', unknownDirection, DEFAULT_UNKNOWN_DIRECTION);
+    });
   }
 
   private _handleHeaderConfigChanged(ev: CustomEvent): void {
+    this._setConfigKey(ev, 'header', withoutEmpty(ev.detail.config));
+  }
+
+  private _handleCompassConfigChanged(ev: CustomEvent): void {
+    this._setConfigKey(ev, 'compass', withoutEmpty(ev.detail.config));
+  }
+
+  // Applies a change to a copy of the card config and fires config-changed
+  // eslint-disable-next-line no-unused-vars
+  private _updateConfig(ev: CustomEvent, update: (config: CompassCardConfig) => void): void {
     ev.stopPropagation();
     if (!this._config || !this.hass) {
       return;
     }
-    const { config } = ev.detail;
-    const newConfig = { ...this._config, header: config };
-    if (newConfig.header && Object.keys(newConfig.header).length === NO_ELEMENTS) {
-      delete newConfig.header;
-    }
+    const newConfig: CompassCardConfig = { ...this._config };
+    update(newConfig);
     this._config = newConfig;
     fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
-  private _handleCompassConfigChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-    const { config } = ev.detail;
-    const newConfig = { ...this._config, compass: config };
-    if (newConfig.compass && Object.keys(newConfig.compass).length === NO_ELEMENTS) {
-      delete newConfig.compass;
-    }
-    this._config = newConfig;
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+  // Sets one key of the card config; an empty value or one equal to defaultValue removes it (setOrDelete)
+  private _setConfigKey<K extends keyof CompassCardConfig>(ev: CustomEvent, key: K, value: CompassCardConfig[K] | undefined, defaultValue?: CompassCardConfig[K]): void {
+    this._updateConfig(ev, (config) => setOrDelete(config, key, value, defaultValue));
   }
 
   private _initialize(): void {

@@ -26,6 +26,11 @@ export function updateObject<T extends object>(base: T | undefined, updates: Par
   return Object.keys(result).length === NO_ELEMENTS ? undefined : result;
 }
 
+// An object without keys becomes undefined, so setOrDelete removes it from the config
+export function withoutEmpty<T extends object>(value: T | undefined): T | undefined {
+  return value && Object.keys(value).length > NO_ELEMENTS ? value : undefined;
+}
+
 // Show switch with the color field to its right on one row; the minimum column width keeps them side by side
 export function showColorRow() {
   return {
