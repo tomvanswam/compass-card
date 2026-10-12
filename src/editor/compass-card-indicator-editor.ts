@@ -107,8 +107,15 @@ export class CompassCardIndicatorEditor extends LitElement {
       ...imageSchema(this._getImageType()),
       showColorRow(),
       { name: 'opacity', selector: opacitySelector() },
-      { name: 'size', selector: { number: { min: 1, mode: 'box' } } },
-      { name: 'radius', selector: { number: { min: 0, mode: 'box' } } },
+      {
+        column_min_width: '120px',
+        name: '',
+        schema: [
+          { name: 'size', selector: { number: { min: 1, mode: 'box' } } },
+          { name: 'radius', selector: { number: { min: 0, mode: 'box' } } },
+        ],
+        type: 'grid',
+      },
     ];
   }
 

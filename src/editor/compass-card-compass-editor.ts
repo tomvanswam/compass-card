@@ -103,6 +103,7 @@ export class CompassCardCompassEditor extends LitElement {
             return [
                 showColorRow(),
                 {
+                    column_min_width: '120px',
                     name: '',
                     schema: [
                         { name: 'radius', selector: { number: { min: 1, mode: 'box' } } },
