@@ -1,30 +1,45 @@
-import { COMPASS_LANGUAGES, localize } from '../localize/localize';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, INDEX_ELEMENT_1, MAX_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { INDEX_ELEMENT_0, INDEX_ELEMENT_1, NO_ELEMENTS } from '../const';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
-import { CCIndicatorSensorConfig } from './editorTypes';
 import { repeat } from 'lit/directives/repeat.js';
 
+// The part of a sensor configuration this list edits; the rest is kept as is
+interface SensorRow {
+  sensor: string;
+}
 
 declare global {
   interface HTMLElementTagNameMap {
-    'compass-card-indicator-row-editor': CompassCardIndicatorRowEditor;
+    'compass-card-sensor-row-editor': CompassCardSensorRowEditor;
   }
 }
 
-@customElement('compass-card-indicator-row-editor')
-export class CompassCardIndicatorRowEditor extends LitElement {
+/**
+ * Sortable list of indicator or value sensors: pick the entity per row, edit a row in its detail editor
+ * (fires 'edit-detail-element' with the given type), remove rows and add new ones.
+ * Content placed inside the element is shown above the list. Fires 'entities-changed' with the new list.
+ */
+@customElement('compass-card-sensor-row-editor')
+export class CompassCardSensorRowEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @property({ attribute: false }) public entities?: CCIndicatorSensorConfig[];
+  @property({ attribute: false }) public entities?: SensorRow[];
   @property() public label?: string;
-  @property() public language?: string;
-  @property({ attribute: false }) public unknownDirection?: string;
+  // Detail editor type passed with 'edit-detail-element'
+  @property() public type = '';
+  // The first rows that cannot be removed
+  @property({ attribute: false }) public fixedRows = NO_ELEMENTS;
+  // Maximum number of rows; the add picker is replaced by limitMessage when reached
+  @property({ attribute: false }) public maxRows = Infinity;
+  @property() public limitMessage = '';
+  // Configuration for a newly added entity; without it only the sensor is set
+  // eslint-disable-next-line no-unused-vars
+  @property({ attribute: false }) public newRow?: (sensor: string) => SensorRow;
 
-  private _entityKeys = new WeakMap<CCIndicatorSensorConfig, string>();
+  private _entityKeys = new WeakMap<SensorRow, string>();
 
-  private _getKey(entity: CCIndicatorSensorConfig) {
+  private _getKey(entity: SensorRow) {
     if (!this._entityKeys.has(entity)) {
       this._entityKeys.set(entity, Math.random().toString());
     }
@@ -39,41 +54,13 @@ export class CompassCardIndicatorRowEditor extends LitElement {
 
     return html`
       <ha-expansion-panel outlined .header=${this.label}>
-        <ha-form
-          .hass=${this.hass}
-          .data=${{
-        language: this.language,
-        unknown_direction: this.unknownDirection || DEFAULT_UNKNOWN_DIRECTION,
-      }}
-          .schema=${[
-        {
-          name: 'language',
-          selector: {
-            select: {
-              mode: 'dropdown',
-              options: COMPASS_LANGUAGES.filter((lang) => lang !== '').map((lang) => ({ label: lang, value: lang })),
-            },
-          },
-        },
-        {
-          name: 'unknown_direction',
-          selector: {
-            select: {
-              mode: 'dropdown',
-              options: UNKNOWN_DIRECTION_VALUES.map((value) => ({ label: localize(`editor.sensor_config.unknown_direction_types.${value}`), value })),
-            },
-          },
-        },
-      ]}
-          .computeLabel=${CompassCardIndicatorRowEditor._computeLanguageLabel}
-          @value-changed=${this._languageChanged}
-        ></ha-form>
+        <slot></slot>
         <ha-sortable handle-selector=".handle" @item-moved=${this._rowMoved}>
           <div class="entities">
             ${repeat(
-        entities,
-        (entityConf) => this._getKey(entityConf),
-        (entityConf, index) => html`
+              entities,
+              (entityConf) => this._getKey(entityConf),
+              (entityConf, index) => html`
                 <div class="entity">
                   <div class="handle">
                     <ha-svg-icon .path=${mdiDragHorizontalVariant}></ha-svg-icon>
@@ -101,21 +88,16 @@ export class CompassCardIndicatorRowEditor extends LitElement {
                     class="remove-icon"
                     .index=${index}
                     @click=${() => this._removeRow(index)}
-                    .disabled=${index === INDEX_ELEMENT_0}
+                    .disabled=${index < this.fixedRows}
                   ></ha-icon-button>
                 </div>
-              `
-      )}
+              `,
+            )}
           </div>
         </ha-sortable>
-        ${entities.length < MAX_INDICATOR_ARRAY_SIZE
-          ? html`<ha-entity-picker
-              class="add-entity"
-              .hass=${this.hass}
-              @value-changed=${this._addEntity}
-              add-button
-            ></ha-entity-picker>`
-          : html`<div class="secondary">${localize('editor.indicator_limit', '{max}', String(MAX_INDICATOR_ARRAY_SIZE))}</div>`}
+        ${entities.length < this.maxRows
+          ? html`<ha-entity-picker class="add-entity" .hass=${this.hass} @value-changed=${this._addEntity} add-button></ha-entity-picker>`
+          : html`<div class="secondary">${this.limitMessage}</div>`}
       </ha-expansion-panel>
     `;
   }
@@ -123,66 +105,37 @@ export class CompassCardIndicatorRowEditor extends LitElement {
   private _valueChanged(ev: CustomEvent): void {
     const { value } = ev.detail;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { index } = (ev.target as any);
+    const { index } = ev.target as any;
     const newConfigEntities = [...(this.entities || [])];
-
-    if (value === '' || value === undefined) {
-      // Don't delete on empty, just update. User can delete with X button.
-      newConfigEntities[index] = { ...newConfigEntities[index], sensor: '' };
-    } else {
-      newConfigEntities[index] = {
-        ...newConfigEntities[index],
-        sensor: value!,
-      };
-    }
-
+    // Don't delete on empty, just update. User can delete with X button.
+    newConfigEntities[index] = { ...newConfigEntities[index], sensor: value || '' };
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
-  }
-
-  private _languageChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    const { language, unknown_direction: unknownDirection } = ev.detail.value;
-    if (language !== this.language) {
-      fireEvent(this, 'language-changed', { language });
-    }
-    if (unknownDirection !== (this.unknownDirection || DEFAULT_UNKNOWN_DIRECTION)) {
-      fireEvent(this, 'unknown-direction-changed', { unknownDirection });
-    }
   }
 
   private _addEntity(ev: CustomEvent): void {
     const { value } = ev.detail;
-    if (value === '' || (this.entities?.length ?? INDEX_ELEMENT_0) >= MAX_INDICATOR_ARRAY_SIZE) {
+    const entities = this.entities || [];
+    if (value === '' || entities.length >= this.maxRows) {
       return;
     }
-    const newConfigEntities = this.entities!.concat({
-      indicator: { image: DEFAULT_ICON_VALUE },
-      sensor: value as string,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (ev.target as any).value = '';
-    fireEvent(this, 'entities-changed', { entities: newConfigEntities });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLanguageLabel(schema: any): string {
-    return localize(`editor.sensor_config.${schema.name}`);
+    fireEvent(this, 'entities-changed', { entities: entities.concat(this.newRow ? this.newRow(value as string) : { sensor: value as string }) });
   }
 
   private _rowMoved(ev: CustomEvent): void {
     ev.stopPropagation();
     const { oldIndex, newIndex } = ev.detail;
-    const newEntities = this.entities!.concat();
+    const newEntities = (this.entities || []).concat();
     newEntities.splice(newIndex, INDEX_ELEMENT_0, newEntities.splice(oldIndex, INDEX_ELEMENT_1)[0]);
     fireEvent(this, 'entities-changed', { entities: newEntities });
   }
 
   private _removeRow(index: number): void {
-    if (index === INDEX_ELEMENT_0) {
+    if (index < this.fixedRows) {
       return;
     }
-    const newConfigEntities = this.entities!.concat();
+    const newConfigEntities = (this.entities || []).concat();
     newConfigEntities.splice(index, INDEX_ELEMENT_1);
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
@@ -192,7 +145,7 @@ export class CompassCardIndicatorRowEditor extends LitElement {
       subElementConfig: {
         elementConfig: this.entities![index],
         index,
-        type: 'indicator',
+        type: this.type,
       },
     });
   }

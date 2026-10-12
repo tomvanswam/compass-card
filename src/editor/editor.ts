@@ -1,10 +1,10 @@
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
+import { CCIndicatorSensorConfig, CompassCardConfig } from './editorTypes';
+import { COMPASS_LANGUAGES, localize } from '../localize/localize.js';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_UNKNOWN_DIRECTION, NO_ELEMENTS } from '../const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, NO_ELEMENTS, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
-import { CompassCardConfig } from './editorTypes';
-import { localize } from '../localize/localize.js';
 import { setOrDelete } from './editorHelpers';
 
 // eslint-disable-next-line sort-imports
@@ -12,9 +12,8 @@ import './compass-card-compass-editor';
 import './compass-card-dynamic-style-editor';
 import './compass-card-header-editor';
 import './compass-card-indicator-editor';
-import './compass-card-indicator-row-editor';
 import './compass-card-value-editor';
-import './compass-card-value-row-editor';
+import './compass-card-sensor-row-editor';
 
 interface CardHelpers {
   // eslint-disable-next-line no-unused-vars
@@ -92,24 +91,34 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         .config=${this._config.compass}
         @config-changed=${this._handleCompassConfigChanged}
       ></compass-card-compass-editor>
-      <compass-card-indicator-row-editor
+      <compass-card-sensor-row-editor
         .hass=${this.hass}
         .entities=${this._config.indicator_sensors}
-        .language=${this._config.language}
-        .unknownDirection=${this._config.unknown_direction}
         .label=${localize('editor.indicator_sensors')}
+        type="indicator"
+        .fixedRows=${MIN_INDICATOR_ARRAY_SIZE}
+        .maxRows=${MAX_INDICATOR_ARRAY_SIZE}
+        .limitMessage=${localize('editor.indicator_limit', '{max}', String(MAX_INDICATOR_ARRAY_SIZE))}
+        .newRow=${CompassCardEditor._newIndicator}
         @entities-changed=${this._handleIndicatorEntitiesChanged}
-        @language-changed=${this._onLanguageChanged}
-        @unknown-direction-changed=${this._onUnknownDirectionChanged}
         @edit-detail-element=${this._editDetailElement}
-      ></compass-card-indicator-row-editor>
-      <compass-card-value-row-editor
+      >
+        <ha-form
+          .hass=${this.hass}
+          .data=${{ language: this._config.language, unknown_direction: this._config.unknown_direction || DEFAULT_UNKNOWN_DIRECTION }}
+          .schema=${CompassCardEditor._indicatorOptionsSchema()}
+          .computeLabel=${(schema: { name: string }) => localize(`editor.sensor_config.${schema.name}`)}
+          @value-changed=${this._indicatorOptionsChanged}
+        ></ha-form>
+      </compass-card-sensor-row-editor>
+      <compass-card-sensor-row-editor
         .hass=${this.hass}
         .entities=${this._config.value_sensors}
         .label=${localize('editor.value_sensors')}
+        type="value"
         @entities-changed=${this._handleValueEntitiesChanged}
         @edit-detail-element=${this._editDetailElement}
-      ></compass-card-value-row-editor>
+      ></compass-card-sensor-row-editor>
       <ha-form
         .hass=${this.hass}
         .data=${this._computeCardData()}
@@ -218,29 +227,32 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
-  private _onLanguageChanged(ev: CustomEvent): void {
-    ev.stopPropagation();
-    if (!this._config || !this.hass) {
-      return;
-    }
-    const { language } = ev.detail;
-    this._config = {
-      ...this._config,
-      language,
-    };
-    if (!language) delete this._config.language;
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+  // Options shown above the indicator list: abbreviation language and the fallback for an unknown direction
+  private static _indicatorOptionsSchema() {
+    return [
+      { name: 'language', selector: { select: { mode: 'dropdown', options: COMPASS_LANGUAGES.filter((lang) => lang !== '').map((lang) => ({ label: lang, value: lang })) } } },
+      {
+        name: 'unknown_direction',
+        selector: { select: { mode: 'dropdown', options: UNKNOWN_DIRECTION_VALUES.map((value) => ({ label: localize(`editor.sensor_config.unknown_direction_types.${value}`), value })) } },
+      },
+    ];
   }
 
-  private _onUnknownDirectionChanged(ev: CustomEvent): void {
+  private static _newIndicator(sensor: string): CCIndicatorSensorConfig {
+    return { indicator: { image: DEFAULT_ICON_VALUE }, sensor };
+  }
+
+  private _indicatorOptionsChanged(ev: CustomEvent): void {
     ev.stopPropagation();
     if (!this._config || !this.hass) {
       return;
     }
-    const { unknownDirection } = ev.detail;
-    this._config = { ...this._config, unknown_direction: unknownDirection };
+    const { language, unknown_direction: unknownDirection } = ev.detail.value;
+    const newConfig: CompassCardConfig = { ...this._config };
+    setOrDelete(newConfig, 'language', language);
     // The default fallback is left out of the YAML
-    if (!unknownDirection || unknownDirection === DEFAULT_UNKNOWN_DIRECTION) delete this._config.unknown_direction;
+    setOrDelete(newConfig, 'unknown_direction', unknownDirection, DEFAULT_UNKNOWN_DIRECTION);
+    this._config = newConfig;
     fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
   }
 
