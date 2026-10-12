@@ -30,15 +30,14 @@ function fieldSchema(field: StyleField) {
   }
 }
 
-// Visibility switch with the color to its right, like the regular settings; other fields below.
+// Visibility switch with the color to its right, like the regular settings; then the other fields, size and radius on one row.
 // The indicator image uses the same type selection as the indicator settings (imageForm.ts).
 function styleSchema(fields: StyleField[], type: string) {
-  const row = (['show', 'color'] as StyleField[]).filter((field) => fields.includes(field));
-  const rest = fields.filter((field) => !row.includes(field));
-  return [
-    ...(row.length ? [{ column_min_width: '120px', name: '', schema: row.map(fieldSchema), type: 'grid' }] : []),
-    ...rest.flatMap((field): object[] => (field === 'image' ? imageSchema(type) : [fieldSchema(field)])),
-  ];
+  // fields shown side by side: show + color, and size + radius
+  const rows = [['show', 'color'], ['size', 'radius']].map((row) => (row as StyleField[]).filter((field) => fields.includes(field)));
+  const grid = (row: StyleField[]): object[] => (row.length ? [{ column_min_width: '120px', name: '', schema: row.map(fieldSchema), type: 'grid' }] : []);
+  const rest = fields.filter((field) => !rows.flat().includes(field));
+  return [...grid(rows[0]), ...rest.flatMap((field): object[] => (field === 'image' ? imageSchema(type) : [fieldSchema(field)])), ...grid(rows[1])];
 }
 
 // What a band (or the unknown style) inherits for options it does not set itself
