@@ -113,11 +113,7 @@
       "remove_band": "Band verwijderen",
       "unknown": "Stijl bij onbekende waarde",
       "color": "Kleur",
-      "show": "Zichtbaarheid",
-      "visibility": {
-        "show": "Tonen",
-        "hide": "Verbergen"
-      },
+      "show": "Tonen",
       "image": "Afbeelding (wijzernaam, mdi:-icoon of URL)",
       "background_image": "URL achtergrondafbeelding",
       "opacity": "Doorzichtigheid",

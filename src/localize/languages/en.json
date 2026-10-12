@@ -113,11 +113,7 @@
       "remove_band": "Remove band",
       "unknown": "Style when the value is unknown",
       "color": "Color",
-      "show": "Visibility",
-      "visibility": {
-        "show": "Show",
-        "hide": "Hide"
-      },
+      "show": "Show",
       "image": "Image (indicator name, mdi: icon or URL)",
       "background_image": "Background image URL",
       "opacity": "Opacity",

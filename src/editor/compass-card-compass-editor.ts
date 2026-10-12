@@ -46,28 +46,26 @@ export class CompassCardCompassEditor extends LitElement {
     `;
     }
 
-    // One block per compass item: the show toggle, and only while the item is shown its settings and dynamic style
+    // One block per compass item: its settings and its dynamic style (always visible: bands can show a hidden item)
     private _renderPart(part: CompassPart, label: string, fields: StyleField[]): TemplateResult {
-        const shown = this._isShown(part);
         return html`
       <ha-expansion-panel outlined .header=${localize(label)}>
         <div class="content">
           <ha-form
             .hass=${this.hass}
             .data=${this._computePartData(part)}
-            .schema=${CompassCardCompassEditor._computePartSchema(part, shown)}
+            .schema=${CompassCardCompassEditor._computePartSchema(part)}
             .computeLabel=${CompassCardCompassEditor._computeLabel}
             @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
           ></ha-form>
-          ${shown
-            ? html`<compass-card-dynamic-style-editor
-                .hass=${this.hass}
-                .config=${this.config?.[part]?.dynamic_style}
-                .fields=${fields}
-                .label=${localize('editor.dynamic_style.title')}
-                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-              ></compass-card-dynamic-style-editor>`
-            : ''}
+          <compass-card-dynamic-style-editor
+            .hass=${this.hass}
+            .config=${this.config?.[part]?.dynamic_style}
+            .fields=${fields}
+            .baseShow=${this._isShown(part)}
+            .label=${localize('editor.dynamic_style.title')}
+            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+          ></compass-card-dynamic-style-editor>
         </div>
       </ha-expansion-panel>
     `;
@@ -85,11 +83,8 @@ export class CompassCardCompassEditor extends LitElement {
         ];
     }
 
-    private static _computePartSchema(part: CompassPart, shown: boolean) {
+    private static _computePartSchema(part: CompassPart) {
         const showField = { name: 'show', selector: { boolean: {} } };
-        if (!shown) {
-            return [showField];
-        }
         const colorField = { name: 'color', selector: { text: {} } };
         if (part === 'circle') {
             return [
@@ -174,7 +169,7 @@ export class CompassCardCompassEditor extends LitElement {
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
-    // Values equal to the card defaults are left out of the YAML; hidden settings keep their values
+    // Values equal to the card defaults are left out of the YAML
     private _partChanged(part: CompassPart, ev: CustomEvent): void {
         ev.stopPropagation();
         const data = ev.detail.value;

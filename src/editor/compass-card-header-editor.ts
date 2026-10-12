@@ -34,12 +34,14 @@ export class CompassCardHeaderEditor extends LitElement {
               <compass-card-dynamic-style-editor
                 .hass=${this.hass}
                 .config=${this.config?.title?.dynamic_style}
+                .baseShow=${this.config?.title?.show ?? headerTitleShowDefault(this.config?.title?.value)}
                 .label=${localize('editor.header_title_conf')}
                 @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged('title', ev)}
               ></compass-card-dynamic-style-editor>
               <compass-card-dynamic-style-editor
                 .hass=${this.hass}
                 .config=${this.config?.icon?.dynamic_style}
+                .baseShow=${this.config?.icon?.show ?? headerIconShowDefault(this.config?.icon?.value, this.config?.title?.value)}
                 .label=${localize('editor.header_icon_conf')}
                 @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged('icon', ev)}
               ></compass-card-dynamic-style-editor>

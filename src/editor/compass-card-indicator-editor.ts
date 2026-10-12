@@ -121,6 +121,7 @@ export class CompassCardIndicatorEditor extends LitElement {
                 <compass-card-dynamic-style-editor
                   .hass=${this.hass}
                   .config=${this.config?.[part]?.dynamic_style}
+                  .baseShow=${this._baseShow(part)}
                   .fields=${fields}
                   .label=${localize(`editor.dynamic_style.parts.${part}`)}
                   @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
@@ -177,6 +178,14 @@ export class CompassCardIndicatorEditor extends LitElement {
     setOrDelete(newConfig, 'tap_action', actionFromData(data.tap_action, this.config.tap_action));
 
     fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  // Effective visibility of a part without dynamic style, as in getIndicatorSensor() in objectHelpers.ts
+  private _baseShow(part: (typeof INDICATOR_STYLE_PARTS)[number]['part']): boolean {
+    if (part === 'state_abbreviation') {
+      return this.config?.state_abbreviation?.show ?? abbreviationShowDefault(this.index);
+    }
+    return this.config?.[part]?.show ?? CONFIG_DEFAULTS.indicator_sensor[part].show;
   }
 
   private _dynamicStyleChanged(part: (typeof INDICATOR_STYLE_PARTS)[number]['part'], ev: CustomEvent): void {
