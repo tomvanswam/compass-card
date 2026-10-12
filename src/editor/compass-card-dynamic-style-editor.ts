@@ -187,7 +187,8 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   }
 
   private _update(changes: Partial<CCDynamicStyleConfig>): void {
-    const next: CCDynamicStyleConfig = { bands: [], sensor: '', ...this.config, ...changes };
+    const next: CCDynamicStyleConfig = { bands: [], ...this.config, ...changes };
+    if (!next.sensor) delete next.sensor;
     if (!next.attribute) delete next.attribute;
     if (!next.unknown) delete next.unknown;
     const isEmpty = !next.sensor && !next.attribute && !next.bands.length && !next.unknown;
@@ -199,7 +200,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     const { sensor, attribute } = ev.detail.value;
     // an attribute of the previous entity makes no sense for a new one
     const keepAttribute = sensor === this.config?.sensor;
-    this._update({ attribute: keepAttribute ? attribute : undefined, sensor: sensor || '' });
+    this._update({ attribute: keepAttribute ? attribute : undefined, sensor: sensor || undefined });
   }
 
   private _bandChanged(index: number, ev: CustomEvent): void {

@@ -62,7 +62,8 @@ export type CCStyleBandConfig = Infer<typeof CCStyleBandConfigStruct>;
 export const CCDynamicStyleConfigStruct = object({
   attribute: optional(string()),
   bands: array(CCStyleBandConfigStruct),
-  sensor: string(),
+  // optional: without it the style follows its sensor or the card's main sensor (see getSensorAttrib)
+  sensor: optional(string()),
   unknown: optional(CCStyleConfigStruct),
 });
 export type CCDynamicStyleConfig = Infer<typeof CCDynamicStyleConfigStruct>;
