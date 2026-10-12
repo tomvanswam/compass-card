@@ -3,7 +3,7 @@
 import { abbreviationShowDefault, CONFIG_DEFAULTS } from '../defaults';
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { customElement, property, state } from 'lit/decorators.js';
-import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
+import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { html, LitElement, TemplateResult } from 'lit';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
@@ -60,8 +60,7 @@ export class CompassCardIndicatorEditor extends LitElement {
           .schema=${[
             { name: 'sensor', selector: { entity: {} } },
             { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
-            { name: 'units', selector: { text: {} } },
-            { name: 'decimals', selector: { number: { min: 0, max: 10, mode: 'box' } } },
+            unitsDecimalsRow(),
           ]}
           .computeLabel=${CompassCardIndicatorEditor._computeLabel}
           @value-changed=${this._generalChanged}

@@ -1,7 +1,7 @@
 
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { customElement, property } from 'lit/decorators.js';
-import { detailEditorStyles, setOrDelete, showColorRow, updateObject } from './editorHelpers';
+import { detailEditorStyles, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { html, LitElement, TemplateResult } from 'lit';
 import { CCValueSensorConfig } from './editorTypes';
@@ -46,8 +46,7 @@ export class CompassCardValueEditor extends LitElement {
           .schema=${[
             { name: 'sensor', selector: { entity: {} } },
             { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
-            { name: 'units', selector: { text: {} } },
-            { name: 'decimals', selector: { number: { max: 10, min: 0, mode: 'box' } } },
+            unitsDecimalsRow(),
           ]}
           .computeLabel=${CompassCardValueEditor._computeLabel}
           @value-changed=${this._generalChanged}

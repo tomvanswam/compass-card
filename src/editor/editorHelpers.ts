@@ -32,6 +32,19 @@ export function withoutEmpty<T extends object>(value: T | undefined): T | undefi
   return value && Object.keys(value).length > NO_ELEMENTS ? value : undefined;
 }
 
+// Units and decimals of a sensor side by side on one row
+export function unitsDecimalsRow() {
+  return {
+    column_min_width: '120px',
+    name: '',
+    schema: [
+      { name: 'units', selector: { text: {} } },
+      { name: 'decimals', selector: { number: { max: 10, min: 0, mode: 'box' } } },
+    ],
+    type: 'grid',
+  };
+}
+
 // Show switch with the color field to its right on one row; the minimum column width keeps them side by side
 export function showColorRow() {
   return {
