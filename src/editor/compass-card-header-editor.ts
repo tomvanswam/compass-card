@@ -1,8 +1,8 @@
-import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { editorStyles, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { headerIconShowDefault, headerTitleShowDefault } from '../defaults';
-import { setOrDelete, showColorRow, updateObject } from './editorHelpers';
+import { html, LitElement, TemplateResult } from 'lit';
 import { CCHeaderConfig } from './editorTypes';
 import { localize } from '../localize/localize';
 
@@ -73,17 +73,5 @@ export class CompassCardHeaderEditor extends LitElement {
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
-    static get styles(): CSSResult {
-        return css`
-      ha-form {
-        width: 100%;
-      }
-      .content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--ha-space-2, 8px);
-        padding: 8px 0;
-      }
-    `;
-    }
+    static styles = editorStyles;
 }

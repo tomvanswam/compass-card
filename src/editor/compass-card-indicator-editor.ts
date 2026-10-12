@@ -2,11 +2,11 @@
 
 import { abbreviationShowDefault, CONFIG_DEFAULTS } from '../defaults';
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
-import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { html, LitElement, TemplateResult } from 'lit';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
-import { opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { CCIndicatorSensorConfig } from './editorTypes';
 import { INDEX_ELEMENT_0 } from '../const';
 import { localize } from '../localize/localize';
@@ -207,30 +207,5 @@ export class CompassCardIndicatorEditor extends LitElement {
     fireEvent(this, 'go-back');
   }
 
-  static get styles(): CSSResult {
-    return css`
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .back-title {
-        display: flex;
-        align-items: center;
-        font-size: 18px;
-      }
-      /* general settings, one block per part and the tap action, spaced like the main editor groups */
-      .groups {
-        display: flex;
-        flex-direction: column;
-        gap: var(--ha-space-2, 8px);
-      }
-      .content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--ha-space-2, 8px);
-        padding: 8px 0;
-      }
-    `;
-  }
+  static styles = detailEditorStyles;
 }

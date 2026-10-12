@@ -1,9 +1,9 @@
 
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
-import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { detailEditorStyles, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
-import { setOrDelete, showColorRow, updateObject } from './editorHelpers';
+import { html, LitElement, TemplateResult } from 'lit';
 import { CCValueSensorConfig } from './editorTypes';
 import { CONFIG_DEFAULTS } from '../defaults';
 import { localize } from '../localize/localize';
@@ -143,30 +143,5 @@ export class CompassCardValueEditor extends LitElement {
     fireEvent(this, 'go-back');
   }
 
-  static get styles(): CSSResult {
-    return css`
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .back-title {
-        display: flex;
-        align-items: center;
-        font-size: 18px;
-      }
-      /* general settings, one block per part and the tap action, spaced like the main editor groups */
-      .groups {
-        display: flex;
-        flex-direction: column;
-        gap: var(--ha-space-2, 8px);
-      }
-      .content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--ha-space-2, 8px);
-        padding: 8px 0;
-      }
-    `;
-  }
+  static styles = detailEditorStyles;
 }

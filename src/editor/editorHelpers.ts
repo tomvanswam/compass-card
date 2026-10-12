@@ -1,3 +1,4 @@
+import { css } from 'lit';
 import { NO_ELEMENTS } from '../const';
 
 // Values the editor treats as "not set": cleared ha-form fields come back as undefined or ''
@@ -60,3 +61,42 @@ export function opacityFromPercent(percent: number | undefined, previous?: numbe
   if (previous !== undefined && opacityToPercent(previous) === percent) return previous;
   return Math.round(percent) / PERCENT;
 }
+
+// Styles shared by the editor components
+// Vertical stack inside a block, spaced like the main editor groups
+export const contentStyles = css`
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ha-space-2, 8px);
+    padding: 8px 0;
+  }
+`;
+
+export const editorStyles = css`
+  ${contentStyles}
+  ha-form {
+    width: 100%;
+  }
+`;
+
+// Detail editors (indicator, value): title row with back button, then the groups
+export const detailEditorStyles = css`
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .back-title {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+  }
+  /* general settings, one block per part and the tap action, spaced like the main editor groups */
+  .groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ha-space-2, 8px);
+  }
+  ${contentStyles}
+`;

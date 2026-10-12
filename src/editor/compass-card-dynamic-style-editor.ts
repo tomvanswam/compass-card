@@ -1,11 +1,11 @@
 import { CCDynamicStyleConfig, CCStyleBandConfig } from './editorTypes';
+import { contentStyles, opacityFromPercent, opacitySelector, opacityToPercent, updateObject } from './editorHelpers';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_1, OPACITY_VISIBLE } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
 import { mdiClose, mdiPlus } from '@mdi/js';
-import { opacityFromPercent, opacitySelector, opacityToPercent, updateObject } from './editorHelpers';
 import { localize } from '../localize/localize';
 
 // Style options a band (or the unknown style) can set; each element only offers the ones the card uses for it
@@ -235,12 +235,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   }
 
   static styles = css`
-    .content {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 8px 0;
-    }
+    ${contentStyles}
     .title {
       font-weight: 500;
       margin-top: 8px;

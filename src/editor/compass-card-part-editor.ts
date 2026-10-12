@@ -1,8 +1,9 @@
-import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, OPACITY_VISIBLE } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { html, LitElement, TemplateResult } from 'lit';
 import { CCDynamicStyleConfig } from './editorTypes';
+import { editorStyles } from './editorHelpers';
 import { localize } from '../localize/localize';
 import { StyleField } from './compass-card-dynamic-style-editor';
 
@@ -61,15 +62,5 @@ export class CompassCardPartEditor extends LitElement {
     fireEvent(this, 'part-changed', { value: ev.detail.value });
   }
 
-  static styles = css`
-    ha-form {
-      width: 100%;
-    }
-    .content {
-      display: flex;
-      flex-direction: column;
-      gap: var(--ha-space-2, 8px);
-      padding: 8px 0;
-    }
-  `;
+  static styles = editorStyles;
 }

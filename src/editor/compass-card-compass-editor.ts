@@ -1,9 +1,9 @@
 import { backgroundOpacityDefault, CONFIG_DEFAULTS } from '../defaults';
-import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DEGREES_MAX, DEGREES_MIN } from '../const';
+import { editorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
-import { opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
+import { html, LitElement, TemplateResult } from 'lit';
 import { CCCompassConfig } from './editorTypes';
 import { localize } from '../localize/localize';
 import { StyleField } from './compass-card-dynamic-style-editor';
@@ -199,17 +199,5 @@ export class CompassCardCompassEditor extends LitElement {
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
-    static get styles(): CSSResult {
-        return css`
-      ha-form {
-        width: 100%;
-      }
-      .content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--ha-space-2, 8px);
-        padding: 8px 0;
-      }
-    `;
-    }
+    static styles = editorStyles;
 }
