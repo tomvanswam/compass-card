@@ -94,7 +94,8 @@
     "dynamic_style": {
       "title": "Dynamische stijl",
       "sensor": "Entiteit",
-      "sensor_helper": "Leeg laten om de entiteit van de eerste wijzer te gebruiken",
+      "sensor_helper_own": "Laat leeg om de entiteit van deze sensor te gebruiken",
+      "sensor_helper_shared": "Laat leeg om de eerste value-sensor te gebruiken, of de eerste wijzer als er geen value-sensors zijn",
       "attribute": "Attribuut",
       "bands": "Banden (gelden vanaf de waarde)",
       "from_value": "Vanaf waarde",

@@ -97,6 +97,8 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   // Image type picked per style ('unknown' or the band index) while its icon/URL is still empty
   @state() private _imageTypes: Record<string, string> = {};
   @property() public label?: string;
+  // Helper under the entity field: which entity is used when it is left empty
+  @property() public sensorHelper = '';
 
   protected render(): TemplateResult {
     if (!this.hass) {
@@ -116,7 +118,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
               { name: 'attribute', selector: { attribute: { entity_id: this.config?.sensor } } },
             ]}
             .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
-            .computeHelper=${CompassCardDynamicStyleEditor._computeHelper}
+            .computeHelper=${(schema: { name: string }) => (schema.name === 'sensor' ? this.sensorHelper : '')}
             @value-changed=${this._sourceChanged}
           ></ha-form>
           <div class="title">${localize('editor.dynamic_style.unknown')}</div>
@@ -154,11 +156,6 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static _computeLabel(schema: any): string {
     return localize(`editor.dynamic_style.${schema.name}`) || localize(`editor.sensor_config.${schema.name}`) || schema.name;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeHelper(schema: any): string {
-    return schema.name === 'sensor' ? localize('editor.dynamic_style.sensor_helper') : '';
   }
 
   private _type(key: string, style: StyleConfig | undefined, inherited: Inherited): string {

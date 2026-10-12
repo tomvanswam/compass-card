@@ -92,6 +92,7 @@ export class CompassCardIndicatorEditor extends LitElement {
         .baseShow=${this._baseShow(part)}
         .baseOpacity=${this.config?.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity}
         .baseImage=${this.config?.indicator?.image || CONFIG_DEFAULTS.indicator_sensor.indicator.image}
+        .ownSensor=${true}
         @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
         @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>

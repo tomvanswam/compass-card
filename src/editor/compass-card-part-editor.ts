@@ -34,6 +34,8 @@ export class CompassCardPartEditor extends LitElement {
   @property({ attribute: false }) public baseShow = true;
   @property({ attribute: false }) public baseOpacity = OPACITY_VISIBLE;
   @property({ attribute: false }) public baseImage = DEFAULT_ICON_VALUE;
+  // True for parts of an indicator or value sensor: their dynamic style falls back to that sensor
+  @property({ attribute: false }) public ownSensor = false;
 
   protected render(): TemplateResult {
     if (!this.hass) {
@@ -50,6 +52,7 @@ export class CompassCardPartEditor extends LitElement {
             .baseShow=${this.baseShow}
             .baseOpacity=${this.baseOpacity}
             .baseImage=${this.baseImage}
+            .sensorHelper=${localize(this.ownSensor ? 'editor.dynamic_style.sensor_helper_own' : 'editor.dynamic_style.sensor_helper_shared')}
             .label=${localize('editor.dynamic_style.title')}
           ></compass-card-dynamic-style-editor>
         </div>

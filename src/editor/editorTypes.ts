@@ -109,6 +109,8 @@ export const CCEntityConfigStruct = object({
   units: optional(string()),
 });
 
+export type CCEntityConfig = Infer<typeof CCEntityConfigStruct>;
+
 export const CCSensorConfigStruct = assign(
   CCEntityConfigStruct,
   object({

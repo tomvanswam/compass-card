@@ -94,7 +94,8 @@
     "dynamic_style": {
       "title": "",
       "sensor": "",
-      "sensor_helper": "",
+      "sensor_helper_own": "",
+      "sensor_helper_shared": "",
       "attribute": "",
       "bands": "",
       "from_value": "",

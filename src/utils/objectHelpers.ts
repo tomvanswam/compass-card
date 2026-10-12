@@ -1,7 +1,7 @@
 import { abbreviationShowDefault, backgroundOpacityDefault, CONFIG_DEFAULTS, headerIconShowDefault, headerTitleShowDefault } from '../defaults.js';
 import { ARROW_ART, DEFAULT_DECIMALS, DEFAULT_INDICATOR_RADIUS, DEFAULT_START_SIZE, HALF, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_VISIBLE } from '../const.js';
 import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
-import { CCDynamicStyleConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
+import { CCDynamicStyleConfig, CCEntityConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
 export function getBoolean(value: boolean | number | string | undefined, defValue: boolean): boolean {
@@ -11,7 +11,11 @@ export function getBoolean(value: boolean | number | string | undefined, defValu
   return Boolean(value).valueOf();
 }
 
-function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConfig | undefined, entities: HassEntities): CCSensorAttrib {
+/**
+ * Source of a dynamic style's value: 1. its own configured entity, 2. ownSensor (the indicator or value sensor the style
+ * belongs to), otherwise 3. the first value sensor and 4. the first indicator sensor (header and compass styles).
+ */
+function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConfig | undefined, entities: HassEntities, ownSensor?: CCEntityConfig): CCSensorAttrib {
   const sa: CCSensorAttrib = {
     attribute: config.indicator_sensors[0]?.attribute || '',
     decimals: config.indicator_sensors[0]?.decimals || DEFAULT_DECIMALS,
@@ -26,6 +30,14 @@ function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConf
     sa.entity = entities[config.value_sensors[0].sensor];
     sa.sensor = config.value_sensors[0].sensor;
     sa.units = config.value_sensors[0].units || entities[config.value_sensors[0].sensor].attributes.unit_of_measurement || '';
+  }
+
+  if (ownSensor?.sensor) {
+    sa.attribute = ownSensor.attribute || '';
+    sa.decimals = ownSensor.decimals || DEFAULT_DECIMALS;
+    sa.entity = entities[ownSensor.sensor];
+    sa.sensor = ownSensor.sensor;
+    sa.units = ownSensor.units || entities[ownSensor.sensor]?.attributes?.unit_of_measurement || '';
   }
 
   if (dynStyle && dynStyle.sensor) {
@@ -89,9 +101,10 @@ function getDynamicStyle(
   startImage: string = '',
   startSize: number = DEFAULT_START_SIZE,
   startRadius: number = DEFAULT_INDICATOR_RADIUS,
-  startOpacity: number = OPACITY_VISIBLE
+  startOpacity: number = OPACITY_VISIBLE,
+  ownSensor?: CCEntityConfig
 ): CCDynamicStyle {
-  const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities);
+  const sensorAttributes = getSensorAttrib(config, dynamicStyle, entities, ownSensor);
   const sens = dynamicStyle?.sensor || sensorAttributes.sensor;
   const attrib = dynamicStyle?.attribute || sensorAttributes.attribute;
   const { units } = sensorAttributes;
@@ -225,7 +238,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     entity: entities[sens],
     indicator: {
       color: indColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow, '', indIconImage, size, radius, opacity),
+      dynamic_style: getDynamicStyle(indicatorSensor.indicator?.dynamic_style, config, entities, indColor, indShow, '', indIconImage, size, radius, opacity, indicatorSensor),
       image: indIconImage,
       opacity: opacity,
       radius: radius,
@@ -237,17 +250,17 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
     sensor: attrib === '' ? sens : `${sens}.${attrib}`,
     state_abbreviation: {
       color: abbrColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow, '', indIconImage, size, radius, opacity),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_abbreviation?.dynamic_style, config, entities, abbrColor, abbrShow, '', indIconImage, size, radius, opacity, indicatorSensor),
       show: abbrShow,
     },
     state_units: {
       color: unitsColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow, '', indIconImage, size, radius, opacity),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow, '', indIconImage, size, radius, opacity, indicatorSensor),
       show: unitsShow,
     },
     state_value: {
       color: valueColor,
-      dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, '', indIconImage, size, radius, opacity),
+      dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, '', indIconImage, size, radius, opacity, indicatorSensor),
       show: valueShow,
     },
     units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
@@ -279,12 +292,12 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
     sensor: attrib === '' ? sens : `${sens}.${attrib}`,
     state_units: {
       color: unitsColor,
-      dynamic_style: getDynamicStyle(valueSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow),
+      dynamic_style: getDynamicStyle(valueSensor.state_units?.dynamic_style, config, entities, unitsColor, unitsShow, undefined, undefined, undefined, undefined, undefined, valueSensor),
       show: unitsShow,
     },
     state_value: {
       color: valueColor,
-      dynamic_style: getDynamicStyle(valueSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow),
+      dynamic_style: getDynamicStyle(valueSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, undefined, undefined, undefined, undefined, undefined, valueSensor),
       show: valueShow,
     },
     units: attrib !== '' ? valueSensor.units || '' : valueSensor.units || entities[sens].attributes?.unit_of_measurement || '',

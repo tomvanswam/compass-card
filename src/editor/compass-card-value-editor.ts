@@ -76,6 +76,7 @@ export class CompassCardValueEditor extends LitElement {
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
         .baseShow=${this._baseShow(part)}
+        .ownSensor=${true}
         @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
         @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>

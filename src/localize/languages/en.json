@@ -94,7 +94,8 @@
     "dynamic_style": {
       "title": "Dynamic style",
       "sensor": "Entity",
-      "sensor_helper": "Leave empty to use the entity of the first indicator",
+      "sensor_helper_own": "Leave empty to use this sensor's entity",
+      "sensor_helper_shared": "Leave empty to use the first value sensor, or the first indicator when there are no value sensors",
       "attribute": "Attribute",
       "bands": "Bands (applied from the value up)",
       "from_value": "From value",
