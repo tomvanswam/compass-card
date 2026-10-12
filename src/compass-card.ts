@@ -248,7 +248,7 @@ export class CompassCard extends LitElement {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         const action = this.getSensorAction('indicator_sensors', sensorIndex);
         divs.push(
-          html`<div class="sensor-${index} indicator-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicator.sensor)}>
+          html`<div class="sensor-${index} indicator-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicator.entity?.entity_id)}>
             ${this.getVisibility(indicator.state_abbreviation) ? this.getIndicatorAbbreviation(indicator) : ''}
             ${this.getVisibility(indicator.state_value) ? this.getIndicatorValue(indicator) : ''}
             ${this.getVisibility(indicator.state_units) ? this.getIndicatorUnits(indicator) : ''}
@@ -294,7 +294,7 @@ export class CompassCard extends LitElement {
       if (this.getVisibility(value.state_value)) {
         const action = this.getSensorAction('value_sensors', sensorIndex);
         divs.push(
-          html`<div class="sensor-${index} value-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, value.sensor)}>
+          html`<div class="sensor-${index} value-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, value.entity?.entity_id)}>
             <span class="value" style="--compass-card-value-value-color: ${this.getColor(value.state_value)};"
               >${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span
             >
@@ -492,7 +492,7 @@ export class CompassCard extends LitElement {
 
     // set per-indicator color via CSS variable so presentational attributes move to CSS
     return svg`
-      <g class="indicator-${index} ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicatorSensor.sensor)} transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
+      <g class="indicator-${index} ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicatorSensor.entity?.entity_id)} transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
         ${indicatorPath}
       </g>
     `;
@@ -763,7 +763,8 @@ export class CompassCard extends LitElement {
     return configured[renderedIndex]?.tap_action;
   }
 
-  private handleSensorClick(e: Event, action: ActionConfig | undefined, entity: string) {
+  // entity is the sensor's own entity id (its `sensor` field includes the attribute, which is no entity), the more-info default
+  private handleSensorClick(e: Event, action: ActionConfig | undefined, entity: string | undefined) {
     if (!action) return;
     e.stopPropagation();
     handleClick(this, this._config, action, entity);

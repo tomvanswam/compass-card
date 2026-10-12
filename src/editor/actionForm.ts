@@ -35,13 +35,14 @@ function actionOptions(current: string | undefined) {
   return actions.map((action) => ({ label: localize(`editor.tap_action.actions.${action}`) || action, value: action }));
 }
 
-export function actionSchema(data: FormData) {
+// entityHelper: helper text under the entity field telling which entity is used when it is left empty
+export function actionSchema(data: FormData, entityHelper?: string) {
   const action = data.action as string | undefined;
   const fields: FormData[] = [{ name: 'action', selector: { select: { mode: 'dropdown', options: actionOptions(action) } } }];
   switch (action) {
     case 'more-info':
     case 'toggle':
-      fields.push({ name: 'entity', selector: { entity: {} } });
+      fields.push({ helper: entityHelper, name: 'entity', selector: { entity: {} } });
       break;
     case 'navigate':
       fields.push({ name: 'navigation_path', selector: { navigation: {} } }, { name: 'new_tab', selector: { boolean: {} } }, { name: 'navigation_replace', selector: { boolean: {} } });
@@ -105,4 +106,9 @@ export function actionFromData(data: FormData | undefined, previous: ActionConfi
     setOrDelete(result, 'confirmation', data.action === 'none' ? undefined : data.confirmation, false as never);
   }
   return result;
+}
+
+// Use as ha-form computeHelper for forms containing the tap action
+export function actionHelper(schema: { helper?: string }): string {
+  return schema.helper || '';
 }

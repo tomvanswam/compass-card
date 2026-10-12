@@ -1,5 +1,5 @@
 
-import { actionData, actionFromData, actionSchema } from './actionForm';
+import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
@@ -56,8 +56,9 @@ export class CompassCardValueEditor extends LitElement {
         <ha-form
           .hass=${this.hass}
           .data=${{ tap_action: tapAction }}
-          .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction), title: localize('editor.tap_action.title'), type: 'expandable' }]}
+          .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction, localize('editor.tap_action.entity_helper_sensor')), title: localize('editor.tap_action.title'), type: 'expandable' }]}
           .computeLabel=${CompassCardValueEditor._computeLabel}
+          .computeHelper=${actionHelper}
           @value-changed=${this._tapActionChanged}
         ></ha-form>
       </div>

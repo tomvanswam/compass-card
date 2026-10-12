@@ -1,4 +1,4 @@
-import { actionData, actionFromData, actionSchema } from './actionForm';
+import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_UNKNOWN_DIRECTION, NO_ELEMENTS } from '../const';
@@ -115,6 +115,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         .data=${this._computeCardData()}
         .schema=${this._computeCardSchema()}
         .computeLabel=${CompassCardEditor._computeCardLabel}
+        .computeHelper=${actionHelper}
         @value-changed=${this._handleCardConfigChanged}
       ></ha-form>
     `;
@@ -135,7 +136,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       {
         name: 'card_conf',
         schema: [
-          { name: 'tap_action', schema: actionSchema(actionData(this._config?.tap_action)), title: localize('editor.tap_action.title'), type: 'expandable' },
+          { name: 'tap_action', schema: actionSchema(actionData(this._config?.tap_action), localize('editor.tap_action.entity_helper_card')), title: localize('editor.tap_action.title'), type: 'expandable' },
           { name: 'debug', selector: { boolean: {} } },
         ],
         title: localize('editor.card_conf'),

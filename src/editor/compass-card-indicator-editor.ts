@@ -1,7 +1,7 @@
 /* eslint-disable sort-keys */
 
 import { abbreviationShowDefault, CONFIG_DEFAULTS } from '../defaults';
-import { actionData, actionFromData, actionSchema } from './actionForm';
+import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, ICON_VALUES, INDEX_ELEMENT_0 } from '../const';
@@ -78,8 +78,9 @@ export class CompassCardIndicatorEditor extends LitElement {
         <ha-form
           .hass=${this.hass}
           .data=${{ tap_action: tapAction }}
-          .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction), title: localize('editor.tap_action.title'), type: 'expandable' }]}
+          .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction, localize('editor.tap_action.entity_helper_sensor')), title: localize('editor.tap_action.title'), type: 'expandable' }]}
           .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+          .computeHelper=${actionHelper}
           @value-changed=${this._tapActionChanged}
         ></ha-form>
       </div>

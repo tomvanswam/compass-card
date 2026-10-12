@@ -83,14 +83,16 @@
         "assist": "Assist",
         "none": "Niets",
         "call-service": "Service aanroepen (verouderd)"
-      }
+      },
+      "entity_helper_sensor": "Laat leeg om de entiteit van de sensor te gebruiken",
+      "entity_helper_card": "Laat leeg om de entiteit van de eerste wijzer te gebruiken"
     },
     "indicator_limit": "Maximum van {max} wijzers bereikt",
     "compass_scale_conf": "Schaal (0 = automatisch)",
     "compass_circle_conf": "Cirkel",
     "compass_ticks_conf": "Streepjes",
     "dynamic_style": {
-      "title": "Dynamische stijlen",
+      "title": "Dynamische stijl",
       "sensor": "Entiteit",
       "sensor_helper": "Leeg laten om de entiteit van de eerste wijzer te gebruiken",
       "attribute": "Attribuut",

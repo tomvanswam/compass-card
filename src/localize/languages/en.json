@@ -83,14 +83,16 @@
         "assist": "Assist",
         "none": "Nothing",
         "call-service": "Call service (legacy)"
-      }
+      },
+      "entity_helper_sensor": "Leave empty to use the sensor's entity",
+      "entity_helper_card": "Leave empty to use the first indicator's entity"
     },
     "indicator_limit": "Maximum of {max} indicators reached",
     "compass_scale_conf": "Scale (0 = automatic)",
     "compass_circle_conf": "Circle",
     "compass_ticks_conf": "Ticks",
     "dynamic_style": {
-      "title": "Dynamic styles",
+      "title": "Dynamic style",
       "sensor": "Entity",
       "sensor_helper": "Leave empty to use the entity of the first indicator",
       "attribute": "Attribute",

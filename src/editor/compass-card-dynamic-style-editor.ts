@@ -59,8 +59,8 @@ declare global {
 }
 
 /**
- * Edits a dynamic_style object: the entity (and attribute) whose value selects the style, the bands
- * (from_value plus style options; the card sorts them by from_value) and the style for an unknown value.
+ * Edits a dynamic_style object: the entity (and attribute) whose value selects the style, the style for an
+ * unknown value and the bands (from_value plus style options; the card sorts them by from_value).
  * Fires 'dynamic-style-changed' with the new dynamic_style, or undefined when nothing is configured.
  */
 @customElement('compass-card-dynamic-style-editor')
@@ -94,6 +94,14 @@ export class CompassCardDynamicStyleEditor extends LitElement {
             .computeHelper=${CompassCardDynamicStyleEditor._computeHelper}
             @value-changed=${this._sourceChanged}
           ></ha-form>
+          <div class="title">${localize('editor.dynamic_style.unknown')}</div>
+          <ha-form
+            .hass=${this.hass}
+            .data=${toFormStyle(this.config?.unknown, this.baseShow)}
+            .schema=${schema}
+            .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
+            @value-changed=${this._unknownChanged}
+          ></ha-form>
           <div class="title">${localize('editor.dynamic_style.bands')}</div>
           ${bands.map(
             (band, index) => html`
@@ -113,14 +121,6 @@ export class CompassCardDynamicStyleEditor extends LitElement {
             <ha-svg-icon slot="start" .path=${mdiPlus}></ha-svg-icon>
             ${localize('editor.dynamic_style.add_band')}
           </ha-button>
-          <div class="title">${localize('editor.dynamic_style.unknown')}</div>
-          <ha-form
-            .hass=${this.hass}
-            .data=${toFormStyle(this.config?.unknown, this.baseShow)}
-            .schema=${schema}
-            .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
-            @value-changed=${this._unknownChanged}
-          ></ha-form>
         </div>
       </ha-expansion-panel>
     `;
