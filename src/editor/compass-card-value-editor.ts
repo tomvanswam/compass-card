@@ -68,25 +68,18 @@ export class CompassCardValueEditor extends LitElement {
   // One block per part: show and color on one row and its dynamic style
   private _renderPart(part: ValuePart, fields: StyleField[]): TemplateResult {
     return html`
-      <ha-expansion-panel outlined .header=${localize(`editor.dynamic_style.parts.${part}`)}>
-        <div class="content">
-          <ha-form
-            .hass=${this.hass}
-            .data=${{ color: this.config?.[part]?.color || '', show: this._baseShow(part) }}
-            .schema=${[showColorRow()]}
-            .computeLabel=${CompassCardValueEditor._computeLabel}
-            @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-          ></ha-form>
-          <compass-card-dynamic-style-editor
-            .hass=${this.hass}
-            .config=${this.config?.[part]?.dynamic_style}
-            .baseShow=${this._baseShow(part)}
-            .fields=${fields}
-            .label=${localize('editor.dynamic_style.title')}
-            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-          ></compass-card-dynamic-style-editor>
-        </div>
-      </ha-expansion-panel>
+      <compass-card-part-editor
+        .hass=${this.hass}
+        .label=${localize(`editor.dynamic_style.parts.${part}`)}
+        .data=${{ color: this.config?.[part]?.color || '', show: this._baseShow(part) }}
+        .schema=${[showColorRow()]}
+        .computeLabel=${CompassCardValueEditor._computeLabel}
+        .dynamicStyle=${this.config?.[part]?.dynamic_style}
+        .fields=${fields}
+        .baseShow=${this._baseShow(part)}
+        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+      ></compass-card-part-editor>
     `;
   }
 

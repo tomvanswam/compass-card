@@ -12,6 +12,7 @@ import './compass-card-compass-editor';
 import './compass-card-dynamic-style-editor';
 import './compass-card-header-editor';
 import './compass-card-indicator-editor';
+import './compass-card-part-editor';
 import './compass-card-value-editor';
 import './compass-card-sensor-row-editor';
 

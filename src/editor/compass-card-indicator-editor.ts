@@ -82,27 +82,20 @@ export class CompassCardIndicatorEditor extends LitElement {
   // One block per part: show and color on one row (plus the indicator's own options) and its dynamic style
   private _renderPart(part: IndicatorPart, fields: StyleField[]): TemplateResult {
     return html`
-      <ha-expansion-panel outlined .header=${localize(`editor.dynamic_style.parts.${part}`)}>
-        <div class="content">
-          <ha-form
-            .hass=${this.hass}
-            .data=${this._computePartData(part)}
-            .schema=${this._computePartSchema(part)}
-            .computeLabel=${CompassCardIndicatorEditor._computeLabel}
-            @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-          ></ha-form>
-          <compass-card-dynamic-style-editor
-            .hass=${this.hass}
-            .config=${this.config?.[part]?.dynamic_style}
-            .baseShow=${this._baseShow(part)}
-            .baseOpacity=${this.config?.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity}
-            .baseImage=${this.config?.indicator?.image || CONFIG_DEFAULTS.indicator_sensor.indicator.image}
-            .fields=${fields}
-            .label=${localize('editor.dynamic_style.title')}
-            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-          ></compass-card-dynamic-style-editor>
-        </div>
-      </ha-expansion-panel>
+      <compass-card-part-editor
+        .hass=${this.hass}
+        .label=${localize(`editor.dynamic_style.parts.${part}`)}
+        .data=${this._computePartData(part)}
+        .schema=${this._computePartSchema(part)}
+        .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+        .dynamicStyle=${this.config?.[part]?.dynamic_style}
+        .fields=${fields}
+        .baseShow=${this._baseShow(part)}
+        .baseOpacity=${this.config?.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity}
+        .baseImage=${this.config?.indicator?.image || CONFIG_DEFAULTS.indicator_sensor.indicator.image}
+        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+      ></compass-card-part-editor>
     `;
   }
 

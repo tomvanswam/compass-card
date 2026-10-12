@@ -31,24 +31,17 @@ export class CompassCardHeaderEditor extends LitElement {
     // One block per header item: its value, show and color on one row, and its dynamic style
     private _renderPart(part: HeaderPart, label: string, valueSelector: object): TemplateResult {
         return html`
-      <ha-expansion-panel outlined .header=${localize(label)}>
-        <div class="content">
-          <ha-form
-            .hass=${this.hass}
-            .data=${{ color: this.config?.[part]?.color || '', show: this._show(part), value: this.config?.[part]?.value || '' }}
-            .schema=${[{ name: 'value', selector: valueSelector }, showColorRow()]}
-            .computeLabel=${(schema: { name: string }) => (schema.name === 'value' ? localize(label) : localize(`editor.fields.${schema.name}`) || schema.name)}
-            @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-          ></ha-form>
-          <compass-card-dynamic-style-editor
-            .hass=${this.hass}
-            .config=${this.config?.[part]?.dynamic_style}
-            .baseShow=${this._show(part)}
-            .label=${localize('editor.dynamic_style.title')}
-            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-          ></compass-card-dynamic-style-editor>
-        </div>
-      </ha-expansion-panel>
+      <compass-card-part-editor
+        .hass=${this.hass}
+        .label=${localize(label)}
+        .data=${{ color: this.config?.[part]?.color || '', show: this._show(part), value: this.config?.[part]?.value || '' }}
+        .schema=${[{ name: 'value', selector: valueSelector }, showColorRow()]}
+        .computeLabel=${(schema: { name: string }) => (schema.name === 'value' ? localize(label) : localize(`editor.fields.${schema.name}`) || schema.name)}
+        .dynamicStyle=${this.config?.[part]?.dynamic_style}
+        .baseShow=${this._show(part)}
+        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+      ></compass-card-part-editor>
     `;
     }
 

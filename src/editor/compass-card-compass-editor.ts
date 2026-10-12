@@ -49,25 +49,18 @@ export class CompassCardCompassEditor extends LitElement {
     // One block per compass item: its settings and its dynamic style (always visible: bands can show a hidden item)
     private _renderPart(part: CompassPart, label: string, fields: StyleField[]): TemplateResult {
         return html`
-      <ha-expansion-panel outlined .header=${localize(label)}>
-        <div class="content">
-          <ha-form
-            .hass=${this.hass}
-            .data=${this._computePartData(part)}
-            .schema=${CompassCardCompassEditor._computePartSchema(part)}
-            .computeLabel=${CompassCardCompassEditor._computeLabel}
-            @value-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-          ></ha-form>
-          <compass-card-dynamic-style-editor
-            .hass=${this.hass}
-            .config=${this.config?.[part]?.dynamic_style}
-            .fields=${fields}
-            .baseShow=${this._isShown(part)}
-            .label=${localize('editor.dynamic_style.title')}
-            @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-          ></compass-card-dynamic-style-editor>
-        </div>
-      </ha-expansion-panel>
+      <compass-card-part-editor
+        .hass=${this.hass}
+        .label=${localize(label)}
+        .data=${this._computePartData(part)}
+        .schema=${CompassCardCompassEditor._computePartSchema(part)}
+        .computeLabel=${CompassCardCompassEditor._computeLabel}
+        .dynamicStyle=${this.config?.[part]?.dynamic_style}
+        .fields=${fields}
+        .baseShow=${this._isShown(part)}
+        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+      ></compass-card-part-editor>
     `;
     }
 
