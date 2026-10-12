@@ -35,12 +35,14 @@
     "eslint": "^10.12.0",
     "globals": "^17.13.0",
     "jiti": "^2.7.0",
+    "jsdom": "^29.1.1",
     "rollup": "^4.64.0",
     "rollup-plugin-ignore": "^1.0.10",
     "rollup-plugin-serve": "^3.0.0",
     "rollup-plugin-server": "^0.7.0",
     "rollup-plugin-typescript2": "^0.37.0",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.4"
   },
   "scripts": {
     "start": "rollup -c --watch",
@@ -48,6 +50,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "rollup": "rollup -c",
+    "test": "vitest run",
     "clean:dist": "rm -rf dist",
     "clean:node": "rm -rf node_modules",
     "clean:lock": "rm -rf package-lock.json",
