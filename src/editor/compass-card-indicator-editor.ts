@@ -106,28 +106,30 @@ export class CompassCardIndicatorEditor extends LitElement {
           <span slot="title">${localize('editor.indicator_sensor')}</span>
         </div>
       </div>
-      <ha-form
-        .hass=${this.hass}
-        .data=${data}
-        .schema=${schema}
-        .computeLabel=${CompassCardIndicatorEditor._computeLabel}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-      <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
-        <div class="content">
-          ${INDICATOR_STYLE_PARTS.map(
-            ({ part, fields }) => html`
-              <compass-card-dynamic-style-editor
-                .hass=${this.hass}
-                .config=${this.config?.[part]?.dynamic_style}
-                .fields=${fields}
-                .label=${localize(`editor.dynamic_style.parts.${part}`)}
-                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-              ></compass-card-dynamic-style-editor>
-            `,
-          )}
-        </div>
-      </ha-expansion-panel>
+      <div class="groups">
+        <ha-form
+          .hass=${this.hass}
+          .data=${data}
+          .schema=${schema}
+          .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+          @value-changed=${this._valueChanged}
+        ></ha-form>
+        <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
+          <div class="content">
+            ${INDICATOR_STYLE_PARTS.map(
+              ({ part, fields }) => html`
+                <compass-card-dynamic-style-editor
+                  .hass=${this.hass}
+                  .config=${this.config?.[part]?.dynamic_style}
+                  .fields=${fields}
+                  .label=${localize(`editor.dynamic_style.parts.${part}`)}
+                  @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+                ></compass-card-dynamic-style-editor>
+              `,
+            )}
+          </div>
+        </ha-expansion-panel>
+      </div>
     `;
   }
 
@@ -207,6 +209,12 @@ export class CompassCardIndicatorEditor extends LitElement {
         display: flex;
         align-items: center;
         font-size: 18px;
+      }
+      /* the form (ending with the tap action) and the dynamic styles panel, spaced like the main editor groups */
+      .groups {
+        display: flex;
+        flex-direction: column;
+        gap: var(--ha-space-2, 8px);
       }
       .content {
         display: flex;

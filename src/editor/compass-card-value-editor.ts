@@ -50,36 +50,38 @@ export class CompassCardValueEditor extends LitElement {
           <span slot="title">${localize('editor.value_sensor')}</span>
         </div>
       </div>
-      <ha-form
-        .hass=${this.hass}
-        .data=${{
-        ...this.config,
-        decimals: this.config.decimals || CONFIG_DEFAULTS.value_sensor.decimals,
-        state_units_color: this.config.state_units?.color || '',
-        state_units_show: this.config.state_units?.show ?? CONFIG_DEFAULTS.value_sensor.state_units.show,
-        state_value_color: this.config.state_value?.color || '',
-        state_value_show: this.config.state_value?.show ?? CONFIG_DEFAULTS.value_sensor.state_value.show,
-        tap_action: tapAction,
-      }}
-        .schema=${schema}
-        .computeLabel=${CompassCardValueEditor._computeLabel}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-      <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
-        <div class="content">
-          ${VALUE_STYLE_PARTS.map(
-            ({ part, fields }) => html`
-              <compass-card-dynamic-style-editor
-                .hass=${this.hass}
-                .config=${this.config?.[part]?.dynamic_style}
-                .fields=${fields}
-                .label=${localize(`editor.dynamic_style.parts.${part}`)}
-                @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
-              ></compass-card-dynamic-style-editor>
-            `,
-          )}
-        </div>
-      </ha-expansion-panel>
+      <div class="groups">
+        <ha-form
+          .hass=${this.hass}
+          .data=${{
+          ...this.config,
+          decimals: this.config.decimals || CONFIG_DEFAULTS.value_sensor.decimals,
+          state_units_color: this.config.state_units?.color || '',
+          state_units_show: this.config.state_units?.show ?? CONFIG_DEFAULTS.value_sensor.state_units.show,
+          state_value_color: this.config.state_value?.color || '',
+          state_value_show: this.config.state_value?.show ?? CONFIG_DEFAULTS.value_sensor.state_value.show,
+          tap_action: tapAction,
+        }}
+          .schema=${schema}
+          .computeLabel=${CompassCardValueEditor._computeLabel}
+          @value-changed=${this._valueChanged}
+        ></ha-form>
+        <ha-expansion-panel outlined .header=${localize('editor.dynamic_style.title')}>
+          <div class="content">
+            ${VALUE_STYLE_PARTS.map(
+              ({ part, fields }) => html`
+                <compass-card-dynamic-style-editor
+                  .hass=${this.hass}
+                  .config=${this.config?.[part]?.dynamic_style}
+                  .fields=${fields}
+                  .label=${localize(`editor.dynamic_style.parts.${part}`)}
+                  @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+                ></compass-card-dynamic-style-editor>
+              `,
+            )}
+          </div>
+        </ha-expansion-panel>
+      </div>
     `;
   }
 
@@ -129,6 +131,12 @@ export class CompassCardValueEditor extends LitElement {
         display: flex;
         align-items: center;
         font-size: 18px;
+      }
+      /* the form (ending with the tap action) and the dynamic styles panel, spaced like the main editor groups */
+      .groups {
+        display: flex;
+        flex-direction: column;
+        gap: var(--ha-space-2, 8px);
       }
       .content {
         display: flex;
