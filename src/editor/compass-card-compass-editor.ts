@@ -3,7 +3,7 @@ import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DEGREES_MAX, DEGREES_MIN } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
-import { setOrDelete, showColorRow, updateObject } from './editorHelpers';
+import { opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { CCCompassConfig } from './editorTypes';
 import { localize } from '../localize/localize';
 import { StyleField } from './compass-card-dynamic-style-editor';
@@ -96,7 +96,7 @@ export class CompassCardCompassEditor extends LitElement {
                             name: '',
                             schema: [
                                 { name: 'offset_background', selector: { boolean: {} } },
-                                { name: 'background_opacity', selector: { number: { max: 1, min: 0, mode: 'box', step: 0.05 } } },
+                                { name: 'background_opacity', selector: opacitySelector() },
                             ],
                             type: 'grid',
                         },
@@ -145,7 +145,7 @@ export class CompassCardCompassEditor extends LitElement {
                 ...data,
                 background: {
                     background_image: circle?.background_image || '',
-                    background_opacity: circle?.background_opacity || backgroundOpacityDefault(circle?.background_image),
+                    background_opacity: opacityToPercent(circle?.background_opacity || backgroundOpacityDefault(circle?.background_image)),
                     offset_background: circle?.offset_background ?? defaults.circle.offset_background,
                 },
                 stroke_width: circle?.stroke_width || defaults.circle.stroke_width,
@@ -182,7 +182,7 @@ export class CompassCardCompassEditor extends LitElement {
                     newConfig.circle,
                     {
                         background_image: background.background_image,
-                        background_opacity: background.background_opacity,
+                        background_opacity: opacityFromPercent(background.background_opacity, newConfig.circle?.background_opacity || backgroundOpacityDefault(background.background_image)),
                         color: data.color,
                         offset_background: background.offset_background,
                         show: data.show,

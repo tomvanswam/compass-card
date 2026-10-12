@@ -2,10 +2,10 @@ import { CCDynamicStyleConfig, CCStyleBandConfig } from './editorTypes';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { INDEX_ELEMENT_1, OPACITY_VISIBLE } from '../const';
 import { mdiClose, mdiPlus } from '@mdi/js';
-import { INDEX_ELEMENT_1 } from '../const';
+import { opacityFromPercent, opacitySelector, opacityToPercent, updateObject } from './editorHelpers';
 import { localize } from '../localize/localize';
-import { updateObject } from './editorHelpers';
 
 // Style options a band (or the unknown style) can set; each element only offers the ones the card uses for it
 export type StyleField = 'background_image' | 'color' | 'image' | 'opacity' | 'radius' | 'show' | 'size';
@@ -19,7 +19,7 @@ function fieldSchema(field: StyleField) {
     case 'show':
       return { name: field, selector: { boolean: {} } };
     case 'opacity':
-      return { name: field, selector: { number: { max: 1, min: 0, mode: 'box', step: 0.05 } } };
+      return { name: field, selector: opacitySelector() };
     case 'radius':
       return { name: field, selector: { number: { min: 0, mode: 'box' } } };
     case 'size':
@@ -36,20 +36,26 @@ function styleSchema(fields: StyleField[]) {
   return [...(row.length ? [{ column_min_width: '120px', name: '', schema: row.map(fieldSchema), type: 'grid' }] : []), ...rest.map(fieldSchema)];
 }
 
-// A missing show inherits the visibility of the previous band (or of the element itself); the switch shows that value
-function toFormStyle(style: StyleConfig | undefined, inheritedShow: boolean) {
-  return { ...style, show: style?.show ?? inheritedShow };
+// What a band (or the unknown style) inherits for options it does not set itself
+interface Inherited {
+  opacity: number;
+  show: boolean;
+}
+
+// A missing show or opacity inherits from the previous band (or the element itself); the form shows that value
+function toFormStyle(style: StyleConfig | undefined, inherited: Inherited) {
+  return { ...style, opacity: opacityToPercent(style?.opacity || inherited.opacity), show: style?.show ?? inherited.show };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous: StyleConfig | undefined, inheritedShow: boolean): StyleConfig | undefined {
+function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous: StyleConfig | undefined, inherited: Inherited): StyleConfig | undefined {
   const updates: Partial<StyleConfig> = {};
   fields.forEach((field) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (updates as any)[field] = data[field];
+    (updates as any)[field] = field === 'opacity' ? opacityFromPercent(data.opacity, previous?.opacity || inherited.opacity) : data[field];
   });
   // a visibility equal to the inherited one is left out, so the band keeps following it
-  return updateObject(previous, updates, { show: inheritedShow });
+  return updateObject(previous, updates, { opacity: inherited.opacity, show: inherited.show });
 }
 
 declare global {
@@ -70,6 +76,8 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   @property({ attribute: false }) public fields: StyleField[] = ['color', 'show'];
   // Effective visibility of the element without dynamic style, the starting point bands inherit from
   @property({ attribute: false }) public baseShow = true;
+  // Effective opacity of the element without dynamic style (only used when the fields include opacity)
+  @property({ attribute: false }) public baseOpacity = OPACITY_VISIBLE;
   @property() public label?: string;
 
   protected render(): TemplateResult {
@@ -78,7 +86,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     }
     const bands = this.config?.bands || [];
     const schema = styleSchema(this.fields);
-    const inherited = this._inheritedShow(bands);
+    const inherited = this._inherited(bands);
 
     return html`
       <ha-expansion-panel outlined .header=${this.label}>
@@ -97,7 +105,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
           <div class="title">${localize('editor.dynamic_style.unknown')}</div>
           <ha-form
             .hass=${this.hass}
-            .data=${toFormStyle(this.config?.unknown, this.baseShow)}
+            .data=${toFormStyle(this.config?.unknown, this._base())}
             .schema=${schema}
             .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
             @value-changed=${this._unknownChanged}
@@ -136,14 +144,19 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     return schema.name === 'sensor' ? localize('editor.dynamic_style.sensor_helper') : '';
   }
 
-  // Visibility each band inherits when it has no show of its own, per index in the config's band order
-  private _inheritedShow(bands: CCStyleBandConfig[]): boolean[] {
+  // The element's own values, inherited by the first band and by the unknown style
+  private _base(): Inherited {
+    return { opacity: this.baseOpacity, show: this.baseShow };
+  }
+
+  // What each band inherits, per index in the config's band order (bands apply in from_value order, as in getBands())
+  private _inherited(bands: CCStyleBandConfig[]): Inherited[] {
     const order = bands.map((band, index) => ({ band, index })).sort((a, b) => a.band.from_value - b.band.from_value);
-    const inherited: boolean[] = [];
-    let previous = this.baseShow;
+    const inherited: Inherited[] = [];
+    let previous = this._base();
     order.forEach(({ band, index }) => {
       inherited[index] = previous;
-      previous = band.show ?? previous;
+      previous = { opacity: band.opacity || previous.opacity, show: band.show ?? previous.show };
     });
     return inherited;
   }
@@ -167,7 +180,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   private _bandChanged(index: number, ev: CustomEvent): void {
     ev.stopPropagation();
     const bands = [...(this.config?.bands || [])];
-    const style = fromFormStyle(ev.detail.value, this.fields, bands[index], this._inheritedShow(bands)[index]);
+    const style = fromFormStyle(ev.detail.value, this.fields, bands[index], this._inherited(bands)[index]);
     bands[index] = { ...style, from_value: ev.detail.value.from_value ?? bands[index].from_value };
     this._update({ bands });
   }
@@ -186,7 +199,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
 
   private _unknownChanged(ev: CustomEvent): void {
     ev.stopPropagation();
-    this._update({ unknown: fromFormStyle(ev.detail.value, this.fields, this.config?.unknown, this.baseShow) });
+    this._update({ unknown: fromFormStyle(ev.detail.value, this.fields, this.config?.unknown, this._base()) });
   }
 
   static styles = css`

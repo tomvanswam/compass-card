@@ -38,3 +38,20 @@ export function showColorRow() {
     type: 'grid',
   };
 }
+
+// Opacity is edited as a 0-100% slider in 1% steps and stored in the YAML as 0-1
+const PERCENT = 100;
+export function opacitySelector() {
+  return { number: { max: PERCENT, min: 0, mode: 'slider', step: 1, unit_of_measurement: '%' } };
+}
+
+export function opacityToPercent(opacity: number | undefined): number | undefined {
+  return opacity === undefined ? undefined : Math.round(opacity * PERCENT);
+}
+
+// previous: the stored value; kept as is (e.g. 0.333) while the slider still shows its rounded percentage
+export function opacityFromPercent(percent: number | undefined, previous?: number): number | undefined {
+  if (percent === undefined || percent === null) return undefined;
+  if (previous !== undefined && opacityToPercent(previous) === percent) return previous;
+  return Math.round(percent) / PERCENT;
+}
