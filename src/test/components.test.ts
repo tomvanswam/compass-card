@@ -116,6 +116,16 @@ describe('compass-card-editor', () => {
     expect(changes.at(-1)?.compass).toEqual({ north: { dynamic_style: { bands: [{ from_value: 0 }] } } });
   });
 
+  it('shows a newly entered header title without writing show', async () => {
+    const { changes, editor } = await createEditor(cardConfig());
+    const header = shadow(editor, 'compass-card-header-editor');
+    await header.updateComplete;
+    const [title] = shadowAll(header, 'compass-card-part-editor');
+    await title.updateComplete;
+    await changeForm(shadow(title, 'ha-form'), { value: 'Wind' }, title);
+    expect(changes.at(-1)?.header).toEqual({ title: { value: 'Wind' } });
+  });
+
   it('updates the language and the unknown direction fallback', async () => {
     const { changes, editor } = await createEditor(cardConfig());
     const row = shadow(editor, 'compass-card-sensor-row-editor');

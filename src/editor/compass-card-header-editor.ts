@@ -62,7 +62,10 @@ export class CompassCardHeaderEditor extends LitElement {
         const value = data.value || undefined;
         const icon = part === 'icon' ? value : this.config?.icon?.value;
         const title = part === 'title' ? value : this.config?.title?.value;
-        setOrDelete(newConfig, part, updateObject(newConfig[part], { color: data.color, show: data.show, value }, { show: this._showDefault(part, icon, title) }));
+        // The switch shows the visibility before this change; while it is not toggled the stored show is kept, so a new
+        // title or icon follows its default (shown) instead of keeping the old default (hidden)
+        const show = data.show === this._show(part) ? this.config?.[part]?.show : data.show;
+        setOrDelete(newConfig, part, updateObject(newConfig[part], { color: data.color, show, value }, { show: this._showDefault(part, icon, title) }));
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
