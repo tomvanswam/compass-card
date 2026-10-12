@@ -187,11 +187,12 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   }
 
   private _update(changes: Partial<CCDynamicStyleConfig>): void {
-    const next: CCDynamicStyleConfig = { bands: [], ...this.config, ...changes };
+    const next: CCDynamicStyleConfig = { ...this.config, ...changes };
+    if (!next.bands?.length) delete next.bands;
     if (!next.sensor) delete next.sensor;
     if (!next.attribute) delete next.attribute;
     if (!next.unknown) delete next.unknown;
-    const isEmpty = !next.sensor && !next.attribute && !next.bands.length && !next.unknown;
+    const isEmpty = !next.sensor && !next.attribute && !next.bands && !next.unknown;
     fireEvent(this, 'dynamic-style-changed', { value: isEmpty ? undefined : next });
   }
 

@@ -67,9 +67,7 @@ export const INDEX_ELEMENT_0 = 0;
 export const INDEX_ELEMENT_1 = 1;
 export const LENGTH_TO_INDEX = -1;
 export const MAX_INDICATOR_ARRAY_SIZE = 10;
-export const MAX_PERCENTAGE = 100;
 export const MIN_INDICATOR_ARRAY_SIZE = 1;
-export const MIN_PERCENTAGE = 0;
 export const NO_ELEMENTS = 0;
 export const CENTER_OBJECT_FACTOR = 0.5;
 export const OPACITY_TRANSPARENT = 0;
@@ -84,7 +82,8 @@ export const MINOR_TICK_INNER_RADIUS_LENGTH = 6;
 export const MEDIUM_TICK_INNER_RADIUS_LENGTH = 8;
 export const MAJOR_TICK_INNER_RADIUS_LENGTH = 10;
 export const MAJOR_TICK_ANGLE = 22.5;
-export const URL_REGEX = /^(?:https?:\/\/)|(?:\/local\/)/i;
+// An image location: a full http(s) URL or a path on the Home Assistant server (e.g. /local/..., /media/...)
+export const URL_REGEX = /^(?:https?:\/\/|\/)/i;
 
 export const UNKNOWN_DIRECTION_VALUES = ['north', 'last', 'hide'] as const;
 export const DEFAULT_UNKNOWN_DIRECTION = 'north';
