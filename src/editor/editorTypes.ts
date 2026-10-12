@@ -28,8 +28,12 @@ export const ActionConfigStruct = object({
 });
 export type ActionConfig = Infer<typeof ActionConfigStruct>;
 
+// A background image location: http(s) URL or a path starting with /, the same check as an indicator image URL.
+// An empty string (no image) stays allowed: earlier editor versions wrote it.
+const CCBackgroundImageStruct = optional(union([enums(['']), pattern(string(), URL_REGEX)]));
+
 export const CCStyleConfigStruct = object({
-  background_image: optional(string()),
+  background_image: CCBackgroundImageStruct,
   color: optional(string()),
   image: CCImageStruct,
   opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
@@ -138,7 +142,7 @@ export type CCHeaderConfig = Infer<typeof CCHeaderConfigStruct>;
 export const CCCircleConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
-    background_image: optional(string()),
+    background_image: CCBackgroundImageStruct,
     background_opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
     offset_background: optional(boolean()),
     stroke_width: optional(number()),

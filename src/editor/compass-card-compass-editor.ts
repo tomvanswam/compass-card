@@ -176,7 +176,7 @@ export class CompassCardCompassEditor extends LitElement {
                     newConfig.circle,
                     {
                         background_image: background.background_image,
-                        background_opacity: opacityFromPercent(background.background_opacity, newConfig.circle?.background_opacity || backgroundOpacityDefault(background.background_image)),
+                        background_opacity: this._backgroundOpacity(background),
                         color: data.color,
                         offset_background: background.offset_background,
                         show: data.show,
@@ -191,6 +191,15 @@ export class CompassCardCompassEditor extends LitElement {
             setOrDelete(newConfig, part, updateObject(newConfig[part], { color: data.color, show: data.show }, defaults[part]));
         }
         fireEvent(this, 'config-changed', { config: newConfig });
+    }
+
+    // The slider shows the stored opacity or the default for the current image; while it is not moved the stored value
+    // is kept (also when the image, and with it the default, changes)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private _backgroundOpacity(background: Record<string, any>): number | undefined {
+        const stored = this.config?.circle?.background_opacity;
+        const shown = stored || backgroundOpacityDefault(this.config?.circle?.background_image);
+        return background.background_opacity === opacityToPercent(shown) ? stored : opacityFromPercent(background.background_opacity);
     }
 
     private _dynamicStyleChanged(part: CompassPart, ev: CustomEvent): void {

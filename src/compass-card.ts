@@ -98,6 +98,12 @@ export class CompassCard extends LitElement {
           { cause: e },
         );
       }
+      if (last === 'background_image') {
+        throw new Error(
+          `Compass Card: ${err.path.join('.')} should be an image URL (e.g. https://example.com/image.png) or a path starting with / (e.g. /local/image.png). More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`,
+          { cause: e },
+        );
+      }
       throw new Error(`Compass Card: invalid yaml configuration. ${err.message} More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`, { cause: e });
     }
 
