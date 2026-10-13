@@ -147,3 +147,14 @@ describe('getIndicatorScale', () => {
     expect(getIndicatorScale('circle', 40, DEFAULT_INDICATOR_RADIUS)).toBeLessThan(1);
   });
 });
+
+describe('missing entities', () => {
+  // every element builds its dynamic style from the first indicator, so a missing first entity must not throw
+  it('renders the other elements when the first indicator entity does not exist', () => {
+    const config = cardConfig({ indicator_sensors: [{ indicator: {}, sensor: 'sensor.removed' }, { indicator: {}, sensor: 'input_number.wind_direction_1' }], value_sensors: [{ sensor: 'sensor.also_removed' }] });
+    expect(() => getCompass(config, COLORS, ENTITIES)).not.toThrow();
+    expect(() => getHeader(config, COLORS, ENTITIES['sensor.removed'], ENTITIES)).not.toThrow();
+    expect(getIndicatorSensors(config, COLORS, ENTITIES)).toHaveLength(1);
+    expect(getValueSensors(config, COLORS, ENTITIES)).toHaveLength(0);
+  });
+});

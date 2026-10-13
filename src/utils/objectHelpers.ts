@@ -21,7 +21,7 @@ function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConf
     decimals: config.indicator_sensors[0]?.decimals || DEFAULT_DECIMALS,
     entity: entities[config.indicator_sensors[0]?.sensor],
     sensor: config.indicator_sensors[0]?.sensor || '',
-    units: config.indicator_sensors[0]?.units || entities[config.indicator_sensors[0].sensor].attributes.unit_of_measurement || '',
+    units: config.indicator_sensors[0]?.units || entities[config.indicator_sensors[0]?.sensor]?.attributes?.unit_of_measurement || '',
   };
 
   if (config.value_sensors && config.value_sensors.length > NO_ELEMENTS && entities[config.value_sensors[0].sensor]) {
@@ -29,7 +29,7 @@ function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConf
     sa.decimals = config.value_sensors[0].decimals || DEFAULT_DECIMALS;
     sa.entity = entities[config.value_sensors[0].sensor];
     sa.sensor = config.value_sensors[0].sensor;
-    sa.units = config.value_sensors[0].units || entities[config.value_sensors[0].sensor].attributes.unit_of_measurement || '';
+    sa.units = config.value_sensors[0].units || entities[config.value_sensors[0].sensor]?.attributes?.unit_of_measurement || '';
   }
 
   if (ownSensor?.sensor) {
@@ -263,7 +263,7 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
       dynamic_style: getDynamicStyle(indicatorSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, '', indIconImage, size, radius, opacity, indicatorSensor),
       show: valueShow,
     },
-    units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens].attributes?.unit_of_measurement || '',
+    units: attrib !== '' ? indicatorSensor.units || '' : indicatorSensor.units || entities[sens]?.attributes?.unit_of_measurement || '',
   };
   return sensor;
 }
@@ -300,7 +300,7 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
       dynamic_style: getDynamicStyle(valueSensor.state_value?.dynamic_style, config, entities, valueColor, valueShow, undefined, undefined, undefined, undefined, undefined, valueSensor),
       show: valueShow,
     },
-    units: attrib !== '' ? valueSensor.units || '' : valueSensor.units || entities[sens].attributes?.unit_of_measurement || '',
+    units: attrib !== '' ? valueSensor.units || '' : valueSensor.units || entities[sens]?.attributes?.unit_of_measurement || '',
   };
   return sensor;
 }
