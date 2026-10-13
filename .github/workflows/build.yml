@@ -14,10 +14,15 @@ jobs:
     name: Test build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # same Node version as the devcontainer
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
       - name: Build
-        run: |
-          npm install
-          npm run build
+        run: npm run build
       - name: Test
         run: npm test
