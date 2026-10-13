@@ -170,3 +170,14 @@ describe('0 is a valid value for numeric options', () => {
     expect(sensor.indicator.dynamic_style.bands.map((b) => [b.opacity, b.size])).toEqual([[0, 0], [0, 0]]);
   });
 });
+
+describe('getDynamicStyle start values', () => {
+  it('passes the element values to bands and the unknown style, also show: false', () => {
+    const style = { bands: [{ from_value: 0 }], unknown: { show: false } };
+    const [sensor] = getIndicatorSensors(cardConfig({ indicator_sensors: [{ indicator: { color: 'blue', dynamic_style: style, image: 'circle', opacity: 0.5, radius: 40, size: 12 }, sensor: 'input_number.wind_direction_1' }] }), COLORS, ENTITIES);
+    expect(sensor.indicator.dynamic_style.bands[0]).toMatchObject({ color: 'blue', image: 'circle', opacity: 0.5, radius: 40, show: true, size: 12 });
+    expect(sensor.indicator.dynamic_style.unknown).toMatchObject({ color: 'blue', image: 'circle', show: false });
+    const {circle} = getCompass(cardConfig({ compass: { circle: { background_image: '/local/bg.png', dynamic_style: { bands: [{ from_value: 0 }] } } } }), COLORS, ENTITIES);
+    expect(circle.dynamic_style.bands[0].background_image).toBe('/local/bg.png');
+  });
+});

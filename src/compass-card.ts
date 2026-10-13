@@ -8,6 +8,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
 import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
 import { CONFIG_DEFAULTS } from './defaults.js';
+import { debugLog } from './utils/debug.js';
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { localize } from './localize/localize.js';
@@ -182,14 +183,13 @@ export class CompassCard extends LitElement {
     this.svgScale = this.compass.scale === SVG_SCALE_MIN
       ? Math.min(...allScales.map((scale) => (scale === SVG_SCALE_MIN ? SVG_SCALE_MAX : scale)))
       : this.compass.scale;
-    if (getBoolean(this._config.debug, false)) {
-      console.info('Compass-Card inflated configuration: header', this.header); // eslint-disable-line
-      console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line
-      console.info('Compass-Card inflated configuration: indicator sensors', this.indicatorSensors); //eslint-disable-line
-      console.info('Compass-Card inflated configuration: value sensors', this.valueSensors); //eslint-disable-line
-      console.info('Compass-Card configuration: listening to entities', this.entities); // eslint-disable-line
-      console.info('Compass-Card configuration: svgScale', this.svgScale); // eslint-disable-line
-    }
+    const debug = getBoolean(this._config.debug, false);
+    debugLog(debug, 'inflated configuration: header', this.header);
+    debugLog(debug, 'inflated configuration: compass', this.compass);
+    debugLog(debug, 'inflated configuration: indicator sensors', this.indicatorSensors);
+    debugLog(debug, 'inflated configuration: value sensors', this.valueSensors);
+    debugLog(debug, 'configuration: listening to entities', this.entities);
+    debugLog(debug, 'configuration: svgScale', this.svgScale);
   }
 
   protected render(): TemplateResult {
