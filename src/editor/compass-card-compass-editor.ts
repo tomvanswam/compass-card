@@ -80,7 +80,7 @@ export class CompassCardCompassEditor extends LitElement {
         if (part === 'circle') {
             return [
                 showColorRow(),
-                { name: 'stroke_width', selector: { number: { min: 0.5, mode: 'box', step: 0.5 } } },
+                { name: 'stroke_width', selector: { number: { min: 0, mode: 'box', step: 0.5 } } },
                 {
                     name: 'background',
                     schema: [
@@ -125,8 +125,8 @@ export class CompassCardCompassEditor extends LitElement {
     private _computeGeneralData() {
         const defaults = CONFIG_DEFAULTS.compass;
         return {
-            compass_offset_conf: this.config?.north?.offset || defaults.north.offset,
-            compass_scale_conf: this.config?.scale || defaults.scale,
+            compass_offset_conf: this.config?.north?.offset ?? defaults.north.offset,
+            compass_scale_conf: this.config?.scale ?? defaults.scale,
         };
     }
 
@@ -139,14 +139,14 @@ export class CompassCardCompassEditor extends LitElement {
                 ...data,
                 background: {
                     background_image: circle?.background_image || '',
-                    background_opacity: opacityToPercent(circle?.background_opacity || backgroundOpacityDefault(circle?.background_image)),
+                    background_opacity: opacityToPercent(circle?.background_opacity ?? backgroundOpacityDefault(circle?.background_image)),
                     offset_background: circle?.offset_background ?? defaults.circle.offset_background,
                 },
-                stroke_width: circle?.stroke_width || defaults.circle.stroke_width,
+                stroke_width: circle?.stroke_width ?? defaults.circle.stroke_width,
             };
         }
         if (part === 'ticks') {
-            return { ...data, radius: this.config?.ticks?.radius || defaults.ticks.radius, step: this.config?.ticks?.step || defaults.ticks.step };
+            return { ...data, radius: this.config?.ticks?.radius ?? defaults.ticks.radius, step: this.config?.ticks?.step ?? defaults.ticks.step };
         }
         return data;
     }
@@ -198,7 +198,7 @@ export class CompassCardCompassEditor extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _backgroundOpacity(background: Record<string, any>): number | undefined {
         const stored = this.config?.circle?.background_opacity;
-        const shown = stored || backgroundOpacityDefault(this.config?.circle?.background_image);
+        const shown = stored ?? backgroundOpacityDefault(this.config?.circle?.background_image);
         return background.background_opacity === opacityToPercent(shown) ? stored : opacityFromPercent(background.background_opacity);
     }
 

@@ -56,7 +56,7 @@ export class CompassCardIndicatorEditor extends LitElement {
       <div class="groups">
         <ha-form
           .hass=${this.hass}
-          .data=${{ attribute: this.config.attribute || '', decimals: this.config.decimals || defaults.decimals, sensor: this.config.sensor || '', units: this.config.units || '' }}
+          .data=${{ attribute: this.config.attribute || '', decimals: this.config.decimals ?? defaults.decimals, sensor: this.config.sensor || '', units: this.config.units || '' }}
           .schema=${[
             { name: 'sensor', selector: { entity: {} } },
             { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
@@ -109,7 +109,7 @@ export class CompassCardIndicatorEditor extends LitElement {
         column_min_width: '120px',
         name: '',
         schema: [
-          { name: 'size', selector: { number: { min: 1, mode: 'box' } } },
+          { name: 'size', selector: { number: { min: 0, mode: 'box' } } },
           { name: 'radius', selector: { number: { min: 0, mode: 'box' } } },
         ],
         type: 'grid',
@@ -128,7 +128,7 @@ export class CompassCardIndicatorEditor extends LitElement {
       ...imageData(this.config?.indicator?.image, this._getImageType()),
       opacity: opacityToPercent(this.config?.indicator?.opacity ?? defaults.opacity),
       radius: this.config?.indicator?.radius ?? defaults.radius,
-      size: this.config?.indicator?.size || defaults.size,
+      size: this.config?.indicator?.size ?? defaults.size,
     };
   }
 
@@ -193,7 +193,7 @@ export class CompassCardIndicatorEditor extends LitElement {
       opacity: indicator?.opacity ?? defaults.opacity,
       radius: indicator?.radius ?? defaults.radius,
       show: this._baseShow(part),
-      size: indicator?.size || defaults.size,
+      size: indicator?.size ?? defaults.size,
     };
   }
 

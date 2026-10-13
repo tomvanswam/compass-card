@@ -42,7 +42,7 @@ export class CompassCardValueEditor extends LitElement {
       <div class="groups">
         <ha-form
           .hass=${this.hass}
-          .data=${{ attribute: this.config.attribute || '', decimals: this.config.decimals || CONFIG_DEFAULTS.value_sensor.decimals, sensor: this.config.sensor || '', units: this.config.units || '' }}
+          .data=${{ attribute: this.config.attribute || '', decimals: this.config.decimals ?? CONFIG_DEFAULTS.value_sensor.decimals, sensor: this.config.sensor || '', units: this.config.units || '' }}
           .schema=${[
             { name: 'sensor', selector: { entity: {} } },
             { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },

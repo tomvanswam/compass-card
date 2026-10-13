@@ -158,3 +158,15 @@ describe('missing entities', () => {
     expect(getValueSensors(config, COLORS, ENTITIES)).toHaveLength(0);
   });
 });
+
+describe('0 is a valid value for numeric options', () => {
+  it('keeps 0 for circle, background opacity, indicator size and band opacity', () => {
+    const compass = getCompass(cardConfig({ compass: { circle: { background_image: '/local/bg.png', background_opacity: 0, stroke_width: 0 } } }), COLORS, ENTITIES);
+    expect(compass.circle.stroke_width).toBe(0);
+    expect(compass.circle.background_opacity).toBe(0);
+    const style = { bands: [{ from_value: 0, opacity: 0, size: 0 }, { from_value: 10 }] };
+    const [sensor] = getIndicatorSensors(cardConfig({ indicator_sensors: [{ indicator: { dynamic_style: style, size: 0 }, sensor: 'input_number.wind_direction_1' }] }), COLORS, ENTITIES);
+    expect(sensor.indicator.size).toBe(0);
+    expect(sensor.indicator.dynamic_style.bands.map((b) => [b.opacity, b.size])).toEqual([[0, 0], [0, 0]]);
+  });
+});

@@ -18,7 +18,7 @@ export function getBoolean(value: boolean | number | string | undefined, defValu
 function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConfig | undefined, entities: HassEntities, ownSensor?: CCEntityConfig): CCSensorAttrib {
   const sa: CCSensorAttrib = {
     attribute: config.indicator_sensors[0]?.attribute || '',
-    decimals: config.indicator_sensors[0]?.decimals || DEFAULT_DECIMALS,
+    decimals: config.indicator_sensors[0]?.decimals ?? DEFAULT_DECIMALS,
     entity: entities[config.indicator_sensors[0]?.sensor],
     sensor: config.indicator_sensors[0]?.sensor || '',
     units: config.indicator_sensors[0]?.units || entities[config.indicator_sensors[0]?.sensor]?.attributes?.unit_of_measurement || '',
@@ -26,7 +26,7 @@ function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConf
 
   if (config.value_sensors && config.value_sensors.length > NO_ELEMENTS && entities[config.value_sensors[0].sensor]) {
     sa.attribute = config.value_sensors[0].attribute || '';
-    sa.decimals = config.value_sensors[0].decimals || DEFAULT_DECIMALS;
+    sa.decimals = config.value_sensors[0].decimals ?? DEFAULT_DECIMALS;
     sa.entity = entities[config.value_sensors[0].sensor];
     sa.sensor = config.value_sensors[0].sensor;
     sa.units = config.value_sensors[0].units || entities[config.value_sensors[0].sensor]?.attributes?.unit_of_measurement || '';
@@ -34,7 +34,7 @@ function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConf
 
   if (ownSensor?.sensor) {
     sa.attribute = ownSensor.attribute || '';
-    sa.decimals = ownSensor.decimals || DEFAULT_DECIMALS;
+    sa.decimals = ownSensor.decimals ?? DEFAULT_DECIMALS;
     sa.entity = entities[ownSensor.sensor];
     sa.sensor = ownSensor.sensor;
     sa.units = ownSensor.units || entities[ownSensor.sensor]?.attributes?.unit_of_measurement || '';
@@ -79,9 +79,9 @@ function getBands(bands: CCStyleBandConfig[] | undefined, startColor: string, st
       const prevVisibility = i === INDEX_ELEMENT_0 ? startVisibility : getBoolean(styleBands[i + LENGTH_TO_INDEX].show, startVisibility);
       const background_image = band.background_image || (i === INDEX_ELEMENT_0 ? startBgImage : styleBands[i + LENGTH_TO_INDEX].background_image) || startBgImage;
       const image = band.image || (i === INDEX_ELEMENT_0 ? startImage : styleBands[i + LENGTH_TO_INDEX].image) || startImage;
-      const size = band.size || (i === INDEX_ELEMENT_0 ? startSize : styleBands[i + LENGTH_TO_INDEX].size) || startSize;
-      const radius = band.radius || (i === INDEX_ELEMENT_0 ? startRadius : styleBands[i + LENGTH_TO_INDEX].radius) || startRadius;
-      const opacity = band.opacity || (i === INDEX_ELEMENT_0 ? startOpacity : styleBands[i + LENGTH_TO_INDEX].opacity) || startOpacity;
+      const size = band.size ?? (i === INDEX_ELEMENT_0 ? startSize : styleBands[i + LENGTH_TO_INDEX].size);
+      const radius = band.radius ?? (i === INDEX_ELEMENT_0 ? startRadius : styleBands[i + LENGTH_TO_INDEX].radius);
+      const opacity = band.opacity ?? (i === INDEX_ELEMENT_0 ? startOpacity : styleBands[i + LENGTH_TO_INDEX].opacity);
       const scale = getIndicatorScale(image, size, radius);
       const show = getBoolean(band.show, prevVisibility);
       styleBands.push({ background_image: background_image, color: color, from_value: band.from_value, image: image, opacity: opacity, radius: radius, scale: scale, show: show, size: size });
@@ -122,11 +122,11 @@ function getDynamicStyle(
       background_image: dynamicStyle?.unknown?.background_image || startBgImage,
       color: dynamicStyle?.unknown?.color || startColor,
       image: dynamicStyle?.unknown?.image || startImage,
-      opacity: dynamicStyle?.unknown?.opacity || startOpacity,
-      radius: dynamicStyle?.unknown?.radius || startRadius,
-      scale: getIndicatorScale(dynamicStyle?.unknown?.image || startImage, dynamicStyle?.unknown?.size || startSize, dynamicStyle?.unknown?.radius || startRadius),
+      opacity: dynamicStyle?.unknown?.opacity ?? startOpacity,
+      radius: dynamicStyle?.unknown?.radius ?? startRadius,
+      scale: getIndicatorScale(dynamicStyle?.unknown?.image || startImage, dynamicStyle?.unknown?.size ?? startSize, dynamicStyle?.unknown?.radius ?? startRadius),
       show: dynamicStyle?.unknown?.show || startVisibility,
-      size: dynamicStyle?.unknown?.size || startSize,
+      size: dynamicStyle?.unknown?.size ?? startSize,
     },
   };
 }
@@ -168,12 +168,12 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
   const westShow = getBoolean(config.compass?.west?.show, CONFIG_DEFAULTS.compass.west.show);
   const ticksColor = config.compass?.ticks?.color || colors.primary;
   const ticksShow = getBoolean(config.compass?.ticks?.show, CONFIG_DEFAULTS.compass.ticks.show);
-  const ticksRadius = config.compass?.ticks?.radius || CONFIG_DEFAULTS.compass.ticks.radius;
-  const ticksStep = config.compass?.ticks?.step || CONFIG_DEFAULTS.compass.ticks.step;
+  const ticksRadius = config.compass?.ticks?.radius ?? CONFIG_DEFAULTS.compass.ticks.radius;
+  const ticksStep = config.compass?.ticks?.step ?? CONFIG_DEFAULTS.compass.ticks.step;
   const bgImage = config.compass?.circle?.background_image || '';
-  const bgOpacity = config.compass?.circle?.background_opacity ? config.compass?.circle?.background_opacity : backgroundOpacityDefault(config.compass?.circle?.background_image);
+  const bgOpacity = config.compass?.circle?.background_opacity ?? backgroundOpacityDefault(config.compass?.circle?.background_image);
   const bgOffset = getBoolean(config.compass?.circle?.offset_background, CONFIG_DEFAULTS.compass.circle.offset_background);
-  const circleStrokeWidth = config.compass?.circle?.stroke_width || CONFIG_DEFAULTS.compass.circle.stroke_width;
+  const circleStrokeWidth = config.compass?.circle?.stroke_width ?? CONFIG_DEFAULTS.compass.circle.stroke_width;
   const compass: CCCompass = {
     circle: {
       background_image: bgImage,
@@ -192,10 +192,10 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
     north: {
       color: northColor,
       dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, northColor, northShow),
-      offset: config.compass?.north?.offset || CONFIG_DEFAULTS.compass.north.offset,
+      offset: config.compass?.north?.offset ?? CONFIG_DEFAULTS.compass.north.offset,
       show: northShow,
     },
-    scale: config.compass?.scale || CONFIG_DEFAULTS.compass.scale,
+    scale: config.compass?.scale ?? CONFIG_DEFAULTS.compass.scale,
     south: {
       color: southColor,
       dynamic_style: getDynamicStyle(config.compass?.south?.dynamic_style, config, entities, southColor, southShow),
@@ -229,12 +229,12 @@ function getIndicatorSensor(config: CompassCardConfig, colors: CCColors, indicat
   const valueShow = getBoolean(indicatorSensor.state_value?.show, CONFIG_DEFAULTS.indicator_sensor.state_value.show);
   const unitsColor = indicatorSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(indicatorSensor.state_units?.show, CONFIG_DEFAULTS.indicator_sensor.state_units.show);
-  const size = indicatorSensor.indicator?.size || CONFIG_DEFAULTS.indicator_sensor.indicator.size;
+  const size = indicatorSensor.indicator?.size ?? CONFIG_DEFAULTS.indicator_sensor.indicator.size;
   const radius = indicatorSensor.indicator?.radius ?? CONFIG_DEFAULTS.indicator_sensor.indicator.radius;
   const opacity = indicatorSensor.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity;
   const scale = getIndicatorScale(indIconImage, size, radius);
   const sensor: CCIndicatorSensor = {
-    decimals: indicatorSensor.decimals || CONFIG_DEFAULTS.indicator_sensor.decimals,
+    decimals: indicatorSensor.decimals ?? CONFIG_DEFAULTS.indicator_sensor.decimals,
     entity: entities[sens],
     indicator: {
       color: indColor,
@@ -286,7 +286,7 @@ function getValueSensor(config: CompassCardConfig, colors: CCColors, valueSensor
   const unitsColor = valueSensor.state_units?.color || colors.secondaryText;
   const unitsShow = getBoolean(valueSensor.state_units?.show, CONFIG_DEFAULTS.value_sensor.state_units.show);
   const sensor: CCValueSensor = {
-    decimals: valueSensor.decimals || CONFIG_DEFAULTS.value_sensor.decimals,
+    decimals: valueSensor.decimals ?? CONFIG_DEFAULTS.value_sensor.decimals,
     entity: entities[sens],
     is_attribute: attrib !== '',
     sensor: attrib === '' ? sens : `${sens}.${attrib}`,

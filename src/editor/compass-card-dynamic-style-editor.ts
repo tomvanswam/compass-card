@@ -24,7 +24,7 @@ function fieldSchema(field: StyleField) {
     case 'radius':
       return { name: field, selector: { number: { min: 0, mode: 'box' } } };
     case 'size':
-      return { name: field, selector: { number: { min: 1, mode: 'box' } } };
+      return { name: field, selector: { number: { min: 0, mode: 'box' } } };
     default:
       return { name: field, selector: { text: {} } };
   }
@@ -58,10 +58,10 @@ function nextInherited(previous: Inherited, style: StyleConfig): Inherited {
     background_image: style.background_image || previous.background_image,
     color: style.color || previous.color,
     image: style.image || previous.image,
-    opacity: style.opacity || previous.opacity,
-    radius: style.radius || previous.radius,
+    opacity: style.opacity ?? previous.opacity,
+    radius: style.radius ?? previous.radius,
     show: style.show ?? previous.show,
-    size: style.size || previous.size,
+    size: style.size ?? previous.size,
   };
 }
 
@@ -83,7 +83,7 @@ function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous
   const updates: Partial<StyleConfig> = {};
   fields.forEach((field) => {
     let value = data[field];
-    if (field === 'opacity') value = opacityFromPercent(data.opacity, previous?.opacity || inherited.opacity);
+    if (field === 'opacity') value = opacityFromPercent(data.opacity, previous?.opacity ?? inherited.opacity);
     if (field === 'image') value = imageFromData(data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (updates as any)[field] = value;
