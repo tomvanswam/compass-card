@@ -1,11 +1,10 @@
 import { customElement, property } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, OPACITY_VISIBLE } from '../const';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { html, LitElement, TemplateResult } from 'lit';
+import { StyleBase, StyleField } from './compass-card-dynamic-style-editor';
 import { CCDynamicStyleConfig } from './editorTypes';
 import { editorStyles } from './editorHelpers';
 import { localize } from '../localize/localize';
-import { StyleField } from './compass-card-dynamic-style-editor';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -31,9 +30,7 @@ export class CompassCardPartEditor extends LitElement {
   // Dynamic style of the element and the values its bands inherit (see compass-card-dynamic-style-editor.ts)
   @property({ attribute: false }) public dynamicStyle?: CCDynamicStyleConfig;
   @property({ attribute: false }) public fields: StyleField[] = ['color', 'show'];
-  @property({ attribute: false }) public baseShow = true;
-  @property({ attribute: false }) public baseOpacity = OPACITY_VISIBLE;
-  @property({ attribute: false }) public baseImage = DEFAULT_ICON_VALUE;
+  @property({ attribute: false }) public base: StyleBase = { show: true };
   // True for parts of an indicator or value sensor: their dynamic style falls back to that sensor
   @property({ attribute: false }) public ownSensor = false;
 
@@ -49,9 +46,7 @@ export class CompassCardPartEditor extends LitElement {
             .hass=${this.hass}
             .config=${this.dynamicStyle}
             .fields=${this.fields}
-            .baseShow=${this.baseShow}
-            .baseOpacity=${this.baseOpacity}
-            .baseImage=${this.baseImage}
+            .base=${this.base}
             .sensorHelper=${localize(this.ownSensor ? 'editor.dynamic_style.sensor_helper_own' : 'editor.dynamic_style.sensor_helper_shared')}
             .label=${localize('editor.dynamic_style.title')}
           ></compass-card-dynamic-style-editor>

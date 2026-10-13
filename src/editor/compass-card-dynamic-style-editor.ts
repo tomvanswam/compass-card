@@ -1,5 +1,5 @@
 import { CCDynamicStyleConfig, CCStyleBandConfig } from './editorTypes';
-import { contentStyles, opacityFromPercent, opacitySelector, opacityToPercent, updateObject } from './editorHelpers';
+import { contentStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, updateObject } from './editorHelpers';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_1, OPACITY_VISIBLE } from '../const';
@@ -40,11 +40,29 @@ function styleSchema(fields: StyleField[], type: string) {
   return [...grid(rows[0]), ...rest.flatMap((field): object[] => (field === 'image' ? imageSchema(type) : [fieldSchema(field)])), ...grid(rows[1])];
 }
 
-// What a band (or the unknown style) inherits for options it does not set itself
-interface Inherited {
-  image: string;
-  opacity: number;
+// Effective style options: of the element itself (StyleBase) or what a band inherits from the band before it
+export interface StyleBase {
+  background_image?: string;
+  color?: string;
+  image?: string;
+  opacity?: number;
+  radius?: number;
   show: boolean;
+  size?: number;
+}
+type Inherited = StyleBase;
+
+// Options inherited the way getBands() in objectHelpers.ts does: a band's own value, else the previous effective value
+function nextInherited(previous: Inherited, style: StyleConfig): Inherited {
+  return {
+    background_image: style.background_image || previous.background_image,
+    color: style.color || previous.color,
+    image: style.image || previous.image,
+    opacity: style.opacity || previous.opacity,
+    radius: style.radius || previous.radius,
+    show: style.show ?? previous.show,
+    size: style.size || previous.size,
+  };
 }
 
 // Image type shown for a style: its own image, else a type picked while its icon/URL is still empty, else the inherited image
@@ -52,14 +70,16 @@ function styleImageType(style: StyleConfig | undefined, inherited: Inherited, ch
   return imageType(style?.image || (chosenType ? undefined : inherited.image), chosenType);
 }
 
-// A missing show or opacity inherits from the previous band (or the element itself); the form shows that value
+// Options a style does not set are inherited from the previous band (or the element itself); the form shows those values
 function toFormStyle(style: StyleConfig | undefined, inherited: Inherited, type: string) {
+  const effective = nextInherited(inherited, style || {});
   const image = style?.image || (imageType(inherited.image) === type ? inherited.image : undefined);
-  return { ...style, ...imageData(image, type), opacity: opacityToPercent(style?.opacity || inherited.opacity), show: style?.show ?? inherited.show };
+  return { ...effective, ...style, ...imageData(image, type), opacity: opacityToPercent(effective.opacity) };
 }
 
+// followInherited: leave values equal to the inherited ones out (unknown style); bands store their values explicitly
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous: StyleConfig | undefined, inherited: Inherited): StyleConfig | undefined {
+function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous: StyleConfig | undefined, inherited: Inherited, followInherited: boolean): StyleConfig | undefined {
   const updates: Partial<StyleConfig> = {};
   fields.forEach((field) => {
     let value = data[field];
@@ -68,8 +88,7 @@ function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (updates as any)[field] = value;
   });
-  // values equal to the inherited ones are left out, so the band keeps following them
-  return updateObject(previous, updates, { image: inherited.image, opacity: inherited.opacity, show: inherited.show });
+  return updateObject(previous, updates, followInherited ? inherited : {});
 }
 
 declare global {
@@ -88,12 +107,8 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @property({ attribute: false }) public config?: CCDynamicStyleConfig;
   @property({ attribute: false }) public fields: StyleField[] = ['color', 'show'];
-  // Effective visibility of the element without dynamic style, the starting point bands inherit from
-  @property({ attribute: false }) public baseShow = true;
-  // Effective opacity of the element without dynamic style (only used when the fields include opacity)
-  @property({ attribute: false }) public baseOpacity = OPACITY_VISIBLE;
-  // Effective image of the indicator without dynamic style (only used when the fields include image)
-  @property({ attribute: false }) public baseImage = DEFAULT_ICON_VALUE;
+  // Effective options of the element without dynamic style: the start values for the first band and the unknown style
+  @property({ attribute: false }) public base: StyleBase = { show: true };
   // Image type picked per style ('unknown' or the band index) while its icon/URL is still empty
   @state() private _imageTypes: Record<string, string> = {};
   @property() public label?: string;
@@ -171,7 +186,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
 
   // The element's own values, inherited by the first band and by the unknown style
   private _base(): Inherited {
-    return { image: this.baseImage, opacity: this.baseOpacity, show: this.baseShow };
+    return { image: DEFAULT_ICON_VALUE, opacity: OPACITY_VISIBLE, ...this.base };
   }
 
   // What each band inherits, per index in the config's band order (bands apply in from_value order, as in getBands())
@@ -181,9 +196,14 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     let previous = this._base();
     order.forEach(({ band, index }) => {
       inherited[index] = previous;
-      previous = { image: band.image || previous.image, opacity: band.opacity || previous.opacity, show: band.show ?? previous.show };
+      previous = nextInherited(previous, band);
     });
     return inherited;
+  }
+
+  // Effective options after all bands: what a band added with the highest from_value starts with
+  private _lastEffective(bands: CCStyleBandConfig[]): Inherited {
+    return [...bands].sort((a, b) => a.from_value - b.from_value).reduce(nextInherited, this._base());
   }
 
   private _update(changes: Partial<CCDynamicStyleConfig>): void {
@@ -208,15 +228,20 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     ev.stopPropagation();
     const bands = [...(this.config?.bands || [])];
     this._rememberType(String(index), ev.detail.value);
-    const style = fromFormStyle(ev.detail.value, this.fields, bands[index], this._inherited(bands)[index]);
+    const style = fromFormStyle(ev.detail.value, this.fields, bands[index], this._inherited(bands)[index], false);
     bands[index] = { ...style, from_value: ev.detail.value.from_value ?? bands[index].from_value };
     this._update({ bands });
   }
 
+  // A new band gets the highest from_value and starts with the effective values of the band before it (or of the element)
   private _addBand(): void {
     const bands = this.config?.bands || [];
     const highest = bands.length ? Math.max(...bands.map((band) => band.from_value)) + BAND_VALUE_STEP : FIRST_BAND_VALUE;
-    this._update({ bands: [...bands, { from_value: highest }] });
+    const effective = this._lastEffective(bands);
+    const band: CCStyleBandConfig = { from_value: highest };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.fields.forEach((field) => setOrDelete(band as any, field, effective[field]));
+    this._update({ bands: [...bands, band] });
   }
 
   private _removeBand(index: number): void {
@@ -229,7 +254,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
   private _unknownChanged(ev: CustomEvent): void {
     ev.stopPropagation();
     this._rememberType('unknown', ev.detail.value);
-    this._update({ unknown: fromFormStyle(ev.detail.value, this.fields, this.config?.unknown, this._base()) });
+    this._update({ unknown: fromFormStyle(ev.detail.value, this.fields, this.config?.unknown, this._base(), true) });
   }
 
   static styles = css`

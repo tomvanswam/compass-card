@@ -38,7 +38,7 @@ export class CompassCardHeaderEditor extends LitElement {
         .schema=${[{ name: 'value', selector: valueSelector }, showColorRow()]}
         .computeLabel=${(schema: { name: string }) => (schema.name === 'value' ? localize(label) : localize(`editor.fields.${schema.name}`) || schema.name)}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
-        .baseShow=${this._show(part)}
+        .base=${{ color: this.config?.[part]?.color, show: this._show(part) }}
         @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
         @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>

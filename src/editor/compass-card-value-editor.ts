@@ -75,7 +75,7 @@ export class CompassCardValueEditor extends LitElement {
         .computeLabel=${CompassCardValueEditor._computeLabel}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
-        .baseShow=${this._baseShow(part)}
+        .base=${{ color: this.config?.[part]?.color, show: this._baseShow(part) }}
         .ownSensor=${true}
         @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
         @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}

@@ -57,7 +57,7 @@ export class CompassCardCompassEditor extends LitElement {
         .computeLabel=${CompassCardCompassEditor._computeLabel}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
-        .baseShow=${this._isShown(part)}
+        .base=${{ background_image: this.config?.circle?.background_image, color: this.config?.[part]?.color, show: this._isShown(part) }}
         @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
         @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>

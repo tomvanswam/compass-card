@@ -113,7 +113,52 @@ describe('compass-card-editor', () => {
     await dynamic.updateComplete;
     shadow(dynamic, 'ha-button').click();
     await tick();
-    expect(changes.at(-1)?.compass).toEqual({ north: { dynamic_style: { bands: [{ from_value: 0 }] } } });
+    // the new band starts with the element's own values (north is hidden by default)
+    expect(changes.at(-1)?.compass).toEqual({ north: { dynamic_style: { bands: [{ from_value: 0, show: false }] } } });
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function dynamicEditor(owner: any) {
+    const part = shadow(owner, 'compass-card-part-editor');
+    await part.updateComplete;
+    const dynamic = shadow(part, 'compass-card-dynamic-style-editor');
+    await dynamic.updateComplete;
+    return dynamic;
+  }
+
+  it('prefills a new band with the values of the band before it', async () => {
+    const { changes, editor } = await createEditor(cardConfig({ compass: { north: { color: 'blue', show: true } } }));
+    const compass = shadow(editor, 'compass-card-compass-editor');
+    await compass.updateComplete;
+    let dynamic = await dynamicEditor(compass);
+    shadow(dynamic, 'ha-button').click();
+    await tick();
+    expect(changes.at(-1)?.compass?.north?.dynamic_style?.bands).toEqual([{ color: 'blue', from_value: 0, show: true }]);
+    // change the first band, then add a second one: it copies the first band
+    dynamic = await dynamicEditor(compass);
+    await changeForm(shadow(dynamic, '.band ha-form'), { color: 'red', show: false }, dynamic);
+    dynamic = await dynamicEditor(compass);
+    shadow(dynamic, 'ha-button').click();
+    await tick();
+    expect(changes.at(-1)?.compass?.north?.dynamic_style?.bands).toEqual([
+      { color: 'red', from_value: 0, show: false },
+      { color: 'red', from_value: 1, show: false },
+    ]);
+  });
+
+  it('prefills an indicator band with the indicator image, opacity, size and radius', async () => {
+    const { changes, editor } = await createEditor(cardConfig({ indicator_sensors: [{ indicator: { color: 'green', image: 'mdi:home', size: 25 }, sensor: 'sun.sun' }] }));
+    const row = shadow(editor, 'compass-card-sensor-row-editor');
+    await row.updateComplete;
+    shadow(row, '.edit-icon').click();
+    await tick();
+    await editor.updateComplete;
+    const detail = shadow(editor, 'compass-card-indicator-editor');
+    await detail.updateComplete;
+    const dynamic = await dynamicEditor(detail);
+    shadow(dynamic, 'ha-button').click();
+    await tick();
+    expect(changes.at(-1)?.indicator_sensors[0].indicator.dynamic_style?.bands).toEqual([{ color: 'green', from_value: 0, image: 'mdi:home', opacity: 1, radius: 62, show: true, size: 25 }]);
   });
 
   it('shows a newly entered header title without writing show', async () => {

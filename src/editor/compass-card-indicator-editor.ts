@@ -7,11 +7,11 @@ import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPerce
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { html, LitElement, TemplateResult } from 'lit';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
+import { StyleBase, StyleField } from './compass-card-dynamic-style-editor';
 import { CCIndicatorSensorConfig } from './editorTypes';
 import { INDEX_ELEMENT_0 } from '../const';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
-import { StyleField } from './compass-card-dynamic-style-editor';
 
 // Parts of an indicator sensor, each with its own block; fields are the dynamic style options the card uses for it
 type IndicatorPart = 'indicator' | 'state_abbreviation' | 'state_units' | 'state_value';
@@ -89,9 +89,7 @@ export class CompassCardIndicatorEditor extends LitElement {
         .computeLabel=${CompassCardIndicatorEditor._computeLabel}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
-        .baseShow=${this._baseShow(part)}
-        .baseOpacity=${this.config?.indicator?.opacity ?? CONFIG_DEFAULTS.indicator_sensor.indicator.opacity}
-        .baseImage=${this.config?.indicator?.image || CONFIG_DEFAULTS.indicator_sensor.indicator.image}
+        .base=${this._styleBase(part)}
         .ownSensor=${true}
         @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
         @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
@@ -183,6 +181,20 @@ export class CompassCardIndicatorEditor extends LitElement {
     const newConfig: CCIndicatorSensorConfig = { ...this.config };
     setOrDelete(newConfig, 'tap_action', actionFromData(ev.detail.value.tap_action, this.config.tap_action));
     this._fire(newConfig);
+  }
+
+  // Effective options of a part without dynamic style; the indicator's image, opacity, size and radius apply to all parts
+  private _styleBase(part: IndicatorPart): StyleBase {
+    const indicator = this.config?.indicator;
+    const defaults = CONFIG_DEFAULTS.indicator_sensor.indicator;
+    return {
+      color: this.config?.[part]?.color,
+      image: indicator?.image || defaults.image,
+      opacity: indicator?.opacity ?? defaults.opacity,
+      radius: indicator?.radius ?? defaults.radius,
+      show: this._baseShow(part),
+      size: indicator?.size || defaults.size,
+    };
   }
 
   // Default visibility of a part, as in getIndicatorSensor() in objectHelpers.ts
