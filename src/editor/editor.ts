@@ -16,40 +16,28 @@ import './compass-card-part-editor';
 import './compass-card-value-editor';
 import './compass-card-sensor-row-editor';
 
-interface CardHelpers {
-  // eslint-disable-next-line no-unused-vars
-  importMoreInfoControl(type: string): void;
-}
+// Elements of Home Assistant the editor uses directly; the selectors inside ha-form are loaded by ha-form itself
+const HA_ELEMENTS = ['ha-form', 'ha-entity-picker', 'ha-expansion-panel', 'ha-sortable'];
 
 @customElement('compass-card-editor')
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @state() private _helpers?: CardHelpers;
+  @state() private _elementsLoaded = false;
   @state() private _config?: CompassCardConfig;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @state() private _subElementEditorConfig?: any;
-  private _initialized = false;
 
   public setConfig(config: CompassCardConfig): void {
     this._config = config;
-    this.loadCardHelpers();
-  }
-
-  protected shouldUpdate(): boolean {
-    if (!this._initialized) {
-      this._initialize();
+    if (!this._elementsLoaded) {
+      this._loadHaElements();
     }
-
-    return true;
   }
 
   protected render(): TemplateResult | void {
-    if (!this.hass || !this._helpers || !this._config) {
+    if (!this.hass || !this._elementsLoaded || !this._config) {
       return html``;
     }
-
-    // The climate more-info has ha-switch and paper-dropdown-menu elements that are lazy loaded unless explicitly done here
-    this._helpers.importMoreInfoControl('climate');
 
     if (this._subElementEditorConfig) {
       if (this._subElementEditorConfig.type === 'indicator') {
@@ -75,13 +63,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       }
     }
 
-    // Force load of ha-entity-picker by using it in a hidden ha-form
-    const forceLoadSchema = [{ name: 'dummy_conf', selector: { entity: {} } }];
-
     return html`
-      <div style="display: none">
-        <ha-form .hass=${this.hass} .data=${{}} .schema=${forceLoadSchema}></ha-form>
-      </div>
       <compass-card-header-editor
         .hass=${this.hass}
         .config=${this._config.header}
@@ -252,16 +234,16 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     this._updateConfig(ev, (config) => setOrDelete(config, key, value, defaultValue));
   }
 
-  private _initialize(): void {
-    if (this.hass === undefined) return;
-    if (this._config === undefined) return;
-    if (this._helpers === undefined) return;
-    this._initialized = true;
-  }
-
-  private async loadCardHelpers(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this._helpers = await (window as any).loadCardHelpers();
+  // Home Assistant loads its editor elements lazily. When they are not there yet, opening the editor of a built-in
+  // card (entities) loads them, the documented way for custom card editors.
+  private async _loadHaElements(): Promise<void> {
+    if (HA_ELEMENTS.some((element) => !customElements.get(element))) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const helpers = await (window as any).loadCardHelpers?.();
+      const card = await helpers?.createCardElement?.({ entities: [], type: 'entities' });
+      await card?.constructor?.getConfigElement?.();
+    }
+    this._elementsLoaded = true;
   }
 
   static get styles(): CSSResult {
