@@ -7,11 +7,11 @@ import { CSSResult, html, LitElement, nothing, PropertyValues, svg, SVGTemplateR
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
 import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
+import { localize, setHassLanguage } from './localize/localize.js';
 import { CONFIG_DEFAULTS } from './defaults.js';
 import { debugLog } from './utils/debug.js';
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
-import { localize } from './localize/localize.js';
 import { mdiCompass } from '@mdi/js';
 import style from './style.js';
 
@@ -138,6 +138,7 @@ export class CompassCard extends LitElement {
 
   set hass(hass: HomeAssistant) {
     this._hass = hass;
+    setHassLanguage(hass.locale?.language ?? hass.language);
     this.updateConfig(this._hass, this._config);
   }
 

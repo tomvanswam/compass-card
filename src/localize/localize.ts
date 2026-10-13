@@ -46,11 +46,28 @@ export const languages: any = {
 };
 export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
 
+// Home Assistant language codes that have a translation under another name
+const LANGUAGE_ALIASES: Record<string, string> = { cs: 'cz', nb: 'no', nn: 'no', zh_hant: 'tw', zh_tw: 'tw' };
+
+// The language of the Home Assistant user, set by the card and the editor from hass
+let hassLanguage: string | undefined;
+
+export function setHassLanguage(language: string | undefined): void {
+  hassLanguage = language;
+}
+
+// Translation for a language code like 'nl', 'pt-BR' or 'zh-Hant', or undefined when there is none
+export function resolveLanguage(code: string | null | undefined): string | undefined {
+  if (!code) return undefined;
+  const normalized = code.replace(/['"]+/g, '').replace('-', '_').toLowerCase();
+  const [base] = normalized.split('_');
+  return [normalized, LANGUAGE_ALIASES[normalized], base, LANGUAGE_ALIASES[base]].find((candidate) => candidate && languages[candidate]);
+}
+
+// Language of the Home Assistant user (hass.locale), then the browser's stored HA language, then English
 export function getLocalLanguage(): string {
-  if (typeof localStorage !== 'undefined') {
-    return (localStorage.getItem('selectedLanguage') || 'en').replace(/['"]+/g, '').replace('-', '_');
-  }
-  return 'en'; // fallback for non-browser environments
+  const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('selectedLanguage') : undefined;
+  return resolveLanguage(hassLanguage) ?? resolveLanguage(stored) ?? 'en';
 }
 
 function lookup(string: string, language: string): string | undefined {

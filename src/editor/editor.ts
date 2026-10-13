@@ -1,7 +1,7 @@
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { CCIndicatorSensorConfig, CompassCardConfig } from './editorTypes';
-import { COMPASS_LANGUAGES, localize } from '../localize/localize.js';
-import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
+import { COMPASS_LANGUAGES, localize, setHassLanguage } from '../localize/localize.js';
+import { css, CSSResult, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { fireEvent, HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
@@ -31,6 +31,13 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     this._config = config;
     if (!this._elementsLoaded) {
       this._loadHaElements();
+    }
+  }
+
+  // Labels follow the language of the Home Assistant user
+  protected willUpdate(changed: PropertyValues): void {
+    if (changed.has('hass') && this.hass) {
+      setHassLanguage(this.hass.locale?.language ?? this.hass.language);
     }
   }
 
