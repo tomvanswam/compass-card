@@ -7,7 +7,7 @@ function keyPaths(obj: Record<string, unknown>, prefix = ''): string[] {
 }
 
 // the json modules come as namespace objects; the translations are their default export
-const table = (lang: string): Record<string, unknown> => languages[lang].default ?? languages[lang];
+const table = (lang: string): Record<string, unknown> => (languages[lang].default ?? languages[lang]) as Record<string, unknown>;
 
 describe('localize', () => {
   it('translates and falls back to English for empty or missing translations', () => {

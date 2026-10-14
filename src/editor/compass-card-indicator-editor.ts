@@ -2,13 +2,15 @@
 
 import { abbreviationShowDefault, CONFIG_DEFAULTS } from '../defaults';
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
+import { CompassCardEvent, fireEvent } from '../utils/events';
 import { customElement, property, state } from 'lit/decorators.js';
 import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { html, LitElement, TemplateResult } from 'lit';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
 import { StyleBase, StyleField } from './compass-card-dynamic-style-editor';
 import { CCIndicatorSensorConfig } from './editorTypes';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { INDEX_ELEMENT_0 } from '../const';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
@@ -91,8 +93,8 @@ export class CompassCardIndicatorEditor extends LitElement {
         .fields=${fields}
         .base=${this._styleBase(part)}
         .ownSensor=${true}
-        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+        @part-changed=${(ev: CompassCardEvent<'part-changed'>) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CompassCardEvent<'dynamic-style-changed'>) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>
     `;
   }
@@ -132,8 +134,7 @@ export class CompassCardIndicatorEditor extends LitElement {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLabel(schema: any): string {
+  private static _computeLabel(schema: HaFormSchemaItem): string {
     return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.fields.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
   }
 
@@ -141,7 +142,7 @@ export class CompassCardIndicatorEditor extends LitElement {
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
-  private _generalChanged(ev: CustomEvent): void {
+  private _generalChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -155,7 +156,7 @@ export class CompassCardIndicatorEditor extends LitElement {
   }
 
   // Values equal to the card defaults are left out of the YAML; the image is always kept explicit
-  private _partChanged(part: IndicatorPart, ev: CustomEvent): void {
+  private _partChanged(part: IndicatorPart, ev: CompassCardEvent<'part-changed'>): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -173,7 +174,7 @@ export class CompassCardIndicatorEditor extends LitElement {
     this._fire(newConfig);
   }
 
-  private _tapActionChanged(ev: CustomEvent): void {
+  private _tapActionChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -207,7 +208,7 @@ export class CompassCardIndicatorEditor extends LitElement {
     return this.config?.[part]?.show ?? this._showDefault(part);
   }
 
-  private _dynamicStyleChanged(part: IndicatorPart, ev: CustomEvent): void {
+  private _dynamicStyleChanged(part: IndicatorPart, ev: CompassCardEvent<'dynamic-style-changed'>): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -223,7 +224,7 @@ export class CompassCardIndicatorEditor extends LitElement {
   }
 
   private _goBack(): void {
-    fireEvent(this, 'go-back');
+    fireEvent(this, 'go-back', {});
   }
 
   static styles = detailEditorStyles;

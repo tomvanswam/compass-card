@@ -323,12 +323,12 @@ export function getValueSensors(config: CompassCardConfig, colors: CCColors, ent
   return sensors;
 }
 
-export function isNumeric(str: string): boolean {
-  if (typeof str !== 'string' && typeof str !== 'number') return false;
-  return !isNaN(Number(str)) && !isNaN(parseFloat(str));
+export function isNumeric(value: unknown): boolean {
+  if (typeof value !== 'string' && typeof value !== 'number') return false;
+  return !isNaN(Number(value)) && !isNaN(parseFloat(String(value)));
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function resolveAttrPath(obj: any, path: string): any {
+ 
+export function resolveAttrPath(obj: unknown, path: string): unknown {
   if (obj === null || typeof path !== 'string') return undefined;
 
   const tokens: string[] = [];
@@ -340,12 +340,12 @@ export function resolveAttrPath(obj: any, path: string): any {
     tokens.push(fullMatch);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return tokens.reduce<any>((acc, k) => (acc === null ? undefined : acc[k]), obj);
+  return tokens.reduce<unknown>((acc, k) => (acc === null || acc === undefined ? undefined : (acc as Record<string, unknown>)[k]), obj);
 }
 
-export function findValues(obj: CompassCardConfig, entities: HassEntities, debug: boolean, root = ''): string[] {
-  const active = [obj];
+// Entity ids of all sensor (and sensor + attribute) options in a (part of the) configuration that exist in Home Assistant
+export function findValues(obj: object, entities: HassEntities, debug: boolean, root = ''): string[] {
+  const active = [obj as Record<string, unknown>];
   let found: string[] = [];
   for (let currentElement = 0; currentElement < active.length; currentElement++) {
     const currentKeys = Object.keys(active[currentElement]);
@@ -360,13 +360,13 @@ export function findValues(obj: CompassCardConfig, entities: HassEntities, debug
       }
       switch (currentKey) {
         case 'sensor':
-          if (entities[currentValue]) {
-            found.push(currentValue);
+          if (entities[String(currentValue)]) {
+            found.push(String(currentValue));
           } else debugWarn(debug, `configuration: ${name} (${currentValue}) is invalid`);
           break;
 
         case 'attribute': {
-          const sensor = active[currentElement]?.sensor;
+          const sensor = String(active[currentElement]?.sensor ?? '');
           const entity = entities?.[sensor];
           const path = String(currentValue).trim();
           const attrs = entity?.attributes;

@@ -1,11 +1,13 @@
 
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
+import { CompassCardEvent, fireEvent } from '../utils/events';
 import { customElement, property } from 'lit/decorators.js';
 import { detailEditorStyles, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { html, LitElement, TemplateResult } from 'lit';
 import { CCValueSensorConfig } from './editorTypes';
 import { CONFIG_DEFAULTS } from '../defaults';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { localize } from '../localize/localize';
 import { mdiArrowLeft } from '@mdi/js';
 import { StyleField } from './compass-card-dynamic-style-editor';
@@ -77,8 +79,8 @@ export class CompassCardValueEditor extends LitElement {
         .fields=${fields}
         .base=${{ color: this.config?.[part]?.color, show: this._baseShow(part) }}
         .ownSensor=${true}
-        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+        @part-changed=${(ev: CompassCardEvent<'part-changed'>) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CompassCardEvent<'dynamic-style-changed'>) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>
     `;
   }
@@ -92,7 +94,7 @@ export class CompassCardValueEditor extends LitElement {
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
-  private _generalChanged(ev: CustomEvent): void {
+  private _generalChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     const data = ev.detail.value;
     const newConfig: CCValueSensorConfig = { ...this.config, sensor: data.sensor || '' };
@@ -103,7 +105,7 @@ export class CompassCardValueEditor extends LitElement {
   }
 
   // Values equal to the card defaults are left out of the YAML
-  private _partChanged(part: ValuePart, ev: CustomEvent): void {
+  private _partChanged(part: ValuePart, ev: CompassCardEvent<'part-changed'>): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -114,7 +116,7 @@ export class CompassCardValueEditor extends LitElement {
     this._fire(newConfig);
   }
 
-  private _tapActionChanged(ev: CustomEvent): void {
+  private _tapActionChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -124,12 +126,11 @@ export class CompassCardValueEditor extends LitElement {
     this._fire(newConfig);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLabel(schema: any): string {
+  private static _computeLabel(schema: HaFormSchemaItem): string {
     return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.fields.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
   }
 
-  private _dynamicStyleChanged(part: ValuePart, ev: CustomEvent): void {
+  private _dynamicStyleChanged(part: ValuePart, ev: CompassCardEvent<'dynamic-style-changed'>): void {
     ev.stopPropagation();
     if (!this.config) {
       return;
@@ -140,7 +141,7 @@ export class CompassCardValueEditor extends LitElement {
   }
 
   private _goBack(): void {
-    fireEvent(this, 'go-back');
+    fireEvent(this, 'go-back', {});
   }
 
   static styles = detailEditorStyles;

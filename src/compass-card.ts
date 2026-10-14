@@ -23,7 +23,7 @@ import style from './style.js';
 declare global {
   interface Window {
     customCards: Array<{ type: string; name: string; description: string; preview: boolean }>;
-    loadCardHelpers: () => unknown;
+    loadCardHelpers?: () => Promise<unknown>;
   }
 }
 
@@ -334,15 +334,14 @@ export class CompassCard extends LitElement {
   private static async loadIconPath(icon: string): Promise<string | undefined> {
     const ICON_POLL_MS = 50;
     const ICON_POLL_TRIES = 100;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const el = document.createElement('ha-icon') as any;
+    const el = document.createElement('ha-icon') as HTMLElement & { icon: string; updateComplete: Promise<unknown> };
     el.icon = icon;
     el.style.display = 'none';
     document.body.appendChild(el);
     try {
       for (let i = 0; i < ICON_POLL_TRIES; i++) {
         await el.updateComplete;
-        const path = el.shadowRoot?.querySelector('ha-svg-icon')?.path as string | undefined;
+        const path = (el.shadowRoot?.querySelector('ha-svg-icon') as (Element & { path?: string }) | null | undefined)?.path;
         if (path) {
           CompassCard.iconPaths.set(icon, path);
           return path;

@@ -1,14 +1,10 @@
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { fireEvent, SensorRow, SubElementConfig } from '../utils/events';
 import { INDEX_ELEMENT_0, INDEX_ELEMENT_1, NO_ELEMENTS } from '../const';
 import { mdiClose, mdiDragHorizontalVariant, mdiPencil } from '@mdi/js';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { repeat } from 'lit/directives/repeat.js';
-
-// The part of a sensor configuration this list edits; the rest is kept as is
-interface SensorRow {
-  sensor: string;
-}
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -27,7 +23,7 @@ export class CompassCardSensorRowEditor extends LitElement {
   @property({ attribute: false }) public entities?: SensorRow[];
   @property() public label?: string;
   // Detail editor type passed with 'edit-detail-element'
-  @property() public type = '';
+  @property() public type: SubElementConfig['type'] = 'indicator';
   // The first rows that cannot be removed
   @property({ attribute: false }) public fixedRows = NO_ELEMENTS;
   // Maximum number of rows; the add picker is replaced by limitMessage when reached
@@ -102,28 +98,26 @@ export class CompassCardSensorRowEditor extends LitElement {
     `;
   }
 
-  private _valueChanged(ev: CustomEvent): void {
+  private _valueChanged(ev: CustomEvent<{ value?: string }>): void {
     const { value } = ev.detail;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { index } = ev.target as any;
+    const { index } = ev.target as HTMLElement & { index: number };
     const newConfigEntities = [...(this.entities || [])];
     // Don't delete on empty, just update. User can delete with X button.
     newConfigEntities[index] = { ...newConfigEntities[index], sensor: value || '' };
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
 
-  private _addEntity(ev: CustomEvent): void {
+  private _addEntity(ev: CustomEvent<{ value?: string }>): void {
     const { value } = ev.detail;
     const entities = this.entities || [];
     if (value === '' || entities.length >= this.maxRows) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (ev.target as any).value = '';
+    (ev.target as HTMLElement & { value: string }).value = '';
     fireEvent(this, 'entities-changed', { entities: entities.concat(this.newRow ? this.newRow(value as string) : { sensor: value as string }) });
   }
 
-  private _rowMoved(ev: CustomEvent): void {
+  private _rowMoved(ev: CustomEvent<{ newIndex: number; oldIndex: number }>): void {
     ev.stopPropagation();
     const { oldIndex, newIndex } = ev.detail;
     const newEntities = (this.entities || []).concat();

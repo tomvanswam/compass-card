@@ -20,8 +20,8 @@ import * as sv from './languages/sv.json' with { type: 'json' };
 import * as tw from './languages/tw.json' with { type: 'json' };
 import * as uk from './languages/uk.json' with { type: 'json' };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const languages: any = {
+// Translation tables per language (the json modules)
+export const languages: Record<string, Record<string, unknown>> = {
   bg: bg,
   ca: ca,
   cz: cz,
@@ -71,8 +71,7 @@ export function getLocalLanguage(): string {
 }
 
 function lookup(string: string, language: string): string | undefined {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const value = string.split('.').reduce((o: any, i) => o?.[i], languages[language]);
+  const value = string.split('.').reduce<unknown>((o, i) => (o as Record<string, unknown> | undefined)?.[i], languages[language]);
   return typeof value === 'string' ? value : undefined;
 }
 
