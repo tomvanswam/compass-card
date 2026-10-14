@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
-import { activeColor, activeOpacity, activeSize, getActiveBand, isVisible } from '../render/activeStyle';
+import { activeBackgroundImage, activeColor, activeImage, activeOpacity, activeRadius, activeSize, getActiveStyle, isVisible } from '../render/activeStyle';
 import { ARROW_ART, CIRCLE } from '../const';
 import { arrowTransform, circleTransform, svgIconIndicator, svgImageIndicator } from '../render/indicators';
 import { cardConfig, COLORS, ENTITIES } from './fixtures';
 import { describe, expect, it } from 'vitest';
+import { getCompass, getIndicatorSensors } from '../utils/objectHelpers';
 import { getCompassAbbreviation, getValue, parseDirection, positiveDegrees } from '../render/direction';
 import { render, SVGTemplateResult } from 'lit';
 import { svgTicks, tickLevel, tickLines } from '../render/compass';
 import { CCTicks } from '../cardTypes';
-import { getIndicatorSensors } from '../utils/objectHelpers';
 
 // The pure render functions of the card: positions in the 152x152 viewBox, scale, direction and active style
 
@@ -124,9 +124,11 @@ describe('direction', () => {
 });
 
 describe('active style', () => {
-  // wind speed is 11
-  const indicatorWithBands = (bands: object[], sensor = 'input_number.wind_speed') =>
-    getIndicatorSensors(cardConfig({ indicator_sensors: [{ indicator: { dynamic_style: { bands, sensor } }, sensor: 'input_number.wind_direction_1' }] } as never), COLORS, ENTITIES)[0].indicator;
+  // wind speed is 11; the unavailable sensor has no number
+  const entities = { ...ENTITIES, 'input_number.broken': { ...ENTITIES['input_number.wind_speed'], entity_id: 'input_number.broken', state: 'unavailable' } };
+  const indicatorWithStyle = (dynamicStyle: object) =>
+    getIndicatorSensors(cardConfig({ indicator_sensors: [{ indicator: { dynamic_style: dynamicStyle, image: 'arrow_outward', opacity: 0.8, radius: 40, size: 20 }, sensor: 'input_number.wind_direction_1' }] } as never), COLORS, entities)[0].indicator;
+  const indicatorWithBands = (bands: object[], sensor = 'input_number.wind_speed') => indicatorWithStyle({ bands, sensor });
 
   it('uses the band with the highest from_value at or below the sensor value', () => {
     const indicator = indicatorWithBands([
@@ -134,22 +136,69 @@ describe('active style', () => {
       { color: 'orange', from_value: 10 },
       { color: 'red', from_value: 20 },
     ]);
-    expect(getActiveBand(indicator, ENTITIES)?.color).toBe('orange');
-    expect(activeColor(indicator, ENTITIES)).toBe('orange');
+    expect(getActiveStyle(indicator, entities)?.color).toBe('orange');
+    expect(activeColor(indicator, entities)).toBe('orange');
   });
 
-  it('keeps the own style below the first band and for a non-numeric sensor', () => {
+  it('keeps the own style below the first band', () => {
     const below = indicatorWithBands([{ color: 'red', from_value: 20 }]);
-    expect(getActiveBand(below, ENTITIES)).toBeUndefined();
-    expect(activeColor(below, ENTITIES)).toBe(below.color);
-    const text = indicatorWithBands([{ color: 'red', from_value: 0 }], 'sun.sun');
-    expect(getActiveBand(text, ENTITIES)).toBeUndefined();
+    expect(getActiveStyle(below, entities)).toBeUndefined();
+    expect(activeColor(below, entities)).toBe(below.color);
   });
 
   it('respects 0 and false in the active band', () => {
     const indicator = indicatorWithBands([{ from_value: 10, opacity: 0, show: false, size: 0 }]);
-    expect(activeSize(indicator, ENTITIES)).toBe(0);
-    expect(activeOpacity(indicator, ENTITIES)).toBe(0);
-    expect(isVisible(indicator, ENTITIES)).toBe(false);
+    expect(activeSize(indicator, entities)).toBe(0);
+    expect(activeOpacity(indicator, entities)).toBe(0);
+    expect(isVisible(indicator, entities)).toBe(false);
+  });
+
+  it('uses the unknown style when the value is not a number', () => {
+    const unknown = { color: 'grey', image: 'circle', opacity: 0.4, radius: 30, size: 10 };
+    for (const sensor of ['input_number.broken', 'sensor.does_not_exist', 'sun.sun']) {
+      const indicator = indicatorWithStyle({ bands: [{ color: 'red', from_value: 0 }], sensor, unknown });
+      expect(activeColor(indicator, entities)).toBe('grey');
+      expect(activeImage(indicator, entities)).toBe('circle');
+      expect(activeOpacity(indicator, entities)).toBe(0.4);
+      expect(activeRadius(indicator, entities)).toBe(30);
+      expect(activeSize(indicator, entities)).toBe(10);
+    }
+    // also without bands, and not for a number
+    expect(activeColor(indicatorWithStyle({ sensor: 'input_number.broken', unknown }), entities)).toBe('grey');
+    expect(activeColor(indicatorWithStyle({ sensor: 'input_number.wind_speed', unknown }), entities)).not.toBe('grey');
+  });
+
+  it('respects 0 and false in the unknown style', () => {
+    const indicator = indicatorWithStyle({ sensor: 'input_number.broken', unknown: { opacity: 0, radius: 0, show: false, size: 0 } });
+    expect(isVisible(indicator, entities)).toBe(false);
+    expect(activeOpacity(indicator, entities)).toBe(0);
+    expect(activeRadius(indicator, entities)).toBe(0);
+    expect(activeSize(indicator, entities)).toBe(0);
+  });
+
+  it('falls back to the own style for what the unknown style does not set', () => {
+    const own = indicatorWithStyle({ sensor: 'input_number.broken', unknown: { color: 'grey' } });
+    expect(activeColor(own, entities)).toBe('grey');
+    expect(isVisible(own, entities)).toBe(own.show);
+    expect(activeImage(own, entities)).toBe(own.image);
+    expect(activeOpacity(own, entities)).toBe(0.8);
+    expect(activeRadius(own, entities)).toBe(40);
+    expect(activeSize(own, entities)).toBe(20);
+    // no unknown style at all: the own style
+    const plain = indicatorWithStyle({ bands: [{ color: 'red', from_value: 0 }], sensor: 'input_number.broken' });
+    expect(activeColor(plain, entities)).toBe(plain.color);
+    expect(activeSize(plain, entities)).toBe(20);
+  });
+
+  it('uses the unknown style for texts and the circle background', () => {
+    const [sensor] = getIndicatorSensors(
+      cardConfig({ indicator_sensors: [{ sensor: 'input_number.broken', state_value: { dynamic_style: { unknown: { color: 'grey', show: false } } } }] } as never),
+      COLORS,
+      entities,
+    );
+    expect(activeColor(sensor.state_value, entities)).toBe('grey');
+    expect(isVisible(sensor.state_value, entities)).toBe(false);
+    const { circle } = getCompass(cardConfig({ compass: { circle: { background_image: '/local/a.png', dynamic_style: { sensor: 'input_number.broken', unknown: { background_image: '/local/unknown.png' } } } } } as never), COLORS, entities);
+    expect(activeBackgroundImage(circle, entities)).toBe('/local/unknown.png');
   });
 });

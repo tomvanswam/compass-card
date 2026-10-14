@@ -54,7 +54,7 @@ Options left at their default value are not written to the YAML.
 
 ### Dynamic style
 
-Every part can change its color, visibility and (for indicators and the circle) image, size, radius, opacity or background image depending on the value of an entity. Each band applies from its `from_value` up to the next band.
+Every part can change its color, visibility and (for indicators and the circle) image, size, radius, opacity or background image depending on the value of an entity. Each band applies from its `from_value` up to the next band. When the value is not a number (for example `unknown` or `unavailable`), the `unknown` style applies; options it does not set keep the element's own style.
 
 When a dynamic style has no `sensor` of its own, its entity is chosen in this order:
 
