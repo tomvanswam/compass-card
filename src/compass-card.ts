@@ -340,15 +340,15 @@ export class CompassCard extends LitElement {
     return this.getActiveBand(properties)?.color || properties.color;
   }
   private getSize(properties: CCIndicator): number {
-    return this.getActiveBand(properties)?.size || properties.size;
+    return this.getActiveBand(properties)?.size ?? properties.size;
   }
 
   private getRadius(properties: CCIndicator): number {
-    return this.getActiveBand(properties)?.radius || properties.radius;
+    return this.getActiveBand(properties)?.radius ?? properties.radius;
   }
 
   private getOpacity(properties: CCIndicator): number {
-    return this.getActiveBand(properties)?.opacity || properties.opacity;
+    return this.getActiveBand(properties)?.opacity ?? properties.opacity;
   }
 
   private getBackgroundImage(properties: CCCircle): string {
