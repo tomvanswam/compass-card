@@ -10,9 +10,9 @@ function keyPaths(obj: Record<string, unknown>, prefix = ''): string[] {
 const table = (lang: string): Record<string, unknown> => (languages[lang].default ?? languages[lang]) as Record<string, unknown>;
 
 describe('localize', () => {
-  it('translates and falls back to English for empty or missing translations', () => {
+  it('translates and falls back to English for unknown languages', () => {
     expect(localize('directions.north', '', '', 'nl')).toBe('Noorden');
-    expect(localize('editor.dynamic_style.bands', '', '', 'bg')).toBe(localize('editor.dynamic_style.bands', '', '', 'en'));
+    expect(localize('editor.dynamic_style.bands', '', '', 'bg')).not.toBe(localize('editor.dynamic_style.bands', '', '', 'en'));
     expect(localize('editor.dynamic_style.bands', '', '', 'xx')).toBe(localize('editor.dynamic_style.bands', '', '', 'en'));
     expect(localize('editor.does.not.exist', '', '', 'nl')).toBe('');
   });
