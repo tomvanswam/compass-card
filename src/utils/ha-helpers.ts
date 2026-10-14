@@ -15,6 +15,7 @@ export interface HomeAssistant {
     panels: any;
     panelUrl: string;
     language: string;
+    locale?: { language: string };
     resources: any;
     localize: (key: string, ...args: any[]) => string;
     translationMetadata: any;

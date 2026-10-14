@@ -46,11 +46,34 @@ export const languages: any = {
 };
 export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
 
+// Home Assistant language codes that have a translation under another name
+const LANGUAGE_ALIASES: Record<string, string> = { cs: 'cz', nb: 'no', nn: 'no', zh_hant: 'tw', zh_tw: 'tw' };
+
+// The language of the Home Assistant user, set by the card and the editor from hass
+let hassLanguage: string | undefined;
+
+export function setHassLanguage(language: string | undefined): void {
+  hassLanguage = language;
+}
+
+// Translation for a language code like 'nl', 'pt-BR' or 'zh-Hant', or undefined when there is none
+export function resolveLanguage(code: string | null | undefined): string | undefined {
+  if (!code) return undefined;
+  const normalized = code.replace(/['"]+/g, '').replace('-', '_').toLowerCase();
+  const [base] = normalized.split('_');
+  return [normalized, LANGUAGE_ALIASES[normalized], base, LANGUAGE_ALIASES[base]].find((candidate) => candidate && languages[candidate]);
+}
+
+// Language of the Home Assistant user (hass.locale), then the browser's stored HA language, then English
 export function getLocalLanguage(): string {
-  if (typeof localStorage !== 'undefined') {
-    return (localStorage.getItem('selectedLanguage') || 'en').replace(/['"]+/g, '').replace('-', '_');
-  }
-  return 'en'; // fallback for non-browser environments
+  const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('selectedLanguage') : undefined;
+  return resolveLanguage(hassLanguage) ?? resolveLanguage(stored) ?? 'en';
+}
+
+function lookup(string: string, language: string): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const value = string.split('.').reduce((o: any, i) => o?.[i], languages[language]);
+  return typeof value === 'string' ? value : undefined;
 }
 
 export function localize(string: string, search = '', replace = '', language = ''): string {
@@ -62,13 +85,8 @@ export function localize(string: string, search = '', replace = '', language = '
   } else {
     translateTo = language;
   }
-  try {
-    translated = string.split('.').reduce((o, i) => o[i], languages[translateTo]);
-  } catch {
-    translated = string.split('.').reduce((o, i) => o[i], languages.en);
-  }
-
-  if (translated === undefined) translated = string.split('.').reduce((o, i) => o[i], languages.en);
+  // Empty or missing translations (also for unknown languages or missing parent keys) fall back to English
+  translated = lookup(string, translateTo) || lookup(string, 'en') || '';
 
   if (search !== '' && replace !== '') {
     translated = translated.replace(search, replace);

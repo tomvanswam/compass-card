@@ -1,15 +1,17 @@
-import './editor';
-import { ActionConfig, CompassCardConfig, CompassCardConfigStruct } from './editorTypes.js';
+import './editor/editor';
+import { ActionConfig, CompassCardConfig, CompassCardConfigStruct } from './editor/editorTypes.js';
 import { assert, StructError } from 'superstruct';
-import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_ICON_VALUE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE, UNKNOWN_STATES } from './const.js';
+import { CARD_VERSION, CENTER_OBJECT_FACTOR, CIRCLE, COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEFAULT_CARD_SIZE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DEGREES_QRT, ICON_VALUES, INDEX_ELEMENT_0, LENGTH_TO_INDEX, MAJOR_TICK_ANGLE, MAJOR_TICK_INNER_RADIUS_LENGTH, MEDIUM_TICK_INNER_RADIUS_LENGTH, MINOR_TICK_INNER_RADIUS_LENGTH, NO_ELEMENTS, RADIUS_TO_DIAMETER_FACTOR, SVG_SCALE_MAX, SVG_SCALE_MIN, TICKS_OUTER_RADIUS_OFFSET, TICKS_TOLERANCE_DEGREE, UNAVAILABLE, UNKNOWN_STATES } from './const.js';
 import { CCCircle, CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicator, CCIndicatorSensor, CCProperties, CCStyleBand, CCValue, CCValueSensor } from './cardTypes.js';
 import { CSSResult, html, LitElement, nothing, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors, isNumeric, resolveAttrPath } from './utils/objectHelpers.js';
 import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
+import { localize, setHassLanguage } from './localize/localize.js';
+import { CONFIG_DEFAULTS } from './defaults.js';
+import { debugLog } from './utils/debug.js';
 import handleClick from './utils/handleClick.js';
 import { HassEntities } from 'home-assistant-js-websocket';
-import { localize } from './localize/localize.js';
 import { mdiCompass } from '@mdi/js';
 import style from './style.js';
 
@@ -43,13 +45,15 @@ export class CompassCard extends LitElement {
     return document.createElement('compass-card-editor');
   }
 
-  public static getStubConfig(): CompassCardConfig {
+  // Only the entity and image are written explicitly; everything else uses CONFIG_DEFAULTS, which the editor displays as well
+  public static getStubConfig(hass?: HomeAssistant): CompassCardConfig {
+    const windDirection = Object.keys(hass?.states || {}).find((entityId) => entityId.startsWith('sensor.') && hass?.states[entityId].attributes?.device_class === 'wind_direction');
+    const source = windDirection ? { sensor: windDirection } : { attribute: 'azimuth', sensor: 'sun.sun' };
     return {
       indicator_sensors: [
         {
-          attribute: 'azimuth',
-          indicator: { image: DEFAULT_ICON_VALUE },
-          sensor: 'sun.sun',
+          ...source,
+          indicator: { image: CONFIG_DEFAULTS.indicator_sensor.indicator.image },
         },
       ],
       type: 'custom:compass-card',
@@ -95,6 +99,12 @@ export class CompassCard extends LitElement {
           { cause: e },
         );
       }
+      if (last === 'background_image') {
+        throw new Error(
+          `Compass Card: ${err.path.join('.')} should be an image URL (e.g. https://example.com/image.png) or a path starting with / (e.g. /local/image.png). More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`,
+          { cause: e },
+        );
+      }
       throw new Error(`Compass Card: invalid yaml configuration. ${err.message} More info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration`, { cause: e });
     }
 
@@ -128,6 +138,7 @@ export class CompassCard extends LitElement {
 
   set hass(hass: HomeAssistant) {
     this._hass = hass;
+    setHassLanguage(hass.locale?.language ?? hass.language);
     this.updateConfig(this._hass, this._config);
   }
 
@@ -173,14 +184,13 @@ export class CompassCard extends LitElement {
     this.svgScale = this.compass.scale === SVG_SCALE_MIN
       ? Math.min(...allScales.map((scale) => (scale === SVG_SCALE_MIN ? SVG_SCALE_MAX : scale)))
       : this.compass.scale;
-    if (getBoolean(this._config.debug, false)) {
-      console.info('Compass-Card inflated configuration: header', this.header); // eslint-disable-line
-      console.info('Compass-Card inflated configuration: compass', this.compass); // eslint-disable-line
-      console.info('Compass-Card inflated configuration: indicator sensors', this.indicatorSensors); //eslint-disable-line
-      console.info('Compass-Card inflated configuration: value sensors', this.valueSensors); //eslint-disable-line
-      console.info('Compass-Card configuration: listening to entities', this.entities); // eslint-disable-line
-      console.info('Compass-Card configuration: svgScale', this.svgScale); // eslint-disable-line
-    }
+    const debug = getBoolean(this._config.debug, false);
+    debugLog(debug, 'inflated configuration: header', this.header);
+    debugLog(debug, 'inflated configuration: compass', this.compass);
+    debugLog(debug, 'inflated configuration: indicator sensors', this.indicatorSensors);
+    debugLog(debug, 'inflated configuration: value sensors', this.valueSensors);
+    debugLog(debug, 'configuration: listening to entities', this.entities);
+    debugLog(debug, 'configuration: svgScale', this.svgScale);
   }
 
   protected render(): TemplateResult {
@@ -245,7 +255,7 @@ export class CompassCard extends LitElement {
       if (this.getVisibility(indicator.state_abbreviation) || this.getVisibility(indicator.state_value)) {
         const action = this.getSensorAction('indicator_sensors', sensorIndex);
         divs.push(
-          html`<div class="sensor-${index} indicator-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicator.sensor)}>
+          html`<div class="sensor-${index} indicator-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicator.entity?.entity_id)}>
             ${this.getVisibility(indicator.state_abbreviation) ? this.getIndicatorAbbreviation(indicator) : ''}
             ${this.getVisibility(indicator.state_value) ? this.getIndicatorValue(indicator) : ''}
             ${this.getVisibility(indicator.state_units) ? this.getIndicatorUnits(indicator) : ''}
@@ -291,7 +301,7 @@ export class CompassCard extends LitElement {
       if (this.getVisibility(value.state_value)) {
         const action = this.getSensorAction('value_sensors', sensorIndex);
         divs.push(
-          html`<div class="sensor-${index} value-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, value.sensor)}>
+          html`<div class="sensor-${index} value-sensor ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, value.entity?.entity_id)}>
             <span class="value" style="--compass-card-value-value-color: ${this.getColor(value.state_value)};"
               >${this.getVisibility(value.state_value) ? this.getValue(value).value : ''}</span
             >
@@ -330,15 +340,15 @@ export class CompassCard extends LitElement {
     return this.getActiveBand(properties)?.color || properties.color;
   }
   private getSize(properties: CCIndicator): number {
-    return this.getActiveBand(properties)?.size || properties.size;
+    return this.getActiveBand(properties)?.size ?? properties.size;
   }
 
   private getRadius(properties: CCIndicator): number {
-    return this.getActiveBand(properties)?.radius || properties.radius;
+    return this.getActiveBand(properties)?.radius ?? properties.radius;
   }
 
   private getOpacity(properties: CCIndicator): number {
-    return this.getActiveBand(properties)?.opacity || properties.opacity;
+    return this.getActiveBand(properties)?.opacity ?? properties.opacity;
   }
 
   private getBackgroundImage(properties: CCCircle): string {
@@ -489,7 +499,7 @@ export class CompassCard extends LitElement {
 
     // set per-indicator color via CSS variable so presentational attributes move to CSS
     return svg`
-      <g class="indicator-${index} ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicatorSensor.sensor)} transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
+      <g class="indicator-${index} ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicatorSensor.entity?.entity_id)} transform="rotate(${degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${this.getColor(indicatorSensor.indicator)}; --compass-card-indicator-opacity: ${this.getOpacity(indicatorSensor.indicator)}">
         ${indicatorPath}
       </g>
     `;
@@ -760,7 +770,8 @@ export class CompassCard extends LitElement {
     return configured[renderedIndex]?.tap_action;
   }
 
-  private handleSensorClick(e: Event, action: ActionConfig | undefined, entity: string) {
+  // entity is the sensor's own entity id (its `sensor` field includes the attribute, which is no entity), the more-info default
+  private handleSensorClick(e: Event, action: ActionConfig | undefined, entity: string | undefined) {
     if (!action) return;
     e.stopPropagation();
     handleClick(this, this._config, action, entity);
