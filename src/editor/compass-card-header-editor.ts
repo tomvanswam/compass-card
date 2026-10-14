@@ -1,9 +1,10 @@
+import { CompassCardEvent, fireEvent } from '../utils/events';
 import { customElement, property } from 'lit/decorators.js';
 import { editorStyles, setOrDelete, showColorRow, updateObject } from './editorHelpers';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { headerIconShowDefault, headerTitleShowDefault } from '../defaults';
 import { html, LitElement, TemplateResult } from 'lit';
 import { CCHeaderConfig } from './editorTypes';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { localize } from '../localize/localize';
 
 type HeaderPart = 'icon' | 'title';
@@ -39,8 +40,8 @@ export class CompassCardHeaderEditor extends LitElement {
         .computeLabel=${(schema: { name: string }) => (schema.name === 'value' ? localize(label) : localize(`editor.fields.${schema.name}`) || schema.name)}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .base=${{ color: this.config?.[part]?.color, show: this._show(part) }}
-        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+        @part-changed=${(ev: CompassCardEvent<'part-changed'>) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CompassCardEvent<'dynamic-style-changed'>) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>
     `;
     }
@@ -55,7 +56,7 @@ export class CompassCardHeaderEditor extends LitElement {
         return part === 'title' ? headerTitleShowDefault(title) : headerIconShowDefault(icon, title);
     }
 
-    private _partChanged(part: HeaderPart, ev: CustomEvent): void {
+    private _partChanged(part: HeaderPart, ev: CompassCardEvent<'part-changed'>): void {
         ev.stopPropagation();
         const data = ev.detail.value;
         const newConfig: CCHeaderConfig = { ...this.config };
@@ -69,7 +70,7 @@ export class CompassCardHeaderEditor extends LitElement {
         fireEvent(this, 'config-changed', { config: newConfig });
     }
 
-    private _dynamicStyleChanged(part: HeaderPart, ev: CustomEvent): void {
+    private _dynamicStyleChanged(part: HeaderPart, ev: CompassCardEvent<'dynamic-style-changed'>): void {
         ev.stopPropagation();
         const newConfig: CCHeaderConfig = { ...this.config };
         setOrDelete(newConfig, part, updateObject(newConfig[part], { dynamic_style: ev.detail.value }));

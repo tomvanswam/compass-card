@@ -1,6 +1,6 @@
 import { ActionConfig, CompassCardConfig } from '../editor/editorTypes.js';
 import { CompassCard } from '../compass-card.js';
-import { fireEvent } from './ha-helpers.js';
+import { fireEvent } from './events.js';
 
 /**
  * Translate the card's tap_action into a Home Assistant action config, so the

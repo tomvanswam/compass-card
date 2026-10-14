@@ -1,10 +1,12 @@
 import { backgroundOpacityDefault, CONFIG_DEFAULTS } from '../defaults';
+import { CompassCardEvent, fireEvent } from '../utils/events';
 import { customElement, property } from 'lit/decorators.js';
 import { DEGREES_MAX, DEGREES_MIN } from '../const';
 import { editorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { HaFormData, HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { html, LitElement, TemplateResult } from 'lit';
 import { CCCompassConfig } from './editorTypes';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { localize } from '../localize/localize';
 import { StyleField } from './compass-card-dynamic-style-editor';
 
@@ -58,8 +60,8 @@ export class CompassCardCompassEditor extends LitElement {
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
         .base=${{ background_image: this.config?.circle?.background_image, color: this.config?.[part]?.color, show: this._isShown(part) }}
-        @part-changed=${(ev: CustomEvent) => this._partChanged(part, ev)}
-        @dynamic-style-changed=${(ev: CustomEvent) => this._dynamicStyleChanged(part, ev)}
+        @part-changed=${(ev: CompassCardEvent<'part-changed'>) => this._partChanged(part, ev)}
+        @dynamic-style-changed=${(ev: CompassCardEvent<'dynamic-style-changed'>) => this._dynamicStyleChanged(part, ev)}
       ></compass-card-part-editor>
     `;
     }
@@ -116,8 +118,7 @@ export class CompassCardCompassEditor extends LitElement {
         return [showColorRow()];
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private static _computeLabel(schema: any): string {
+    private static _computeLabel(schema: HaFormSchemaItem): string {
         return localize(`editor.fields.${schema.name}`) || localize(`editor.${schema.name}`) || schema.name;
     }
 
@@ -151,7 +152,7 @@ export class CompassCardCompassEditor extends LitElement {
         return data;
     }
 
-    private _generalChanged(ev: CustomEvent): void {
+    private _generalChanged(ev: HaFormValueChanged): void {
         ev.stopPropagation();
         const data = ev.detail.value;
         const defaults = CONFIG_DEFAULTS.compass;
@@ -162,7 +163,7 @@ export class CompassCardCompassEditor extends LitElement {
     }
 
     // Values equal to the card defaults are left out of the YAML
-    private _partChanged(part: CompassPart, ev: CustomEvent): void {
+    private _partChanged(part: CompassPart, ev: CompassCardEvent<'part-changed'>): void {
         ev.stopPropagation();
         const data = ev.detail.value;
         const defaults = CONFIG_DEFAULTS.compass;
@@ -195,14 +196,13 @@ export class CompassCardCompassEditor extends LitElement {
 
     // The slider shows the stored opacity or the default for the current image; while it is not moved the stored value
     // is kept (also when the image, and with it the default, changes)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private _backgroundOpacity(background: Record<string, any>): number | undefined {
+    private _backgroundOpacity(background: HaFormData): number | undefined {
         const stored = this.config?.circle?.background_opacity;
         const shown = stored ?? backgroundOpacityDefault(this.config?.circle?.background_image);
         return background.background_opacity === opacityToPercent(shown) ? stored : opacityFromPercent(background.background_opacity);
     }
 
-    private _dynamicStyleChanged(part: CompassPart, ev: CustomEvent): void {
+    private _dynamicStyleChanged(part: CompassPart, ev: CompassCardEvent<'dynamic-style-changed'>): void {
         ev.stopPropagation();
         const newConfig: CCCompassConfig = { ...this.config };
         setOrDelete(newConfig, part, updateObject(newConfig[part], { dynamic_style: ev.detail.value }));

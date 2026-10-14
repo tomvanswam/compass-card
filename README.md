@@ -41,6 +41,58 @@ A custom [Home Assistant](https://home-assistant.io/) dashboard card that displa
 - Add the card with the visual editor
 - Or add the card manually and [configure it with YAML](https://github.com/tomvanswam/compass-card/wiki/1.-YAML-configuration)
 
+### Visual editor
+
+The visual editor covers every option of the card. It is split into groups:
+
+- **Header**: title and icon, each with its own color, visibility and dynamic style.
+- **Indicators** and **Values**: the list of sensors. Drag to reorder, and click a sensor to open its details: entity, attribute, units, decimals, the style of each part (indicator, value, units, abbreviation), a dynamic style per part and a tap action.
+- **Compass**: the N/E/S/W letters, circle (line width, background image and opacity), ticks, offset and scale.
+- **Card**: the language of the direction abbreviations, the behaviour for an unknown direction, the tap action of the card and debug logging.
+
+Options left at their default value are not written to the YAML.
+
+### Dynamic style
+
+Every part can change its color, visibility and (for indicators and the circle) image, size, radius, opacity or background image depending on the value of an entity. Each band applies from its `from_value` up to the next band. When the value is not a number (for example `unknown` or `unavailable`), the `unknown` style applies; options it does not set keep the element's own style.
+
+When a dynamic style has no `sensor` of its own, its entity is chosen in this order:
+
+1. The `sensor` (and `attribute`) of the dynamic style itself.
+2. For a part of an indicator or value sensor: that sensor itself.
+3. Otherwise (header and compass): the first value sensor, or the first indicator when there are no value sensors.
+
+### Unknown direction
+
+`unknown_direction` sets what an indicator does when its value is no direction (for example `unavailable`):
+
+- `north` (default): point north
+- `last`: keep the last known direction
+- `hide`: hide the indicator and its direction text
+
+### Tap action
+
+`tap_action` can be set on the card and on each indicator and value sensor, with the standard Home Assistant actions (`more-info`, `navigate`, `url`, `perform-action`, `toggle`, `assist`, `none`). A sensor's `more-info` without `entity` opens its own entity, the card's opens the first indicator's entity.
+
+```yaml
+type: custom:compass-card
+unknown_direction: last
+tap_action:
+  action: navigate
+  navigation_path: /dashboard-weather
+indicator_sensors:
+  - sensor: sensor.wind_direction
+    tap_action:
+      action: more-info
+```
+
+### Breaking changes after version 3.5.0
+
+1. **A dynamic style of an indicator or value sensor follows that sensor.** A `dynamic_style` without `sensor` on `indicator`, `state_value`, `state_units` or `state_abbreviation` of an indicator, or on `state_value` or `state_units` of a value sensor, used to follow the first value sensor (or the first indicator). It now follows its own sensor. To keep the old behaviour, set `sensor` (and `attribute`) in the dynamic style.
+2. **`background_image` must be a URL.** On the circle and in dynamic styles it now has to be a full `http(s)://` URL or a path starting with `/` (like `/local/compass.png`), or empty, the same as an indicator `image`.
+3. **Relative image paths are rejected.** An image like `images/local/arrow.png` is no longer accepted; use `/local/arrow.png`.
+4. **0 is a value.** `0` for opacity, size, radius, line width, decimals and offsets is now used as `0` instead of falling back to the default.
+
 ## Wish/Todo list
 
 - See [open enhancements](https://github.com/tomvanswam/compass-card/issues?q=state%3Aopen%20label%3Aenhancement)

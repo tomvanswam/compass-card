@@ -1,10 +1,12 @@
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
-import { CCIndicatorSensorConfig, CompassCardConfig } from './editorTypes';
+import { CCCompassConfig, CCHeaderConfig, CCIndicatorSensorConfig, CCValueSensorConfig, CompassCardConfig } from './editorTypes';
 import { COMPASS_LANGUAGES, localize, setHassLanguage } from '../localize/localize.js';
+import { CompassCardEvent, fireEvent, SubElementConfig } from '../utils/events';
 import { css, CSSResult, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
-import { fireEvent, HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
+import { HaFormSchemaItem, HaFormValueChanged } from './haTypes';
+import { HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
 import { setOrDelete, withoutEmpty } from './editorHelpers';
 
 // eslint-disable-next-line sort-imports
@@ -16,6 +18,12 @@ import './compass-card-part-editor';
 import './compass-card-value-editor';
 import './compass-card-sensor-row-editor';
 
+// The part of Home Assistant's card helpers (window.loadCardHelpers) the editor uses
+interface CardHelpers {
+  // eslint-disable-next-line no-unused-vars
+  createCardElement?: (config: object) => Promise<HTMLElement>;
+}
+
 // Elements of Home Assistant the editor uses directly; the selectors inside ha-form are loaded by ha-form itself
 const HA_ELEMENTS = ['ha-form', 'ha-entity-picker', 'ha-expansion-panel', 'ha-sortable'];
 
@@ -24,8 +32,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _elementsLoaded = false;
   @state() private _config?: CompassCardConfig;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  @state() private _subElementEditorConfig?: any;
+  @state() private _subElementEditorConfig?: SubElementConfig;
 
   public setConfig(config: CompassCardConfig): void {
     this._config = config;
@@ -144,12 +151,11 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     ];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeCardLabel(schema: any): string {
+  private static _computeCardLabel(schema: HaFormSchemaItem): string {
     return localize(`editor.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
   }
 
-  private _handleCardConfigChanged(ev: CustomEvent): void {
+  private _handleCardConfigChanged(ev: HaFormValueChanged): void {
     const cardData = ev.detail.value.card_conf;
     if (!cardData) {
       return;
@@ -160,7 +166,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     });
   }
 
-  private _editDetailElement(ev: CustomEvent): void {
+  private _editDetailElement(ev: CompassCardEvent<'edit-detail-element'>): void {
     this._subElementEditorConfig = ev.detail.subElementConfig;
   }
 
@@ -168,9 +174,12 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     this._subElementEditorConfig = undefined;
   }
 
-  private _handleSubElementChanged(ev: CustomEvent): void {
+  private _handleSubElementChanged(ev: CompassCardEvent<'config-changed'>): void {
+    if (!this._subElementEditorConfig) {
+      return;
+    }
     const { index, type } = this._subElementEditorConfig;
-    const value = ev.detail.config;
+    const value = ev.detail.config as SubElementConfig['elementConfig'];
     // replace the edited sensor in a copy of its list
     const replaced = <T,>(sensors: T[] | undefined): T[] => Object.assign([...(sensors || [])], { [index]: value });
     this._updateConfig(ev, (config) => {
@@ -183,12 +192,13 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     this._subElementEditorConfig = { ...this._subElementEditorConfig, elementConfig: value };
   }
 
-  private _handleIndicatorEntitiesChanged(ev: CustomEvent): void {
-    this._setConfigKey(ev, 'indicator_sensors', ev.detail.entities);
+  // the rows keep every option of a sensor; only the entity and the order change
+  private _handleIndicatorEntitiesChanged(ev: CompassCardEvent<'entities-changed'>): void {
+    this._setConfigKey(ev, 'indicator_sensors', ev.detail.entities as CCIndicatorSensorConfig[]);
   }
 
-  private _handleValueEntitiesChanged(ev: CustomEvent): void {
-    this._setConfigKey(ev, 'value_sensors', ev.detail.entities);
+  private _handleValueEntitiesChanged(ev: CompassCardEvent<'entities-changed'>): void {
+    this._setConfigKey(ev, 'value_sensors', ev.detail.entities as CCValueSensorConfig[]);
   }
 
   // Options shown above the indicator list: abbreviation language and the fallback for an unknown direction
@@ -206,7 +216,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     return { indicator: { image: DEFAULT_ICON_VALUE }, sensor };
   }
 
-  private _indicatorOptionsChanged(ev: CustomEvent): void {
+  private _indicatorOptionsChanged(ev: HaFormValueChanged): void {
     const { language, unknown_direction: unknownDirection } = ev.detail.value;
     this._updateConfig(ev, (config) => {
       setOrDelete(config, 'language', language);
@@ -215,17 +225,17 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     });
   }
 
-  private _handleHeaderConfigChanged(ev: CustomEvent): void {
-    this._setConfigKey(ev, 'header', withoutEmpty(ev.detail.config));
+  private _handleHeaderConfigChanged(ev: CompassCardEvent<'config-changed'>): void {
+    this._setConfigKey(ev, 'header', withoutEmpty(ev.detail.config as CCHeaderConfig));
   }
 
-  private _handleCompassConfigChanged(ev: CustomEvent): void {
-    this._setConfigKey(ev, 'compass', withoutEmpty(ev.detail.config));
+  private _handleCompassConfigChanged(ev: CompassCardEvent<'config-changed'>): void {
+    this._setConfigKey(ev, 'compass', withoutEmpty(ev.detail.config as CCCompassConfig));
   }
 
   // Applies a change to a copy of the card config and fires config-changed
   // eslint-disable-next-line no-unused-vars
-  private _updateConfig(ev: CustomEvent, update: (config: CompassCardConfig) => void): void {
+  private _updateConfig(ev: Event, update: (config: CompassCardConfig) => void): void {
     ev.stopPropagation();
     if (!this._config || !this.hass) {
       return;
@@ -233,11 +243,11 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
     const newConfig: CompassCardConfig = { ...this._config };
     update(newConfig);
     this._config = newConfig;
-    fireEvent(this as unknown as HTMLElement, 'config-changed', { config: this._config });
+    fireEvent(this, 'config-changed', { config: this._config });
   }
 
   // Sets one key of the card config; an empty value or one equal to defaultValue removes it (setOrDelete)
-  private _setConfigKey<K extends keyof CompassCardConfig>(ev: CustomEvent, key: K, value: CompassCardConfig[K] | undefined, defaultValue?: CompassCardConfig[K]): void {
+  private _setConfigKey<K extends keyof CompassCardConfig>(ev: Event, key: K, value: CompassCardConfig[K] | undefined, defaultValue?: CompassCardConfig[K]): void {
     this._updateConfig(ev, (config) => setOrDelete(config, key, value, defaultValue));
   }
 
@@ -245,10 +255,9 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   // card (entities) loads them, the documented way for custom card editors.
   private async _loadHaElements(): Promise<void> {
     if (HA_ELEMENTS.some((element) => !customElements.get(element))) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const helpers = await (window as any).loadCardHelpers?.();
+      const helpers = (await window.loadCardHelpers?.()) as CardHelpers | undefined;
       const card = await helpers?.createCardElement?.({ entities: [], type: 'entities' });
-      await card?.constructor?.getConfigElement?.();
+      await (card?.constructor as { getConfigElement?: () => Promise<unknown> } | undefined)?.getConfigElement?.();
     }
     this._elementsLoaded = true;
   }

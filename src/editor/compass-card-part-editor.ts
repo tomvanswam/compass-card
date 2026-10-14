@@ -1,9 +1,11 @@
 import { customElement, property } from 'lit/decorators.js';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { HaFormComputeText, HaFormData, HaFormSchema, HaFormValueChanged } from './haTypes';
 import { html, LitElement, TemplateResult } from 'lit';
 import { StyleBase, StyleField } from './compass-card-dynamic-style-editor';
 import { CCDynamicStyleConfig } from './editorTypes';
 import { editorStyles } from './editorHelpers';
+import { fireEvent } from '../utils/events';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { localize } from '../localize/localize';
 
 declare global {
@@ -22,11 +24,9 @@ export class CompassCardPartEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @property() public label?: string;
   // Settings form of the element
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  @property({ attribute: false }) public data: Record<string, any> = {};
-  @property({ attribute: false }) public schema: object[] = [];
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-explicit-any
-  @property({ attribute: false }) public computeLabel?: (schema: any) => string;
+  @property({ attribute: false }) public data: HaFormData = {};
+  @property({ attribute: false }) public schema: HaFormSchema = [];
+  @property({ attribute: false }) public computeLabel?: HaFormComputeText;
   // Dynamic style of the element and the values its bands inherit (see compass-card-dynamic-style-editor.ts)
   @property({ attribute: false }) public dynamicStyle?: CCDynamicStyleConfig;
   @property({ attribute: false }) public fields: StyleField[] = ['color', 'show'];
@@ -55,7 +55,7 @@ export class CompassCardPartEditor extends LitElement {
     `;
   }
 
-  private _formChanged(ev: CustomEvent): void {
+  private _formChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     fireEvent(this, 'part-changed', { value: ev.detail.value });
   }

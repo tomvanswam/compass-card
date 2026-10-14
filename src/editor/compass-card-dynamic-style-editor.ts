@@ -3,9 +3,11 @@ import { contentStyles, opacityFromPercent, opacitySelector, opacityToPercent, s
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { DEFAULT_ICON_VALUE, INDEX_ELEMENT_1, OPACITY_VISIBLE } from '../const';
-import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
+import { HaFormData, HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
 import { mdiClose, mdiPlus } from '@mdi/js';
+import { fireEvent } from '../utils/events';
+import { HomeAssistant } from '../utils/ha-helpers';
 import { localize } from '../localize/localize';
 
 // Style options a band (or the unknown style) can set; each element only offers the ones the card uses for it
@@ -78,15 +80,13 @@ function toFormStyle(style: StyleConfig | undefined, inherited: Inherited, type:
 }
 
 // followInherited: leave values equal to the inherited ones out (unknown style); bands store their values explicitly
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function fromFormStyle(data: Record<string, any>, fields: StyleField[], previous: StyleConfig | undefined, inherited: Inherited, followInherited: boolean): StyleConfig | undefined {
+function fromFormStyle(data: HaFormData, fields: StyleField[], previous: StyleConfig | undefined, inherited: Inherited, followInherited: boolean): StyleConfig | undefined {
   const updates: Partial<StyleConfig> = {};
   fields.forEach((field) => {
     let value = data[field];
     if (field === 'opacity') value = opacityFromPercent(data.opacity, previous?.opacity ?? inherited.opacity);
     if (field === 'image') value = imageFromData(data);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (updates as any)[field] = value;
+    (updates as Record<string, unknown>)[field] = value;
   });
   return updateObject(previous, updates, followInherited ? inherited : {});
 }
@@ -153,7 +153,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
                   .data=${toFormStyle(band, inherited[index], this._type(String(index), band, inherited[index]))}
                   .schema=${[{ name: 'from_value', required: true, selector: { number: { mode: 'box' } } }, ...styleSchema(this.fields, this._type(String(index), band, inherited[index]))]}
                   .computeLabel=${CompassCardDynamicStyleEditor._computeLabel}
-                  @value-changed=${(ev: CustomEvent) => this._bandChanged(index, ev)}
+                  @value-changed=${(ev: HaFormValueChanged) => this._bandChanged(index, ev)}
                 ></ha-form>
                 <ha-icon-button .label=${localize('editor.dynamic_style.remove_band')} .path=${mdiClose} @click=${() => this._removeBand(index)}></ha-icon-button>
               </div>
@@ -168,8 +168,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     `;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLabel(schema: any): string {
+  private static _computeLabel(schema: HaFormSchemaItem): string {
     return localize(`editor.dynamic_style.${schema.name}`) || localize(`editor.sensor_config.${schema.name}`) || schema.name;
   }
 
@@ -177,8 +176,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     return styleImageType(style, inherited, this._imageTypes[key]);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _rememberType(key: string, data: Record<string, any>): void {
+  private _rememberType(key: string, data: HaFormData): void {
     if (this.fields.includes('image') && data.indicator) {
       this._imageTypes = { ...this._imageTypes, [key]: data.indicator };
     }
@@ -216,7 +214,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     fireEvent(this, 'dynamic-style-changed', { value: isEmpty ? undefined : next });
   }
 
-  private _sourceChanged(ev: CustomEvent): void {
+  private _sourceChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     const { sensor, attribute } = ev.detail.value;
     // an attribute of the previous entity makes no sense for a new one
@@ -224,7 +222,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     this._update({ attribute: keepAttribute ? attribute : undefined, sensor: sensor || undefined });
   }
 
-  private _bandChanged(index: number, ev: CustomEvent): void {
+  private _bandChanged(index: number, ev: HaFormValueChanged): void {
     ev.stopPropagation();
     const bands = [...(this.config?.bands || [])];
     this._rememberType(String(index), ev.detail.value);
@@ -239,8 +237,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     const highest = bands.length ? Math.max(...bands.map((band) => band.from_value)) + BAND_VALUE_STEP : FIRST_BAND_VALUE;
     const effective = this._lastEffective(bands);
     const band: CCStyleBandConfig = { from_value: highest };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.fields.forEach((field) => setOrDelete(band as any, field, effective[field]));
+    this.fields.forEach((field) => setOrDelete(band as Record<string, unknown>, field, effective[field]));
     this._update({ bands: [...bands, band] });
   }
 
@@ -251,7 +248,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     this._update({ bands });
   }
 
-  private _unknownChanged(ev: CustomEvent): void {
+  private _unknownChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
     this._rememberType('unknown', ev.detail.value);
     this._update({ unknown: fromFormStyle(ev.detail.value, this.fields, this.config?.unknown, this._base(), true) });
