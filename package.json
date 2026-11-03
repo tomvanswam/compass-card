@@ -32,7 +32,7 @@
     "@rollup/plugin-terser": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.72.1",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "globals": "^17.13.0",
     "jiti": "^2.7.0",
     "rollup": "^4.66.0",
