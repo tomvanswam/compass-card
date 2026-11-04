@@ -64,7 +64,8 @@ export function localize(string: string, search = '', replace = '', language = '
   if (language === '') {
     translateTo = getLocalLanguage();
   } else {
-    translateTo = language;
+    // Convert hyphen to underscore (e.g., sr-Latn to sr_Latn) to match the keys in the languages object
+    translateTo = language.replace('-', '_');
   }
   try {
     translated = string.split('.').reduce((o, i) => o[i], languages[translateTo]);
