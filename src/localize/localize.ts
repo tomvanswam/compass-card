@@ -16,6 +16,8 @@ import * as pt from './languages/pt.json' with { type: 'json' };
 import * as ru from './languages/ru.json' with { type: 'json' };
 import * as sk from './languages/sk.json' with { type: 'json' };
 import * as sl from './languages/sl.json' with { type: 'json' };
+import * as sr from './languages/sr.json' with { type: 'json' };
+import * as sr_Latn from './languages/sr-Latn.json' with { type: 'json' };
 import * as sv from './languages/sv.json' with { type: 'json' };
 import * as tw from './languages/tw.json' with { type: 'json' };
 import * as uk from './languages/uk.json' with { type: 'json' };
@@ -40,6 +42,8 @@ export const languages: any = {
   ru: ru,
   sk: sk,
   sl: sl,
+  sr: sr,
+  sr_Latn: sr_Latn,
   sv: sv,
   tw: tw,
   uk: uk,
