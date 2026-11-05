@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.72.1",
     "eslint": "^10.14.0",
-    "globals": "^17.13.0",
+    "globals": "^17.14.0",
     "jiti": "^2.7.0",
     "rollup": "^4.67.4",
     "rollup-plugin-ignore": "^1.0.10",
