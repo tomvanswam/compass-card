@@ -2,8 +2,8 @@
   "common": {
     "version": "Verzia",
     "description": "Ukážte kompas s indikátorom v smere hodnoty entity",
-    "invalid_configuration": "Neplatná konfigurácia",
-    "missing_direction_entity": "Chýba entita smeru",
+    "invalid_configuration": "Compass Card: Neplatná konfigurácia. Viac informácií: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration",
+    "missing_direction_entity": "Compass Card: Chýba entita smeru. Viac informácií: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration#indicator-object",
     "no_entity": "Entita nie je nakonfigurovaná",
     "offset_not_a_number": "Posun smeru nie je číslo",
     "invalid": "neplatný",
@@ -27,7 +27,11 @@
     "primary entity description": "Smerová entita",
     "secondary entity description": "Sekundárna entita",
     "language description": "Jazyk skratky smeru",
-    "offset description": "Ofset smeru"
+    "offset description": "Ofset smeru",
+    "unknown direction description": "Náhradné riešenie, keď je smer neznámy",
+    "unknown direction north": "Ukáž na sever",
+    "unknown direction last": "Zachovať posledný známy smer",
+    "unknown direction hide": "Skryť indikátor"
   },
   "directions": {
     "north": "Sever",
