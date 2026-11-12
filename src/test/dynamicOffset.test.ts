@@ -41,7 +41,7 @@ describe('dynamic offset configuration', () => {
 
   it('is resolved by getCompass and absent without a sensor', () => {
     expect(getCompass(cardConfig(), COLORS, ENTITIES).north.dynamic_offset).toBeUndefined();
-    expect(getCompass(withOffset({ dynamic_offset: { sensor: HEADING } }), COLORS, ENTITIES).north.dynamic_offset).toMatchObject({ is_attribute: false, mode: 'follow', sensor: HEADING });
+    expect(getCompass(withOffset({ dynamic_offset: { sensor: HEADING } }), COLORS, ENTITIES).north.dynamic_offset).toMatchObject({ is_attribute: false, mode: 'north_up', sensor: HEADING });
     const attribute = getCompass(withOffset({ dynamic_offset: { attribute: 'azimuth', mode: 'heading_up', sensor: 'sun.sun' } }), COLORS, ENTITIES).north.dynamic_offset;
     expect(attribute).toMatchObject({ is_attribute: true, mode: 'heading_up', sensor: 'sun.sun.azimuth' });
   });

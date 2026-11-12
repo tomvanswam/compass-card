@@ -98,7 +98,7 @@
             "attribute": "Attribútum",
             "mode": "Forgatás",
             "modes": {
-                "follow": "Észak követi az értéket",
+                "north_up": "Észak követi az értéket",
                 "heading_up": "Haladási irány felül (az érték felül marad)"
             }
         },

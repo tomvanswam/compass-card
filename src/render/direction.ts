@@ -18,7 +18,7 @@ export function positiveDegrees(degrees: number): number {
  * Rotation of the compass: the fixed offset plus the direction of the dynamic offset entity.
  * In mode heading_up the compass turns against the entity, so a heading entity keeps the heading at the top.
  */
-export function compassRotation(offset: number, dynamicDegrees = DEGREES_MIN, mode: DynamicOffsetMode = 'follow'): number {
+export function compassRotation(offset: number, dynamicDegrees = DEGREES_MIN, mode: DynamicOffsetMode = 'north_up'): number {
   return positiveDegrees(offset + (mode === 'heading_up' ? -dynamicDegrees : dynamicDegrees));
 }
 

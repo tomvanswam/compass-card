@@ -98,7 +98,7 @@
       "attribute": "Atribut",
       "mode": "Vrtenje",
       "modes": {
-        "follow": "Sever sledi vrednosti",
+        "north_up": "Sever sledi vrednosti",
         "heading_up": "Smer plovbe zgoraj (vrednost ostane na vrhu)"
       }
     },

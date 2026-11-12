@@ -98,7 +98,7 @@
       "attribute": "Attribut",
       "mode": "Rotation",
       "modes": {
-        "follow": "Norr följer värdet",
+        "north_up": "Norr följer värdet",
         "heading_up": "Kurs överst (värdet stannar överst)"
       }
     },

@@ -98,7 +98,7 @@
       "attribute": "Atribút",
       "mode": "Otáčanie",
       "modes": {
-        "follow": "Sever sleduje hodnotu",
+        "north_up": "Sever sleduje hodnotu",
         "heading_up": "Kurz hore (hodnota zostáva hore)"
       }
     },

@@ -98,7 +98,7 @@
         "attribute": "Eigind",
         "mode": "Snúningur",
         "modes": {
-          "follow": "Norður fylgir gildinu",
+          "north_up": "Norður fylgir gildinu",
           "heading_up": "Stefna efst (gildið helst efst)"
         }
       },

@@ -74,13 +74,13 @@ compass:
     dynamic_offset:
       sensor: sensor.boat_heading
       attribute: heading # optional, to use an attribute of the entity
-      mode: heading_up # optional, follow (default) or heading_up
+      mode: heading_up # optional, north_up (default) or heading_up
   circle:
     background_image: /local/boat.png
     offset_background: false # keep the image in place while the compass turns
 ```
 
-- `mode: follow` (default): the compass turns with the value, so north points to the direction of the entity.
+- `mode: north_up` (default): the compass turns with the value, so north points to the direction of the entity.
 - `mode: heading_up`: the compass turns against the value. With a heading entity this gives a "heading up" compass: the heading stays at the top and north moves around it.
 
 ### Dynamic style

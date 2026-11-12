@@ -98,7 +98,7 @@
       "attribute": "Attribut",
       "mode": "Drehung",
       "modes": {
-        "follow": "Norden folgt dem Wert",
+        "north_up": "Norden folgt dem Wert",
         "heading_up": "Kurs oben (der Wert bleibt oben)"
       }
     },

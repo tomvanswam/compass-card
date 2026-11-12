@@ -98,7 +98,7 @@
       "attribute": "屬性",
       "mode": "旋轉方式",
       "modes": {
-        "follow": "北方跟隨數值",
+        "north_up": "北方跟隨數值",
         "heading_up": "航向朝上（數值保持在上方）"
       }
     },

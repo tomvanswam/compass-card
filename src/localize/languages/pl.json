@@ -98,7 +98,7 @@
       "attribute": "Atrybut",
       "mode": "Obrót",
       "modes": {
-        "follow": "Północ podąża za wartością",
+        "north_up": "Północ podąża za wartością",
         "heading_up": "Kurs u góry (wartość pozostaje u góry)"
       }
     },

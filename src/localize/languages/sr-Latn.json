@@ -98,7 +98,7 @@
       "attribute": "Atribut",
       "mode": "Rotacija",
       "modes": {
-        "follow": "Sever prati vrednost",
+        "north_up": "Sever prati vrednost",
         "heading_up": "Kurs na vrhu (vrednost ostaje na vrhu)"
       }
     },

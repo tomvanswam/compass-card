@@ -98,7 +98,7 @@
       "attribute": "Atributo",
       "mode": "Rotación",
       "modes": {
-        "follow": "El norte sigue el valor",
+        "north_up": "El norte sigue el valor",
         "heading_up": "Rumbo arriba (el valor queda arriba)"
       }
     },

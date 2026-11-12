@@ -98,7 +98,7 @@
       "attribute": "Attribuut",
       "mode": "Draaiing",
       "modes": {
-        "follow": "Noord volgt de waarde",
+        "north_up": "Noord volgt de waarde",
         "heading_up": "Koers boven (de waarde blijft bovenaan)"
       }
     },

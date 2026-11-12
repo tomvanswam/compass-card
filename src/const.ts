@@ -86,7 +86,7 @@ export const MAJOR_TICK_ANGLE = 22.5;
 export const URL_REGEX = /^(?:https?:\/\/|\/)/i;
 
 // How the compass turns with its dynamic offset: north follows the value, or the value stays at the top
-export const DYNAMIC_OFFSET_MODES = ['follow', 'heading_up'] as const;
+export const DYNAMIC_OFFSET_MODES = ['north_up', 'heading_up'] as const;
 export type DynamicOffsetMode = (typeof DYNAMIC_OFFSET_MODES)[number];
 export const UNKNOWN_DIRECTION_VALUES = ['north', 'last', 'hide'] as const;
 export const DEFAULT_UNKNOWN_DIRECTION = 'north';

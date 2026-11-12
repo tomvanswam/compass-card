@@ -98,7 +98,7 @@
       "attribute": "Atribut",
       "mode": "Rotació",
       "modes": {
-        "follow": "El nord segueix el valor",
+        "north_up": "El nord segueix el valor",
         "heading_up": "Rumb a dalt (el valor queda a dalt)"
       }
     },
