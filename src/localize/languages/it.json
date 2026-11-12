@@ -91,6 +91,14 @@
     "compass_scale_conf": "Scala (0 = automatica)",
     "compass_circle_conf": "Cerchio",
     "compass_ticks_conf": "Tacche",
+    "dynamic_offset": {
+      "title": "Compensazione dinamica",
+      "sensor": "Entità",
+      "sensor_helper": "La bussola ruota con il valore di questa entità, in aggiunta alla compensazione",
+      "attribute": "Attributo",
+      "invert": "Inverti direzione",
+      "invert_helper": "Ruota in senso opposto al valore, ad esempio per mantenere la rotta in alto"
+    },
     "dynamic_style": {
       "title": "Stile dinamico",
       "sensor": "Entità",

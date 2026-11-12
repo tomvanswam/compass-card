@@ -91,6 +91,14 @@
     "compass_scale_conf": "Skala (0 = automatyczna)",
     "compass_circle_conf": "Okrąg",
     "compass_ticks_conf": "Podziałka",
+    "dynamic_offset": {
+      "title": "Przesunięcie dynamiczne",
+      "sensor": "Encja",
+      "sensor_helper": "Kompas obraca się zgodnie z wartością tej encji, dodatkowo do przesunięcia",
+      "attribute": "Atrybut",
+      "invert": "Odwróć kierunek",
+      "invert_helper": "Obracaj przeciwnie do wartości, na przykład aby kurs pozostał u góry"
+    },
     "dynamic_style": {
       "title": "Styl dynamiczny",
       "sensor": "Encja",

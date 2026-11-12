@@ -91,6 +91,14 @@
     "compass_scale_conf": "Размера (0 = аутоматски)",
     "compass_circle_conf": "Круг",
     "compass_ticks_conf": "Подеоци",
+    "dynamic_offset": {
+      "title": "Динамичко одступање",
+      "sensor": "Ентитет",
+      "sensor_helper": "Компас се окреће са вредношћу овог ентитета, поред одступања",
+      "attribute": "Атрибут",
+      "invert": "Обрни смер",
+      "invert_helper": "Окретање супротно од вредности, на пример да курс остане на врху"
+    },
     "dynamic_style": {
       "title": "Динамички стил",
       "sensor": "Ентитет",

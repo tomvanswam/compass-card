@@ -91,6 +91,14 @@
     "compass_scale_conf": "Mierka (0 = automaticky)",
     "compass_circle_conf": "Kruh",
     "compass_ticks_conf": "Značky",
+    "dynamic_offset": {
+      "title": "Dynamický ofset",
+      "sensor": "Entita",
+      "sensor_helper": "Kompas sa otáča podľa hodnoty tejto entity, navyše k ofsetu",
+      "attribute": "Atribút",
+      "invert": "Obrátiť smer",
+      "invert_helper": "Otáčať proti hodnote, napríklad aby kurz zostal hore"
+    },
     "dynamic_style": {
       "title": "Dynamický štýl",
       "sensor": "Entita",

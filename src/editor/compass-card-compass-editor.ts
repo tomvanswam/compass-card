@@ -1,11 +1,12 @@
 import { backgroundOpacityDefault, CONFIG_DEFAULTS } from '../defaults';
+import { CCCompassConfig, CCDynamicOffsetConfig } from './editorTypes';
 import { CompassCardEvent, fireEvent } from '../utils/events';
 import { customElement, property } from 'lit/decorators.js';
 import { DEGREES_MAX, DEGREES_MIN } from '../const';
 import { editorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { HaFormData, HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { html, LitElement, TemplateResult } from 'lit';
-import { CCCompassConfig } from './editorTypes';
+import { actionHelper } from './actionForm';
 import { HomeAssistant } from '../utils/ha-helpers';
 import { localize } from '../localize/localize';
 import { StyleField } from './compass-card-dynamic-style-editor';
@@ -38,8 +39,9 @@ export class CompassCardCompassEditor extends LitElement {
           <ha-form
             .hass=${this.hass}
             .data=${this._computeGeneralData()}
-            .schema=${CompassCardCompassEditor._computeGeneralSchema()}
+            .schema=${this._computeGeneralSchema()}
             .computeLabel=${CompassCardCompassEditor._computeLabel}
+            .computeHelper=${actionHelper}
             @value-changed=${this._generalChanged}
           ></ha-form>
           ${PARTS.map(({ part, label, fields }) => this._renderPart(part, label, fields))}
@@ -71,9 +73,19 @@ export class CompassCardCompassEditor extends LitElement {
         return this.config?.[part]?.show ?? CONFIG_DEFAULTS.compass[part].show;
     }
 
-    private static _computeGeneralSchema() {
+    private _computeGeneralSchema() {
         return [
             { name: 'compass_offset_conf', selector: { number: { max: DEGREES_MAX, min: DEGREES_MIN, mode: 'box' } } },
+            {
+                name: 'dynamic_offset',
+                schema: [
+                    { helper: localize('editor.dynamic_offset.sensor_helper'), name: 'sensor', selector: { entity: {} } },
+                    { name: 'attribute', selector: { attribute: { entity_id: this.config?.north?.dynamic_offset?.sensor } } },
+                    { helper: localize('editor.dynamic_offset.invert_helper'), name: 'invert', selector: { boolean: {} } },
+                ],
+                title: localize('editor.dynamic_offset.title'),
+                type: 'expandable',
+            },
             { name: 'compass_scale_conf', selector: { number: { min: 0, mode: 'box', step: 0.05 } } },
         ];
     }
@@ -119,15 +131,21 @@ export class CompassCardCompassEditor extends LitElement {
     }
 
     private static _computeLabel(schema: HaFormSchemaItem): string {
-        return localize(`editor.fields.${schema.name}`) || localize(`editor.${schema.name}`) || schema.name;
+        return localize(`editor.fields.${schema.name}`) || localize(`editor.${schema.name}`) || localize(`editor.dynamic_offset.${schema.name}`) || schema.name;
     }
 
     // Shows the values the card actually uses, including defaults for options missing from the config
     private _computeGeneralData() {
         const defaults = CONFIG_DEFAULTS.compass;
+        const dynamicOffset = this.config?.north?.dynamic_offset;
         return {
             compass_offset_conf: this.config?.north?.offset ?? defaults.north.offset,
             compass_scale_conf: this.config?.scale ?? defaults.scale,
+            dynamic_offset: {
+                attribute: dynamicOffset?.attribute || '',
+                invert: dynamicOffset?.invert ?? defaults.dynamic_offset.invert,
+                sensor: dynamicOffset?.sensor || '',
+            },
         };
     }
 
@@ -157,9 +175,19 @@ export class CompassCardCompassEditor extends LitElement {
         const data = ev.detail.value;
         const defaults = CONFIG_DEFAULTS.compass;
         const newConfig: CCCompassConfig = { ...this.config };
-        setOrDelete(newConfig, 'north', updateObject(newConfig.north, { offset: data.compass_offset_conf }, defaults.north));
+        setOrDelete(newConfig, 'north', updateObject(newConfig.north, { dynamic_offset: this._dynamicOffset(data.dynamic_offset), offset: data.compass_offset_conf }, defaults.north));
         setOrDelete(newConfig, 'scale', data.compass_scale_conf, defaults.scale);
         fireEvent(this, 'config-changed', { config: newConfig });
+    }
+
+    // Without an entity there is no dynamic offset; an attribute of the previous entity makes no sense for a new one
+    private _dynamicOffset(data: HaFormData | undefined): CCDynamicOffsetConfig | undefined {
+        if (!data?.sensor) return undefined;
+        const previous = this.config?.north?.dynamic_offset;
+        const dynamicOffset: CCDynamicOffsetConfig = { ...previous, sensor: data.sensor };
+        setOrDelete(dynamicOffset, 'attribute', data.sensor === previous?.sensor ? data.attribute : undefined);
+        setOrDelete(dynamicOffset, 'invert', data.invert, CONFIG_DEFAULTS.compass.dynamic_offset.invert);
+        return dynamicOffset;
     }
 
     // Values equal to the card defaults are left out of the YAML

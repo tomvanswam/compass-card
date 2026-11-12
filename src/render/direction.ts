@@ -14,6 +14,14 @@ export function positiveDegrees(degrees: number): number {
   return degrees < DEGREES_MIN ? degrees + (Math.abs(Math.ceil(degrees / DEGREES_MAX)) + DEGREES_ONE) * DEGREES_MAX : degrees % DEGREES_MAX;
 }
 
+/**
+ * Rotation of the compass: the fixed offset plus the direction of the dynamic offset entity.
+ * Inverted, the compass turns against the entity (a heading entity then keeps the heading at the top).
+ */
+export function compassRotation(offset: number, dynamicDegrees = DEGREES_MIN, invert = false): number {
+  return positiveDegrees(offset + (invert ? -dynamicDegrees : dynamicDegrees));
+}
+
 // Degrees of a compass point name like 'NNE', or -1 when it is no compass point
 export function getDegrees(abbreviation: string): number {
   const key = abbreviation.toUpperCase() as keyof typeof COMPASS_POINTS;

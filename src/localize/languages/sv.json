@@ -91,6 +91,14 @@
     "compass_scale_conf": "Skala (0 = automatisk)",
     "compass_circle_conf": "Cirkel",
     "compass_ticks_conf": "Streck",
+    "dynamic_offset": {
+      "title": "Dynamisk offset",
+      "sensor": "Entitet",
+      "sensor_helper": "Kompassen roterar med värdet för denna entitet, utöver offset",
+      "attribute": "Attribut",
+      "invert": "Invertera riktning",
+      "invert_helper": "Rotera mot värdet, till exempel för att hålla kursen överst"
+    },
     "dynamic_style": {
       "title": "Dynamisk stil",
       "sensor": "Entitet",

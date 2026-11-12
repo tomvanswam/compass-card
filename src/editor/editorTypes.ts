@@ -77,9 +77,18 @@ export const CCIndicatorConfigStruct = assign(
 );
 export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
 
+// Rotates the compass with the value of an entity (or one of its attributes), on top of the fixed offset
+export const CCDynamicOffsetConfigStruct = object({
+  attribute: optional(string()),
+  invert: optional(boolean()),
+  sensor: string(),
+});
+export type CCDynamicOffsetConfig = Infer<typeof CCDynamicOffsetConfigStruct>;
+
 export const CCNorthConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
+    dynamic_offset: optional(CCDynamicOffsetConfigStruct),
     offset: optional(numberBetween(DEGREES_MIN, DEGREES_MAX)),
   }),
 );

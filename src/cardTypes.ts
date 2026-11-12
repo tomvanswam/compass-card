@@ -68,6 +68,12 @@ export interface CCTicks extends CCProperties {
 
 export interface CCNorth extends CCProperties {
   offset: number;
+  // set when the compass also rotates with the value of an entity
+  dynamic_offset?: CCDynamicOffset;
+}
+
+export interface CCDynamicOffset extends CCEntity {
+  invert: boolean;
 }
 
 export interface CCStyle {

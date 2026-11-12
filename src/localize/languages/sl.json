@@ -91,6 +91,14 @@
     "compass_scale_conf": "Merilo (0 = samodejno)",
     "compass_circle_conf": "Krog",
     "compass_ticks_conf": "Oznake",
+    "dynamic_offset": {
+      "title": "Dinamični odmik",
+      "sensor": "Entiteta",
+      "sensor_helper": "Kompas se vrti z vrednostjo te entitete, poleg odmika",
+      "attribute": "Atribut",
+      "invert": "Obrni smer",
+      "invert_helper": "Vrti proti vrednosti, na primer da smer plovbe ostane na vrhu"
+    },
     "dynamic_style": {
       "title": "Dinamični slog",
       "sensor": "Entiteta",

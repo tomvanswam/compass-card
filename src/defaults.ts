@@ -8,6 +8,8 @@ import { CIRCLE, DEFAULT_CIRCLE_STROKE_WIDTH, DEFAULT_DECIMALS, DEFAULT_ICON_VAL
 export const CONFIG_DEFAULTS = {
   compass: {
     circle: { offset_background: true, show: true, stroke_width: DEFAULT_CIRCLE_STROKE_WIDTH },
+    // false: the compass turns with the value of the dynamic offset entity, true: against it
+    dynamic_offset: { invert: false },
     east: { show: false },
     north: { offset: DEGREES_MIN, show: false },
     // 0 lets the card pick the scale that fits all indicators
