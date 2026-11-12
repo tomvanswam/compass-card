@@ -120,6 +120,8 @@ describe('direction', () => {
     expect(getValue({ decimals: 1, entity, is_attribute: true, sensor: 'sun.sun.azimuth', units: '°' }, ENTITIES)).toEqual({ units: '°', value: '120.0' });
     expect(getValue({ decimals: 0, entity, is_attribute: false, sensor: 'sun.sun', units: '' }, ENTITIES).value).toBe('above_horizon');
     expect(getValue({ decimals: 2, entity: ENTITIES['input_number.wind_speed'], is_attribute: false, sensor: 'input_number.wind_speed', units: 'm/s' }, ENTITIES).value).toBe('11.00');
+    const withList = { ...ENTITIES, 'sun.sun': { ...entity, attributes: { ...entity.attributes, list: [1, 2] } } };
+    expect(getValue({ decimals: 0, entity, is_attribute: true, sensor: 'sun.sun.list', units: '' }, withList as never).value).toBe('[1,2]');
   });
 });
 
@@ -166,6 +168,18 @@ describe('active style', () => {
     // also without bands, and not for a number
     expect(activeColor(indicatorWithStyle({ sensor: 'input_number.broken', unknown }), entities)).toBe('grey');
     expect(activeColor(indicatorWithStyle({ sensor: 'input_number.wind_speed', unknown }), entities)).not.toBe('grey');
+  });
+
+  it('does not use the unknown style for a direction in text', () => {
+    const textEntities = { ...entities, 'sensor.compass_point': { ...ENTITIES['input_number.wind_speed'], entity_id: 'sensor.compass_point', state: 'NNE' } };
+    const [{ indicator }] = getIndicatorSensors(cardConfig({ indicator_sensors: [{ indicator: { dynamic_style: { sensor: 'sensor.compass_point', unknown: { color: 'grey' } } }, sensor: 'input_number.wind_direction_1' }] } as never), COLORS, textEntities);
+    expect(activeColor(indicator, textEntities)).not.toBe('grey');
+  });
+
+  it('compares the unrounded value with the bands', () => {
+    const gustEntities = { ...entities, 'sensor.gust': { ...ENTITIES['input_number.wind_speed'], entity_id: 'sensor.gust', state: '0.6' } };
+    const [{ indicator }] = getIndicatorSensors(cardConfig({ indicator_sensors: [{ indicator: { dynamic_style: { bands: [{ color: 'red', from_value: 1 }], sensor: 'sensor.gust' } }, sensor: 'input_number.wind_direction_1' }] } as never), COLORS, gustEntities);
+    expect(getActiveStyle(indicator, gustEntities)).toBeUndefined();
   });
 
   it('respects 0 and false in the unknown style', () => {

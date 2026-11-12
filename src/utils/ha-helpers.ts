@@ -1,4 +1,3 @@
- 
 /* eslint-disable no-unused-vars */
 import { HassEntities } from 'home-assistant-js-websocket';
 

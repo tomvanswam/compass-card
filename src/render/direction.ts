@@ -28,9 +28,13 @@ export function getCompassAbbreviation(degrees: number, language: string | undef
 }
 
 // The (formatted) value of a sensor or of one of its attributes (sensor 'domain.object.attribute.path')
-export function getValue(entity: CCEntity, entities: HassEntities): CCValue {
-  // numbers get the configured decimals; other values (text, or an attribute of another type) are shown as they are
-  const format = (value: unknown): string => (isNumeric(value) ? Number(value).toFixed(entity.decimals) : (value as string));
+export function getValue(entity: CCEntity, entities: HassEntities, raw = false): CCValue {
+  // numbers get the configured decimals (unless raw); text is shown as it is, other attribute types as JSON
+  const format = (value: unknown): string => {
+    if (isNumeric(value)) return raw ? String(value) : Number(value).toFixed(entity.decimals);
+    if (typeof value === 'string') return value;
+    return typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value);
+  };
   if (entity.is_attribute) {
     const parts = entity.sensor.split('.');
     const entityObj = entities[parts.slice(INDEX_ELEMENT_0, ENTITY_PATH_PARTS).join('.')];

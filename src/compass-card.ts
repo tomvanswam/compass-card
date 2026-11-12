@@ -202,6 +202,7 @@ export class CompassCard extends LitElement {
     if (!this._config || !this._hass) {
       return html``;
     }
+    this.renderDirections.clear();
 
     return html`
       <ha-card
@@ -272,24 +273,24 @@ export class CompassCard extends LitElement {
       ${background ? svgBackground(background, circleRotation) : ''}
       ${isVisible(circle, this.entities) ? svgCircle(circleRotation) : ''}
         <g class="indicators" transform="rotate(${directionOffset},${CIRCLE.CENTER},${CIRCLE.CENTER})" stroke-width=".5">
-          ${ticks.show ? svgTicks(ticks) : ''}
-          ${north.show ? letter('north', north, 'N') : ''}
-          ${east.show ? letter('east', east, 'E') : ''}
-          ${south.show ? letter('south', south, 'S') : ''}
-          ${west.show ? letter('west', west, 'W') : ''}
-          ${this.indicatorSensors.filter((sensor) => isVisible(sensor.indicator, this.entities)).map((sensor, index) => this.svgIndicator(sensor, index))}
+          ${isVisible(ticks, this.entities) ? svgTicks({ ...ticks, color: activeColor(ticks, this.entities) }) : ''}
+          ${isVisible(north, this.entities) ? letter('north', north, 'N') : ''}
+          ${isVisible(east, this.entities) ? letter('east', east, 'E') : ''}
+          ${isVisible(south, this.entities) ? letter('south', south, 'S') : ''}
+          ${isVisible(west, this.entities) ? letter('west', west, 'W') : ''}
+          ${this.indicatorSensors.map((sensor, index) => (isVisible(sensor.indicator, this.entities) ? this.svgIndicator(sensor, index) : ''))}
         </g>
     </svg>
     `;
   }
 
-  // One indicator, rotated to its direction; colored and faded through CSS variables
+  // One indicator, rotated to its direction; colored and faded through CSS variables. index is its place in indicatorSensors
   private svgIndicator(indicatorSensor: CCIndicatorSensor, index: number): SVGTemplateResult {
     const direction = this.visibleDirection(indicatorSensor);
     if (!direction) return svg``;
     const { indicator } = indicatorSensor;
     const shape = { opacity: activeOpacity(indicator, this.entities), radius: activeRadius(indicator, this.entities), size: activeSize(indicator, this.entities) };
-    const action = this.getSensorAction('indicator_sensors', this.indicatorSensors.indexOf(indicatorSensor));
+    const action = this.getSensorAction('indicator_sensors', index);
     return svg`
       <g class="indicator-${index} ${action ? 'clickable' : ''}" @click=${(e: Event) => this.handleSensorClick(e, action, indicatorSensor.entity?.entity_id)} transform="rotate(${direction.degrees},${CIRCLE.CENTER},${CIRCLE.CENTER})" style="--compass-card-indicator-color: ${activeColor(indicator, this.entities)}; --compass-card-indicator-opacity: ${shape.opacity}">
         ${this.svgIndicatorShape(activeImage(indicator, this.entities), shape)}
@@ -399,9 +400,16 @@ export class CompassCard extends LitElement {
     return info;
   }
 
+  private readonly renderDirections = new Map<CCEntity, CCDirectionInfo>();
+
   // The direction to draw, or undefined when an unknown direction is configured to be hidden
   private visibleDirection(entity: CCEntity): CCDirectionInfo | undefined {
-    const info = this.computeIndicator(entity);
+    // the indicator and its text line both need the direction; compute it once per render
+    let info = this.renderDirections.get(entity);
+    if (!info) {
+      info = this.computeIndicator(entity);
+      this.renderDirections.set(entity, info);
+    }
     return info.unknown && this._config.unknown_direction === 'hide' ? undefined : info;
   }
 

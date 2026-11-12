@@ -315,7 +315,7 @@ export function isNumeric(value: unknown): boolean {
   if (typeof value !== 'string' && typeof value !== 'number') return false;
   return !isNaN(Number(value)) && !isNaN(parseFloat(String(value)));
 }
- 
+
 export function resolveAttrPath(obj: unknown, path: string): unknown {
   if (obj === null || typeof path !== 'string') return undefined;
 
