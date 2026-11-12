@@ -91,6 +91,17 @@
         "compass_scale_conf": "Méretarány (0 = automatikus)",
         "compass_circle_conf": "Kör",
         "compass_ticks_conf": "Beosztások",
+        "dynamic_offset": {
+            "title": "Dinamikus offszet",
+            "sensor": "Entitás",
+            "sensor_helper": "Az iránytű ennek az entitásnak az értékével együtt forog, az offszeten felül",
+            "attribute": "Attribútum",
+            "mode": "Forgatás",
+            "modes": {
+                "north_up": "Észak követi az értéket",
+                "heading_up": "Haladási irány felül (az érték felül marad)"
+            }
+        },
         "dynamic_style": {
             "title": "Dinamikus stílus",
             "sensor": "Entitás",

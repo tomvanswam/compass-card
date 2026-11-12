@@ -91,6 +91,17 @@
     "compass_scale_conf": "Scale (0 = automatic)",
     "compass_circle_conf": "Circle",
     "compass_ticks_conf": "Ticks",
+    "dynamic_offset": {
+      "title": "Dynamic offset",
+      "sensor": "Entity",
+      "sensor_helper": "The compass rotates with the value of this entity, on top of the offset",
+      "attribute": "Attribute",
+      "mode": "Rotation",
+      "modes": {
+        "north_up": "North follows the value",
+        "heading_up": "Heading up (the value stays at the top)"
+      }
+    },
     "dynamic_style": {
       "title": "Dynamic style",
       "sensor": "Entity",

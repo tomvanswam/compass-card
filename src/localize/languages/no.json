@@ -91,6 +91,17 @@
     "compass_scale_conf": "Skala (0 = automatisk)",
     "compass_circle_conf": "Sirkel",
     "compass_ticks_conf": "Streker",
+    "dynamic_offset": {
+      "title": "Dynamisk offset",
+      "sensor": "Enhet",
+      "sensor_helper": "Kompasset roterer med verdien til denne enheten, i tillegg til offset",
+      "attribute": "Attributt",
+      "mode": "Rotasjon",
+      "modes": {
+        "north_up": "Nord følger verdien",
+        "heading_up": "Kurs øverst (verdien blir øverst)"
+      }
+    },
     "dynamic_style": {
       "title": "Dynamisk stil",
       "sensor": "Enhet",

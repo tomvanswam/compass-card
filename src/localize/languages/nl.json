@@ -91,6 +91,17 @@
     "compass_scale_conf": "Schaal (0 = automatisch)",
     "compass_circle_conf": "Cirkel",
     "compass_ticks_conf": "Streepjes",
+    "dynamic_offset": {
+      "title": "Dynamische afwijking",
+      "sensor": "Entiteit",
+      "sensor_helper": "Het kompas draait mee met de waarde van deze entiteit, bovenop de afwijking",
+      "attribute": "Attribuut",
+      "mode": "Draaiing",
+      "modes": {
+        "north_up": "Noord volgt de waarde",
+        "heading_up": "Koers boven (de waarde blijft bovenaan)"
+      }
+    },
     "dynamic_style": {
       "title": "Dynamische stijl",
       "sensor": "Entiteit",

@@ -91,6 +91,17 @@
     "compass_scale_conf": "Skalierung (0 = automatisch)",
     "compass_circle_conf": "Kreis",
     "compass_ticks_conf": "Teilstriche",
+    "dynamic_offset": {
+      "title": "Dynamischer Offset",
+      "sensor": "Entität",
+      "sensor_helper": "Der Kompass dreht sich mit dem Wert dieser Entität, zusätzlich zum Offset",
+      "attribute": "Attribut",
+      "mode": "Drehung",
+      "modes": {
+        "north_up": "Norden folgt dem Wert",
+        "heading_up": "Kurs oben (der Wert bleibt oben)"
+      }
+    },
     "dynamic_style": {
       "title": "Dynamischer Stil",
       "sensor": "Entität",

@@ -1,3 +1,4 @@
+import { DynamicOffsetMode } from './const.js';
 import { HassEntity } from 'home-assistant-js-websocket';
 
 export interface CCEntity {
@@ -68,6 +69,12 @@ export interface CCTicks extends CCProperties {
 
 export interface CCNorth extends CCProperties {
   offset: number;
+  // set when the compass also rotates with the value of an entity
+  dynamic_offset?: CCDynamicOffset;
+}
+
+export interface CCDynamicOffset extends CCEntity {
+  mode: DynamicOffsetMode;
 }
 
 export interface CCStyle {

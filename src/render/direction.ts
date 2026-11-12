@@ -1,5 +1,5 @@
 import { CCDirectionInfo, CCEntity, CCValue } from '../cardTypes.js';
-import { COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEGREES_MAX, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, INDEX_ELEMENT_0, UNAVAILABLE, UNKNOWN_STATES } from '../const.js';
+import { COMPASS_ABBREVIATIONS, COMPASS_POINTS, DEGREES_MAX, DEGREES_MIN, DEGREES_ONE, DEGREES_PER_ABBREVIATION, DynamicOffsetMode, INDEX_ELEMENT_0, UNAVAILABLE, UNKNOWN_STATES } from '../const.js';
 import { isNumeric, resolveAttrPath } from '../utils/objectHelpers.js';
 import { HassEntities } from 'home-assistant-js-websocket';
 import { localize } from '../localize/localize.js';
@@ -12,6 +12,14 @@ const ENTITY_PATH_PARTS = 2;
 // Any angle as 0 <= degrees < 360
 export function positiveDegrees(degrees: number): number {
   return degrees < DEGREES_MIN ? degrees + (Math.abs(Math.ceil(degrees / DEGREES_MAX)) + DEGREES_ONE) * DEGREES_MAX : degrees % DEGREES_MAX;
+}
+
+/**
+ * Rotation of the compass: the fixed offset plus the direction of the dynamic offset entity.
+ * In mode heading_up the compass turns against the entity, so a heading entity keeps the heading at the top.
+ */
+export function compassRotation(offset: number, dynamicDegrees = DEGREES_MIN, mode: DynamicOffsetMode = 'north_up'): number {
+  return positiveDegrees(offset + (mode === 'heading_up' ? -dynamicDegrees : dynamicDegrees));
 }
 
 // Degrees of a compass point name like 'NNE', or -1 when it is no compass point

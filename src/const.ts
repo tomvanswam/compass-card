@@ -85,6 +85,9 @@ export const MAJOR_TICK_ANGLE = 22.5;
 // An image location: a full http(s) URL or a path on the Home Assistant server (e.g. /local/..., /media/...)
 export const URL_REGEX = /^(?:https?:\/\/|\/)/i;
 
+// How the compass turns with its dynamic offset: north follows the value, or the value stays at the top
+export const DYNAMIC_OFFSET_MODES = ['north_up', 'heading_up'] as const;
+export type DynamicOffsetMode = (typeof DYNAMIC_OFFSET_MODES)[number];
 export const UNKNOWN_DIRECTION_VALUES = ['north', 'last', 'hide'] as const;
 export const DEFAULT_UNKNOWN_DIRECTION = 'north';
 export const UNKNOWN_STATES = ['unknown', 'unavailable', ''];

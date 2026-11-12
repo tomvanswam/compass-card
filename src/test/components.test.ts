@@ -103,6 +103,22 @@ describe('compass-card-editor', () => {
     expect(changes.at(-1)?.compass).toBeUndefined();
   });
 
+  it('writes a dynamic offset and removes it with its entity', async () => {
+    const { changes, editor } = await createEditor(cardConfig());
+    const compass = shadow(editor, 'compass-card-compass-editor');
+    await compass.updateComplete;
+    const change = (dynamicOffset: object) => changeForm(shadow(compass, 'ha-form'), { dynamic_offset: { ...shadow(compass, 'ha-form').data.dynamic_offset, ...dynamicOffset } }, compass);
+    await change({ sensor: 'sun.sun' });
+    expect(changes.at(-1)?.compass).toEqual({ north: { dynamic_offset: { sensor: 'sun.sun' } } });
+    await change({ attribute: 'azimuth', mode: 'heading_up' });
+    expect(changes.at(-1)?.compass).toEqual({ north: { dynamic_offset: { attribute: 'azimuth', mode: 'heading_up', sensor: 'sun.sun' } } });
+    // the attribute belongs to the previous entity
+    await change({ sensor: 'sensor.wind_direction' });
+    expect(changes.at(-1)?.compass).toEqual({ north: { dynamic_offset: { mode: 'heading_up', sensor: 'sensor.wind_direction' } } });
+    await change({ sensor: '' });
+    expect(changes.at(-1)?.compass).toBeUndefined();
+  });
+
   it('adds a dynamic style band without sensor or empty keys', async () => {
     const { changes, editor } = await createEditor(cardConfig());
     const compass = shadow(editor, 'compass-card-compass-editor');

@@ -91,6 +91,17 @@
     "compass_scale_conf": "Skala (0 = automatisk)",
     "compass_circle_conf": "Cirkel",
     "compass_ticks_conf": "Streger",
+    "dynamic_offset": {
+      "title": "Dynamisk forskydning",
+      "sensor": "Entitet",
+      "sensor_helper": "Kompasset drejer med værdien af denne entitet, oven i forskydningen",
+      "attribute": "Attribut",
+      "mode": "Rotation",
+      "modes": {
+        "north_up": "Nord følger værdien",
+        "heading_up": "Kurs øverst (værdien bliver øverst)"
+      }
+    },
     "dynamic_style": {
       "title": "Dynamisk stil",
       "sensor": "Entitet",

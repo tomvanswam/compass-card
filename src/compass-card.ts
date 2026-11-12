@@ -4,11 +4,11 @@ import { activeBackgroundImage, activeColor, activeImage, activeOpacity, activeR
 import { assert, StructError } from 'superstruct';
 import { CARD_VERSION, CIRCLE, DEFAULT_CARD_SIZE, DEFAULT_SECTIONS_SIZE, DEFAULT_UNKNOWN_DIRECTION, DEGREES_MIN, ICON_VALUES, NO_ELEMENTS, SVG_SCALE_MAX, SVG_SCALE_MIN } from './const.js';
 import { CCColors, CCCompass, CCDirectionInfo, CCEntity, CCHeader, CCIndicatorSensor, CCProperties, CCValueSensor } from './cardTypes.js';
+import { compassRotation, getValue, parseDirection } from './render/direction.js';
 import { CSSResult, html, LitElement, nothing, PropertyValues, svg, SVGTemplateResult, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Direction, svgBackground, svgCircle, svgDirectionLetter, svgTicks } from './render/compass.js';
 import { findValues, getBoolean, getCompass, getHeader, getIndicatorSensors, getValueSensors } from './utils/objectHelpers.js';
-import { getValue, parseDirection } from './render/direction.js';
 import { HomeAssistant, LovelaceCard, LovelaceCardEditor } from './utils/ha-helpers.js';
 import { IndicatorShape, svgArrowInward, svgArrowOutward, svgCircleIndicator, svgIconIndicator, svgImageIndicator } from './render/indicators.js';
 import { localize, setHassLanguage } from './localize/localize.js';
@@ -214,10 +214,17 @@ export class CompassCard extends LitElement {
         @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e)}
       >
         ${this.showHeader() ? renderHeader(this.header, this.entities) : ''}
-        <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
+        <div class="compass">${this.svgCompass(this.compassOffset())}</div>
         <div class="sensors">${this.renderIndicatorTexts()} ${this.renderValueTexts()}</div>
       </ha-card>
     `;
+  }
+
+  // Fixed offset plus the dynamic offset; an unknown dynamic value counts as 0, or as the last known one when configured
+  private compassOffset(): number {
+    const { dynamic_offset: dynamicOffset, offset } = this.compass.north;
+    if (!dynamicOffset) return offset;
+    return compassRotation(offset, this.computeIndicator(dynamicOffset).degrees, dynamicOffset.mode);
   }
 
   private showHeader(): boolean {

@@ -91,6 +91,17 @@
     "compass_scale_conf": "Échelle (0 = automatique)",
     "compass_circle_conf": "Cercle",
     "compass_ticks_conf": "Graduations",
+    "dynamic_offset": {
+      "title": "Décalage dynamique",
+      "sensor": "Entité",
+      "sensor_helper": "La boussole tourne avec la valeur de cette entité, en plus du décalage",
+      "attribute": "Attribut",
+      "mode": "Rotation",
+      "modes": {
+        "north_up": "Le nord suit la valeur",
+        "heading_up": "Cap en haut (la valeur reste en haut)"
+      }
+    },
     "dynamic_style": {
       "title": "Style dynamique",
       "sensor": "Entité",

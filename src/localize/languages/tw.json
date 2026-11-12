@@ -91,6 +91,17 @@
     "compass_scale_conf": "比例（0 = 自動）",
     "compass_circle_conf": "圓形",
     "compass_ticks_conf": "刻度",
+    "dynamic_offset": {
+      "title": "動態偏移量",
+      "sensor": "實體",
+      "sensor_helper": "羅盤會隨此實體的數值旋轉，並加上偏移量",
+      "attribute": "屬性",
+      "mode": "旋轉方式",
+      "modes": {
+        "north_up": "北方跟隨數值",
+        "heading_up": "航向朝上（數值保持在上方）"
+      }
+    },
     "dynamic_style": {
       "title": "動態樣式",
       "sensor": "實體",

@@ -1,7 +1,7 @@
 import { abbreviationShowDefault, backgroundOpacityDefault, CONFIG_DEFAULTS, headerIconShowDefault, headerTitleShowDefault } from '../defaults.js';
 import { ARROW_ART, DEFAULT_DECIMALS, DEFAULT_INDICATOR_RADIUS, DEFAULT_START_SIZE, HALF, ICONS, INDEX_ELEMENT_0, LENGTH_TO_INDEX, NO_ELEMENTS, OPACITY_VISIBLE } from '../const.js';
-import { CCColors, CCCompass, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
-import { CCDynamicStyleConfig, CCEntityConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
+import { CCColors, CCCompass, CCDynamicOffset, CCDynamicStyle, CCHeader, CCIndicatorSensor, CCSensorAttrib, CCStyleBand, CCValueSensor } from '../cardTypes.js';
+import { CCDynamicOffsetConfig, CCDynamicStyleConfig, CCEntityConfig, CCIndicatorSensorConfig, CCStyleBandConfig, CCValueSensorConfig, CompassCardConfig } from '../editor/editorTypes.js';
 import { debugLog, debugWarn } from './debug.js';
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 
@@ -147,6 +147,20 @@ export function getHeader(config: CompassCardConfig, colors: CCColors, indicator
   return header;
 }
 
+// The entity (or attribute) whose value rotates the compass, or undefined when none is configured
+function getDynamicOffset(dynamicOffset: CCDynamicOffsetConfig | undefined, entities: HassEntities): CCDynamicOffset | undefined {
+  if (!dynamicOffset?.sensor) return undefined;
+  const { attribute = '', sensor } = dynamicOffset;
+  return {
+    decimals: DEFAULT_DECIMALS,
+    entity: entities[sensor],
+    is_attribute: attribute !== '',
+    mode: dynamicOffset.mode ?? CONFIG_DEFAULTS.compass.dynamic_offset.mode,
+    sensor: attribute === '' ? sensor : `${sensor}.${attribute}`,
+    units: '',
+  };
+}
+
 export function getCompass(config: CompassCardConfig, colors: CCColors, entities: HassEntities): CCCompass {
   const circleColor = config.compass?.circle?.color || colors.primary;
   const circleShow = getBoolean(config.compass?.circle?.show, CONFIG_DEFAULTS.compass.circle.show);
@@ -183,6 +197,7 @@ export function getCompass(config: CompassCardConfig, colors: CCColors, entities
     },
     north: {
       color: northColor,
+      dynamic_offset: getDynamicOffset(config.compass?.north?.dynamic_offset, entities),
       dynamic_style: getDynamicStyle(config.compass?.north?.dynamic_style, config, entities, { color: northColor, show: northShow }),
       offset: config.compass?.north?.offset ?? CONFIG_DEFAULTS.compass.north.offset,
       show: northShow,

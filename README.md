@@ -57,10 +57,31 @@ The visual editor covers every option of the card. It is split into groups:
 
 - **Header**: title and icon, each with its own color, visibility and dynamic style.
 - **Indicators** and **Values**: the list of sensors. Drag to reorder, and click a sensor to open its details: entity, attribute, units, decimals, the style of each part (indicator, value, units, abbreviation), a dynamic style per part and a tap action.
-- **Compass**: the N/E/S/W letters, circle (line width, background image and opacity), ticks, offset and scale.
+- **Compass**: the N/E/S/W letters, circle (line width, background image and opacity), ticks, offset, dynamic offset and scale.
 - **Card**: the language of the direction abbreviations, the behaviour for an unknown direction, the tap action of the card and debug logging.
 
 Options left at their default value are not written to the YAML.
+
+### Dynamic offset
+
+The compass can rotate with the value of an entity, for example the heading of a boat. The value (degrees or a compass point like `NNE`) is added to the fixed `offset`. While the entity is unknown or unavailable only the fixed offset is used, or the last known value with `unknown_direction: last`.
+
+```yaml
+compass:
+  north:
+    show: true
+    offset: 0 # optional fixed offset, added to the dynamic one
+    dynamic_offset:
+      sensor: sensor.boat_heading
+      attribute: heading # optional, to use an attribute of the entity
+      mode: heading_up # optional, north_up (default) or heading_up
+  circle:
+    background_image: /local/boat.png
+    offset_background: false # keep the image in place while the compass turns
+```
+
+- `mode: north_up` (default): the compass turns with the value, so north points to the direction of the entity.
+- `mode: heading_up`: the compass turns against the value. With a heading entity this gives a "heading up" compass: the heading stays at the top and north moves around it.
 
 ### Dynamic style
 
