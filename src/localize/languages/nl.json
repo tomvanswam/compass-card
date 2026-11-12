@@ -3,7 +3,7 @@
     "version": "Versie",
     "description": "Toon een kompas met een pijl wijzend naar de waarde van de entity",
     "invalid_configuration": "Foutieve configuratie",
-    "missing_direction_entity": "",
+    "missing_direction_entity": "Compass Card: richtingsentiteit ontbreekt. Meer info: https://github.com/tomvanswam/compass-card/wiki/YAML-configuration#indicator-object",
     "no_entity": "Entity niet geconfigureerd",
     "offset_not_a_number": "Direction offset is geen nummer",
     "invalid": "ongeldig",
@@ -12,24 +12,24 @@
   },
   "editor": {
     "indicator_sensor": "Wijzer",
-    "indicator_sensors": "",
-    "value_sensor": "",
-    "value_sensors": "",
+    "indicator_sensors": "Wijzers",
+    "value_sensor": "Waarde",
+    "value_sensors": "Waarden",
     "sensor_config": {
       "sensor": "Entiteit",
-      "attribute": "",
+      "attribute": "Attribuut",
       "indicator": "Wijzer",
-      "indicator_icon": "",
-      "indicator_url": "",
+      "indicator_icon": "Icoon",
+      "indicator_url": "Afbeeldings-URL",
       "indicator_types": {
-        "arrow_inward": "",
-        "arrow_outward": "",
-        "circle": "",
-        "mdi": "",
-        "url": ""
+        "arrow_inward": "Pijl naar binnen",
+        "arrow_outward": "Pijl naar buiten",
+        "circle": "Cirkel",
+        "mdi": "Icoon (mdi)",
+        "url": "Afbeeldings-URL"
       },
-      "units": "",
-      "decimals": "",
+      "units": "Eenheden",
+      "decimals": "Decimalen",
       "language": "Taal",
       "unknown_direction": "Terugval bij onbekende richting",
       "unknown_direction_types": {
@@ -38,10 +38,10 @@
         "hide": "Indicator verbergen"
       }
     },
-    "header_conf": "",
-    "header_title_conf": "",
-    "header_icon_conf": "",
-    "compass_conf": "",
+    "header_conf": "Koptekst",
+    "header_title_conf": "Titel",
+    "header_icon_conf": "Icoon",
+    "compass_conf": "Kompas",
     "fields": {
       "show": "Tonen",
       "color": "Kleur",
@@ -55,7 +55,7 @@
       "size": "Grootte"
     },
     "compass_offset_conf": "Afwijking",
-    "compass_circle_background_conf": "",
+    "compass_circle_background_conf": "Achtergrond",
     "card_conf": "Kaart",
     "debug": "Debug-logging",
     "tap_action": {

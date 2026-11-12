@@ -1,5 +1,4 @@
 import { css } from 'lit';
-import { localize } from '../localize/localize';
 import { NO_ELEMENTS } from '../const';
 
 // Values the editor treats as "not set": cleared ha-form fields come back as undefined or ''
@@ -115,7 +114,3 @@ export const detailEditorStyles = css`
   ${contentStyles}
 `;
 
-// Label of a field in the indicator and value sensor editors
-export function sensorFieldLabel(schema: { name: string }): string {
-  return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.fields.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
-}

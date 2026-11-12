@@ -1,4 +1,5 @@
 import { ActionConfig } from './editorTypes';
+import { HaFormData } from './haTypes';
 import { localize } from '../localize/localize';
 import { NO_ELEMENTS } from '../const';
 import { setOrDelete } from './editorHelpers';
@@ -27,18 +28,15 @@ const ACTION_FIELDS: Record<string, (keyof ActionConfig)[]> = {
   'url': ['url', 'url_path', 'new_tab'],
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FormData = Record<string, any>;
-
 function actionOptions(current: string | undefined) {
   const actions = current === LEGACY_ACTION ? [...ACTIONS, LEGACY_ACTION] : ACTIONS;
   return actions.map((action) => ({ label: localize(`editor.tap_action.actions.${action}`) || action, value: action }));
 }
 
 // entityHelper: helper text under the entity field telling which entity is used when it is left empty
-export function actionSchema(data: FormData, entityHelper?: string) {
+export function actionSchema(data: HaFormData, entityHelper?: string) {
   const action = data.action as string | undefined;
-  const fields: FormData[] = [{ name: 'action', selector: { select: { mode: 'dropdown', options: actionOptions(action) } } }];
+  const fields: HaFormData[] = [{ name: 'action', selector: { select: { mode: 'dropdown', options: actionOptions(action) } } }];
   switch (action) {
     case 'more-info':
     case 'toggle':
@@ -69,7 +67,7 @@ export function actionSchema(data: FormData, entityHelper?: string) {
 }
 
 // Values shown in the form; includes the defaults the card applies
-export function actionData(config: ActionConfig | undefined): FormData {
+export function actionData(config: ActionConfig | undefined): HaFormData {
   if (!config) return {};
   return {
     ...config,
@@ -83,7 +81,7 @@ export function actionData(config: ActionConfig | undefined): FormData {
 }
 
 // Converts the form values back into a minimal tap_action, or undefined when no action is selected
-export function actionFromData(data: FormData | undefined, previous: ActionConfig | undefined): ActionConfig | undefined {
+export function actionFromData(data: HaFormData | undefined, previous: ActionConfig | undefined): ActionConfig | undefined {
   if (!data?.action) return undefined;
   const fields = ACTION_FIELDS[data.action] || [];
   const result: ActionConfig = { action: data.action };

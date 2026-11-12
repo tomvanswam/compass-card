@@ -1,4 +1,5 @@
 import { DEFAULT_ICON_VALUE, ICON_VALUES } from '../const';
+import { HaFormData } from './haTypes';
 import { localize } from '../localize/localize';
 
 /*
@@ -10,9 +11,6 @@ import { localize } from '../localize/localize';
 export const IMAGE_TYPE_MDI = 'mdi';
 export const IMAGE_TYPE_URL = 'url';
 const IMAGE_TYPES = [...ICON_VALUES, IMAGE_TYPE_MDI, IMAGE_TYPE_URL];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FormData = Record<string, any>;
 
 // Type of a stored image; chosenType keeps a picked type while its icon/URL field is still empty
 export function imageType(image: string | undefined, chosenType?: string): string {
@@ -30,7 +28,7 @@ export function imageSchema(type: string) {
   ];
 }
 
-export function imageData(image: string | undefined, type: string): FormData {
+export function imageData(image: string | undefined, type: string): HaFormData {
   return {
     indicator: type,
     indicator_icon: type === IMAGE_TYPE_MDI ? image || '' : '',
@@ -39,7 +37,7 @@ export function imageData(image: string | undefined, type: string): FormData {
 }
 
 // The image from the form values; undefined while the icon/URL of the chosen type is empty
-export function imageFromData(data: FormData): string | undefined {
+export function imageFromData(data: HaFormData): string | undefined {
   const byType: Record<string, string | undefined> = { [IMAGE_TYPE_MDI]: data.indicator_icon, [IMAGE_TYPE_URL]: data.indicator_url };
   return (data.indicator in byType ? byType[data.indicator] : data.indicator) || undefined;
 }

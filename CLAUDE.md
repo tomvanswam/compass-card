@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm start` – rollup watch; serves `dist/` on `http://0.0.0.0:4000` (dev mode, no terser)
 - `npm run build` – `eslint` + `npm cache verify` + `rollup -c` (minified). This is what CI (`.github/workflows/build.yml`) runs.
 - `npm run lint` / `npm run lint:fix` – ESLint flat config (`eslint.config.mjs`) covers TS, JSON, CSS and Markdown
-- There is no test runner on `master` yet.
+- `npm test` – vitest (jsdom) over `src/**/*.test.ts`; CI runs it after the build. Single file/test: `npx vitest run src/test/render.test.ts -t "<name>"`. Shared test configs/entities are in `src/test/fixtures.ts`.
 
 If rollup builds behave oddly after switching branches, clear the stale cache: `rm -rf node_modules/.cache/rollup-plugin-typescript2`.
 
@@ -22,14 +22,17 @@ The devcontainer (`.devcontainer/`) runs a Home Assistant instance on `localhost
 
 ## Architecture
 
-- `src/compass-card.ts` – the `compass-card` element. Registers itself in `window.customCards`, provides `getConfigElement`/`getStubConfig`/`getGridOptions`. `setConfig` validates the YAML with the superstruct schema and throws user-readable errors (including v2→v3 migration hints). On every `hass` update, `updateConfig` turns raw config + entity states into render models; `shouldUpdate` limits re-renders to changes in the entities the config references. Rendering is a hand-built SVG.
-- `src/cardTypes.ts` – two layers of types: the raw user config (`CompassCardConfig`, plus its superstruct `CompassCardConfigStruct`) and the resolved render models (`CC*` types: `CCCompass`, `CCIndicatorSensor`, `CCValueSensor`, `CCHeader`, `CCColors`, …).
-- `src/utils/objectHelpers.ts` – config → `CC*` model resolution (`getCompass`, `getIndicatorSensors`, `getValueSensors`, `getHeader`), defaults, dynamic styling, and `findValues` which collects referenced entity ids (used for update filtering). Most behavioural changes land here.
-- `src/editor.ts` / `src/editorTypes.ts` – the `compass-card-editor` visual editor (uses HA's form/selector elements; schemas in `editorTypes.ts`).
-- `src/const.ts` – shared constants (compass points/abbreviations, indicator icon values `arrow_inward|arrow_outward|circle`, size defaults, `MAX_INDICATOR_ARRAY_SIZE = 10`).
-- `src/style.ts` – card CSS.
-- `src/localize/` – `localize(key)` with JSON files per language in `languages/`; `en.json` is the reference. Add new keys to all language files.
-- `src/utils/handleClick.ts` – tap/hold action handling; `ha-helpers.ts`/`ha-types.ts` – minimal local copies of HA frontend types/helpers.
+- `src/compass-card.ts` – the `compass-card` element. Registers itself in `window.customCards`, provides `getConfigElement`/`getStubConfig`/`getGridOptions`. `setConfig` validates the YAML with the superstruct schema and throws user-readable errors (including v2→v3 migration hints). On every `hass` update, `updateConfig` turns raw config + entity states into render models; `shouldUpdate` limits re-renders to changes in the entities the config references. The element only composes; SVG/text pieces come from `src/render/`.
+- `src/defaults.ts` – `CONFIG_DEFAULTS`, the single source of truth for defaults, used by rendering (`objectHelpers.ts`), the editor (shown values, and omitting defaults from the YAML) and `getStubConfig`. Change defaults only here.
+- `src/cardTypes.ts` – resolved render models (`CC*` types: `CCCompass`, `CCIndicatorSensor`, `CCValueSensor`, `CCHeader`, `CCProperties`, …). The raw user config type and its superstruct `CompassCardConfigStruct` live in `src/editor/editorTypes.ts`.
+- `src/utils/objectHelpers.ts` – config → `CC*` model resolution (`getCompass`, `getIndicatorSensors`, `getValueSensors`, `getHeader`) and `findValues`, which collects referenced entity ids (used for update filtering).
+- `src/render/` – pure render helpers: `direction.ts` (sensor value → degrees/abbreviation), `activeStyle.ts` (an element's own style overridden by the dynamic style band of the current value, cached per `entities` object), `compass.ts` (circle, ticks, N/E/S/W), `indicators.ts` (arrow/circle/mdi/image shapes), `texts.ts` (header and value lines).
+- `src/editor/` – visual editor. `editor.ts` is `compass-card-editor`; sub-editors per part (header, compass, indicator/value sensors, dynamic style) share a detail-editor base and helpers in `editorHelpers.ts`; `haTypes.ts` has local copies of HA frontend types.
+- `src/const.ts` – shared constants (compass points/abbreviations, indicator icon values `arrow_inward|arrow_outward|circle`, size limits, `MAX_INDICATOR_ARRAY_SIZE = 10`).
+- `src/localize/` – `localize(key)` with JSON files per language in `languages/`; `en.json` is the reference. Add new keys to all language files (non-English texts are partly machine-translated).
+- `src/utils/` – `handleClick.ts` (tap/hold actions), `debug.ts` (`debugLog`, active with the `debug` option), `ha-helpers.ts`/`ha-types.ts`.
+
+TypeScript runs with `noImplicitAny`; imports use explicit `.js` extensions.
 
 ## Conventions
 
