@@ -31,10 +31,10 @@
       "units": "Jednotka",
       "decimals": "Desatinné miesta",
       "language": "Jazyk",
-      "unknown_direction": "Keď je smer neznámy",
+      "unknown_direction": "Náhradné riešenie, keď je smer neznámy",
       "unknown_direction_types": {
-        "north": "Ukazovať na sever",
-        "last": "Ponechať posledný známy smer",
+        "north": "Ukáž na sever",
+        "last": "Zachovať posledný známy smer",
         "hide": "Skryť indikátor"
       }
     },
