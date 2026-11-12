@@ -96,8 +96,11 @@
       "sensor": "Entité",
       "sensor_helper": "La boussole tourne avec la valeur de cette entité, en plus du décalage",
       "attribute": "Attribut",
-      "invert": "Inverser le sens",
-      "invert_helper": "Tourner à l'inverse de la valeur, par exemple pour garder le cap en haut"
+      "mode": "Rotation",
+      "modes": {
+        "follow": "Le nord suit la valeur",
+        "heading_up": "Cap en haut (la valeur reste en haut)"
+      }
     },
     "dynamic_style": {
       "title": "Style dynamique",

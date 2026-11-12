@@ -96,8 +96,11 @@
       "sensor": "實體",
       "sensor_helper": "羅盤會隨此實體的數值旋轉，並加上偏移量",
       "attribute": "屬性",
-      "invert": "反轉方向",
-      "invert_helper": "朝數值的反方向旋轉，例如讓航向保持在上方"
+      "mode": "旋轉方式",
+      "modes": {
+        "follow": "北方跟隨數值",
+        "heading_up": "航向朝上（數值保持在上方）"
+      }
     },
     "dynamic_style": {
       "title": "動態樣式",

@@ -96,8 +96,11 @@
       "sensor": "Entität",
       "sensor_helper": "Der Kompass dreht sich mit dem Wert dieser Entität, zusätzlich zum Offset",
       "attribute": "Attribut",
-      "invert": "Richtung umkehren",
-      "invert_helper": "Gegen den Wert drehen, zum Beispiel damit der Kurs oben bleibt"
+      "mode": "Drehung",
+      "modes": {
+        "follow": "Norden folgt dem Wert",
+        "heading_up": "Kurs oben (der Wert bleibt oben)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamischer Stil",

@@ -154,8 +154,8 @@ function getDynamicOffset(dynamicOffset: CCDynamicOffsetConfig | undefined, enti
   return {
     decimals: DEFAULT_DECIMALS,
     entity: entities[sensor],
-    invert: getBoolean(dynamicOffset.invert, CONFIG_DEFAULTS.compass.dynamic_offset.invert),
     is_attribute: attribute !== '',
+    mode: dynamicOffset.mode ?? CONFIG_DEFAULTS.compass.dynamic_offset.mode,
     sensor: attribute === '' ? sensor : `${sensor}.${attribute}`,
     units: '',
   };

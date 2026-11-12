@@ -2,7 +2,7 @@ import { backgroundOpacityDefault, CONFIG_DEFAULTS } from '../defaults';
 import { CCCompassConfig, CCDynamicOffsetConfig } from './editorTypes';
 import { CompassCardEvent, fireEvent } from '../utils/events';
 import { customElement, property } from 'lit/decorators.js';
-import { DEGREES_MAX, DEGREES_MIN } from '../const';
+import { DEGREES_MAX, DEGREES_MIN, DYNAMIC_OFFSET_MODES } from '../const';
 import { editorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, updateObject } from './editorHelpers';
 import { HaFormData, HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { html, LitElement, TemplateResult } from 'lit';
@@ -81,7 +81,7 @@ export class CompassCardCompassEditor extends LitElement {
                 schema: [
                     { helper: localize('editor.dynamic_offset.sensor_helper'), name: 'sensor', selector: { entity: {} } },
                     { name: 'attribute', selector: { attribute: { entity_id: this.config?.north?.dynamic_offset?.sensor } } },
-                    { helper: localize('editor.dynamic_offset.invert_helper'), name: 'invert', selector: { boolean: {} } },
+                    { name: 'mode', selector: { select: { mode: 'dropdown', options: DYNAMIC_OFFSET_MODES.map((value) => ({ label: localize(`editor.dynamic_offset.modes.${value}`), value })) } } },
                 ],
                 title: localize('editor.dynamic_offset.title'),
                 type: 'expandable',
@@ -143,7 +143,7 @@ export class CompassCardCompassEditor extends LitElement {
             compass_scale_conf: this.config?.scale ?? defaults.scale,
             dynamic_offset: {
                 attribute: dynamicOffset?.attribute || '',
-                invert: dynamicOffset?.invert ?? defaults.dynamic_offset.invert,
+                mode: dynamicOffset?.mode ?? defaults.dynamic_offset.mode,
                 sensor: dynamicOffset?.sensor || '',
             },
         };
@@ -186,7 +186,7 @@ export class CompassCardCompassEditor extends LitElement {
         const previous = this.config?.north?.dynamic_offset;
         const dynamicOffset: CCDynamicOffsetConfig = { ...previous, sensor: data.sensor };
         setOrDelete(dynamicOffset, 'attribute', data.sensor === previous?.sensor ? data.attribute : undefined);
-        setOrDelete(dynamicOffset, 'invert', data.invert, CONFIG_DEFAULTS.compass.dynamic_offset.invert);
+        setOrDelete(dynamicOffset, 'mode', data.mode, CONFIG_DEFAULTS.compass.dynamic_offset.mode);
         return dynamicOffset;
     }
 

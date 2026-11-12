@@ -96,8 +96,11 @@
       "sensor": "Entitet",
       "sensor_helper": "Kompas se okreće sa vrednošću ovog entiteta, pored odstupanja",
       "attribute": "Atribut",
-      "invert": "Obrni smer",
-      "invert_helper": "Okretanje suprotno od vrednosti, na primer da kurs ostane na vrhu"
+      "mode": "Rotacija",
+      "modes": {
+        "follow": "Sever prati vrednost",
+        "heading_up": "Kurs na vrhu (vrednost ostaje na vrhu)"
+      }
     },
     "dynamic_style": {
       "title": "Dinamički stil",

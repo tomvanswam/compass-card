@@ -96,8 +96,11 @@
       "sensor": "Entity",
       "sensor_helper": "The compass rotates with the value of this entity, on top of the offset",
       "attribute": "Attribute",
-      "invert": "Invert direction",
-      "invert_helper": "Rotate against the value, for example to keep the heading at the top"
+      "mode": "Rotation",
+      "modes": {
+        "follow": "North follows the value",
+        "heading_up": "Heading up (the value stays at the top)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamic style",

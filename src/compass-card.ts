@@ -224,7 +224,7 @@ export class CompassCard extends LitElement {
   private compassOffset(): number {
     const { dynamic_offset: dynamicOffset, offset } = this.compass.north;
     if (!dynamicOffset) return offset;
-    return compassRotation(offset, this.computeIndicator(dynamicOffset).degrees, dynamicOffset.invert);
+    return compassRotation(offset, this.computeIndicator(dynamicOffset).degrees, dynamicOffset.mode);
   }
 
   private showHeader(): boolean {

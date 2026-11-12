@@ -7,18 +7,18 @@ import { assert } from 'superstruct';
 import type { CompassCard } from '../compass-card';
 import { compassRotation } from '../render/direction';
 
-// compass.north.dynamic_offset: the compass rotates with the value of an entity (#1125), inverted for heading up (#1040)
+// compass.north.dynamic_offset: the compass rotates with the value of an entity (#1125), in mode heading_up against it (#1040)
 
 const HEADING = 'input_number.wind_direction_1'; // 90
 const withOffset = (north: object, circle?: object) => cardConfig({ compass: { circle, north }, indicator_sensors: [{ indicator: { image: 'arrow_outward' }, sensor: 'sensor.wind_direction' }] } as Partial<CompassCardConfig>);
 
 describe('compassRotation', () => {
-  it('adds the dynamic value to the fixed offset, or subtracts it when inverted', () => {
+  it('adds the dynamic value to the fixed offset, or subtracts it for heading up', () => {
     expect(compassRotation(15)).toBe(15);
     expect(compassRotation(15, 90)).toBe(105);
-    expect(compassRotation(15, 90, true)).toBe(285);
+    expect(compassRotation(15, 90, 'heading_up')).toBe(285);
     expect(compassRotation(300, 90)).toBe(30);
-    expect(compassRotation(0, 0, true)).toBe(0);
+    expect(compassRotation(0, 0, 'heading_up')).toBe(0);
   });
 });
 
@@ -32,18 +32,18 @@ describe('dynamic offset configuration', () => {
     }
   };
 
-  it('needs a sensor and accepts attribute and invert', () => {
+  it('needs a sensor and accepts attribute and mode', () => {
     expect(valid({ dynamic_offset: { sensor: HEADING } })).toBe(true);
-    expect(valid({ dynamic_offset: { attribute: 'azimuth', invert: true, sensor: 'sun.sun' }, offset: 10 })).toBe(true);
-    expect(valid({ dynamic_offset: { invert: true } })).toBe(false);
-    expect(valid({ dynamic_offset: { invert: 'yes', sensor: HEADING } })).toBe(false);
+    expect(valid({ dynamic_offset: { attribute: 'azimuth', mode: 'heading_up', sensor: 'sun.sun' }, offset: 10 })).toBe(true);
+    expect(valid({ dynamic_offset: { mode: 'heading_up' } })).toBe(false);
+    expect(valid({ dynamic_offset: { mode: 'inverted', sensor: HEADING } })).toBe(false);
   });
 
   it('is resolved by getCompass and absent without a sensor', () => {
     expect(getCompass(cardConfig(), COLORS, ENTITIES).north.dynamic_offset).toBeUndefined();
-    expect(getCompass(withOffset({ dynamic_offset: { sensor: HEADING } }), COLORS, ENTITIES).north.dynamic_offset).toMatchObject({ invert: false, is_attribute: false, sensor: HEADING });
-    const attribute = getCompass(withOffset({ dynamic_offset: { attribute: 'azimuth', invert: true, sensor: 'sun.sun' } }), COLORS, ENTITIES).north.dynamic_offset;
-    expect(attribute).toMatchObject({ invert: true, is_attribute: true, sensor: 'sun.sun.azimuth' });
+    expect(getCompass(withOffset({ dynamic_offset: { sensor: HEADING } }), COLORS, ENTITIES).north.dynamic_offset).toMatchObject({ is_attribute: false, mode: 'follow', sensor: HEADING });
+    const attribute = getCompass(withOffset({ dynamic_offset: { attribute: 'azimuth', mode: 'heading_up', sensor: 'sun.sun' } }), COLORS, ENTITIES).north.dynamic_offset;
+    expect(attribute).toMatchObject({ is_attribute: true, mode: 'heading_up', sensor: 'sun.sun.azimuth' });
   });
 
   it('makes the card listen to the offset entity', () => {
@@ -75,8 +75,8 @@ describe('compass-card with a dynamic offset', () => {
     card.remove();
   });
 
-  it('turns against the entity when inverted and keeps the background in place without offset_background', async () => {
-    const { card, circle, compass } = await rotations(withOffset({ dynamic_offset: { invert: true, sensor: HEADING } }, { offset_background: false }));
+  it('turns against the entity in mode heading_up and keeps the background in place without offset_background', async () => {
+    const { card, circle, compass } = await rotations(withOffset({ dynamic_offset: { mode: 'heading_up', sensor: HEADING } }, { offset_background: false }));
     expect(compass).toBe('rotate(270,76,76)');
     expect(circle).toBe('rotate(0,76,76)');
     card.remove();

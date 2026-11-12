@@ -96,8 +96,11 @@
       "sensor": "Entiteit",
       "sensor_helper": "Het kompas draait mee met de waarde van deze entiteit, bovenop de afwijking",
       "attribute": "Attribuut",
-      "invert": "Richting omkeren",
-      "invert_helper": "Draai tegen de waarde in, bijvoorbeeld om de koers bovenaan te houden"
+      "mode": "Draaiing",
+      "modes": {
+        "follow": "Noord volgt de waarde",
+        "heading_up": "Koers boven (de waarde blijft bovenaan)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamische stijl",

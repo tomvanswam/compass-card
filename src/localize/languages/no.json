@@ -96,8 +96,11 @@
       "sensor": "Enhet",
       "sensor_helper": "Kompasset roterer med verdien til denne enheten, i tillegg til offset",
       "attribute": "Attributt",
-      "invert": "Inverter retning",
-      "invert_helper": "Roter mot verdien, for eksempel for å holde kursen øverst"
+      "mode": "Rotasjon",
+      "modes": {
+        "follow": "Nord følger verdien",
+        "heading_up": "Kurs øverst (verdien blir øverst)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamisk stil",

@@ -1,5 +1,5 @@
 import { any, array, assign, boolean, enums, Infer, number, object, optional, pattern, record, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './../const.js';
+import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, DYNAMIC_OFFSET_MODES, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './../const.js';
 import { COMPASS_LANGUAGES } from './../localize/localize.js';
 import { LovelaceCardConfig } from './../utils/ha-helpers.js';
 
@@ -80,7 +80,7 @@ export type CCIndicatorConfig = Infer<typeof CCIndicatorConfigStruct>;
 // Rotates the compass with the value of an entity (or one of its attributes), on top of the fixed offset
 export const CCDynamicOffsetConfigStruct = object({
   attribute: optional(string()),
-  invert: optional(boolean()),
+  mode: optional(enums([...DYNAMIC_OFFSET_MODES])),
   sensor: string(),
 });
 export type CCDynamicOffsetConfig = Infer<typeof CCDynamicOffsetConfigStruct>;

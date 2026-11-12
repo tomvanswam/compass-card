@@ -96,8 +96,11 @@
         "sensor": "Eining",
         "sensor_helper": "Áttavitinn snýst með gildi þessarar einingar, til viðbótar við mótvægið",
         "attribute": "Eigind",
-        "invert": "Snúa stefnu við",
-        "invert_helper": "Snúa á móti gildinu, til dæmis til að halda stefnunni efst"
+        "mode": "Snúningur",
+        "modes": {
+          "follow": "Norður fylgir gildinu",
+          "heading_up": "Stefna efst (gildið helst efst)"
+        }
       },
       "dynamic_style": {
         "title": "Breytilegur stíll",

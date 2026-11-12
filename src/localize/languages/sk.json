@@ -96,8 +96,11 @@
       "sensor": "Entita",
       "sensor_helper": "Kompas sa otáča podľa hodnoty tejto entity, navyše k ofsetu",
       "attribute": "Atribút",
-      "invert": "Obrátiť smer",
-      "invert_helper": "Otáčať proti hodnote, napríklad aby kurz zostal hore"
+      "mode": "Otáčanie",
+      "modes": {
+        "follow": "Sever sleduje hodnotu",
+        "heading_up": "Kurz hore (hodnota zostáva hore)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamický štýl",

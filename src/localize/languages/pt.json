@@ -96,8 +96,11 @@
       "sensor": "Entidade",
       "sensor_helper": "A bússola roda com o valor desta entidade, além do offset",
       "attribute": "Atributo",
-      "invert": "Inverter direção",
-      "invert_helper": "Rodar contra o valor, por exemplo para manter o rumo no topo"
+      "mode": "Rotação",
+      "modes": {
+        "follow": "O norte segue o valor",
+        "heading_up": "Rumo no topo (o valor fica no topo)"
+      }
     },
     "dynamic_style": {
       "title": "Estilo dinâmico",

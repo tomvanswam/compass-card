@@ -1,3 +1,4 @@
+import { DynamicOffsetMode } from './const.js';
 import { HassEntity } from 'home-assistant-js-websocket';
 
 export interface CCEntity {
@@ -73,7 +74,7 @@ export interface CCNorth extends CCProperties {
 }
 
 export interface CCDynamicOffset extends CCEntity {
-  invert: boolean;
+  mode: DynamicOffsetMode;
 }
 
 export interface CCStyle {

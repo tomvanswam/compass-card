@@ -96,8 +96,11 @@
       "sensor": "Entità",
       "sensor_helper": "La bussola ruota con il valore di questa entità, in aggiunta alla compensazione",
       "attribute": "Attributo",
-      "invert": "Inverti direzione",
-      "invert_helper": "Ruota in senso opposto al valore, ad esempio per mantenere la rotta in alto"
+      "mode": "Rotazione",
+      "modes": {
+        "follow": "Il nord segue il valore",
+        "heading_up": "Rotta in alto (il valore resta in alto)"
+      }
     },
     "dynamic_style": {
       "title": "Stile dinamico",

@@ -96,8 +96,11 @@
       "sensor": "Entitet",
       "sensor_helper": "Kompassen roterar med värdet för denna entitet, utöver offset",
       "attribute": "Attribut",
-      "invert": "Invertera riktning",
-      "invert_helper": "Rotera mot värdet, till exempel för att hålla kursen överst"
+      "mode": "Rotation",
+      "modes": {
+        "follow": "Norr följer värdet",
+        "heading_up": "Kurs överst (värdet stannar överst)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamisk stil",

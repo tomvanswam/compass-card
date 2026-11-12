@@ -96,8 +96,11 @@
       "sensor": "Entitet",
       "sensor_helper": "Kompasset drejer med værdien af denne entitet, oven i forskydningen",
       "attribute": "Attribut",
-      "invert": "Vend retning",
-      "invert_helper": "Drej mod værdien, for eksempel for at holde kursen øverst"
+      "mode": "Rotation",
+      "modes": {
+        "follow": "Nord følger værdien",
+        "heading_up": "Kurs øverst (værdien bliver øverst)"
+      }
     },
     "dynamic_style": {
       "title": "Dynamisk stil",

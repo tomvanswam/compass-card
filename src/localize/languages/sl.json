@@ -96,8 +96,11 @@
       "sensor": "Entiteta",
       "sensor_helper": "Kompas se vrti z vrednostjo te entitete, poleg odmika",
       "attribute": "Atribut",
-      "invert": "Obrni smer",
-      "invert_helper": "Vrti proti vrednosti, na primer da smer plovbe ostane na vrhu"
+      "mode": "Vrtenje",
+      "modes": {
+        "follow": "Sever sledi vrednosti",
+        "heading_up": "Smer plovbe zgoraj (vrednost ostane na vrhu)"
+      }
     },
     "dynamic_style": {
       "title": "Dinamični slog",

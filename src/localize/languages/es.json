@@ -96,8 +96,11 @@
       "sensor": "Entidad",
       "sensor_helper": "La brújula gira con el valor de esta entidad, además del desfase",
       "attribute": "Atributo",
-      "invert": "Invertir dirección",
-      "invert_helper": "Girar en contra del valor, por ejemplo para mantener el rumbo arriba"
+      "mode": "Rotación",
+      "modes": {
+        "follow": "El norte sigue el valor",
+        "heading_up": "Rumbo arriba (el valor queda arriba)"
+      }
     },
     "dynamic_style": {
       "title": "Estilo dinámico",

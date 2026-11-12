@@ -96,8 +96,11 @@
             "sensor": "Entitás",
             "sensor_helper": "Az iránytű ennek az entitásnak az értékével együtt forog, az offszeten felül",
             "attribute": "Attribútum",
-            "invert": "Irány megfordítása",
-            "invert_helper": "Forgatás az értékkel ellentétesen, például hogy a haladási irány felül maradjon"
+            "mode": "Forgatás",
+            "modes": {
+                "follow": "Észak követi az értéket",
+                "heading_up": "Haladási irány felül (az érték felül marad)"
+            }
         },
         "dynamic_style": {
             "title": "Dinamikus stílus",

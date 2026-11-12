@@ -96,8 +96,11 @@
       "sensor": "Entitat",
       "sensor_helper": "La brúixola gira amb el valor d'aquesta entitat, a més de la compensació",
       "attribute": "Atribut",
-      "invert": "Inverteix la direcció",
-      "invert_helper": "Gira en contra del valor, per exemple per mantenir el rumb a dalt"
+      "mode": "Rotació",
+      "modes": {
+        "follow": "El nord segueix el valor",
+        "heading_up": "Rumb a dalt (el valor queda a dalt)"
+      }
     },
     "dynamic_style": {
       "title": "Estil dinàmic",
