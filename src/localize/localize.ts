@@ -48,6 +48,8 @@ export const languages: Record<string, Record<string, unknown>> = {
   tw: tw,
   uk: uk,
 };
+// Lower-case lookup for table names with capitals, like sr_Latn
+const LANGUAGE_KEYS: Record<string, string> = Object.fromEntries(Object.keys(languages).map((key) => [key.toLowerCase(), key]));
 export const COMPASS_LANGUAGES = [...Object.keys(languages), ''].sort();
 
 // Home Assistant language codes that have a translation under another name
@@ -67,7 +69,7 @@ export function resolveLanguage(code: string | null | undefined): string | undef
   // most specific first: zh_hant_tw, zh_hant, zh
   const prefixes: string[] = [];
   for (let prefix = normalized; prefix; prefix = prefix.includes('_') ? prefix.replace(/_[^_]*$/, '') : '') prefixes.push(prefix);
-  return prefixes.flatMap((prefix) => [prefix, LANGUAGE_ALIASES[prefix]]).find((candidate) => candidate && languages[candidate]);
+  return prefixes.flatMap((prefix) => [LANGUAGE_KEYS[prefix], LANGUAGE_ALIASES[prefix]]).find((candidate) => candidate && languages[candidate]);
 }
 
 // Language of the Home Assistant user (hass.locale), then the browser's stored HA language, then English
@@ -88,8 +90,8 @@ export function localize(string: string, search = '', replace = '', language = '
   if (language === '') {
     translateTo = getLocalLanguage();
   } else {
-    // Convert hyphen to underscore (e.g., sr-Latn to sr_Latn) to match the keys in the languages object
-    translateTo = language.replace('-', '_');
+    // 'sr-Latn', 'sr_Latn' and aliases resolve to their table, unknown codes fall back to English below
+    translateTo = resolveLanguage(language) ?? language;
   }
   // Empty or missing translations (also for unknown languages or missing parent keys) fall back to English
   translated = lookup(string, translateTo) || lookup(string, 'en') || '';
