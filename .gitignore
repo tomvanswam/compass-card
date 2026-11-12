@@ -12,6 +12,9 @@ dist
 !.hass_dev/www
 !.hass_dev/packages
 .hass_dev/www/community/*
+ha-frontend/*
+.agent/*
+.hass_dev/.storage/*
 
 # Mac OS
 .DS_Store
@@ -19,3 +22,4 @@ dist
 .idea
 
 .env
+todo.md

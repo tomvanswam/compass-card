@@ -1,4 +1,4 @@
-import { ActionConfig } from '../editorTypes.js';
+import { ActionConfig } from '../editor/editorTypes.js';
 
 export interface EditorTarget extends EventTarget {
   value?: string;

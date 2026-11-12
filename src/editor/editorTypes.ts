@@ -1,24 +1,11 @@
 import { any, array, assign, boolean, enums, Infer, number, object, optional, pattern, record, refine, size, string, type, union } from 'superstruct';
-import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MAX_PERCENTAGE, MIN_INDICATOR_ARRAY_SIZE, MIN_PERCENTAGE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './const.js';
-import { COMPASS_LANGUAGES } from './localize/localize.js';
-import { LovelaceCardConfig } from './utils/ha-helpers.js';
-
-/* seems needed to cover runtime validation, cannot find a clean solution within superstruct */
-export interface CompassCardConfigV1 extends LovelaceCardConfig {
-  header?: CCHeaderConfig;
-  compass?: CCCompassConfig;
-  indicator_sensors: CCIndicatorSensorConfig[];
-  value_sensors?: CCValueSensorConfig[];
-  tap_action?: ActionConfig;
-  language?: string;
-  debug?: boolean;
-}
+import { DEGREES_MAX, DEGREES_MID, DEGREES_MIN, DEGREES_ONE, ICON_VALUES, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, OPACITY_TRANSPARENT, OPACITY_VISIBLE, UNKNOWN_DIRECTION_VALUES, URL_REGEX } from './../const.js';
+import { COMPASS_LANGUAGES } from './../localize/localize.js';
+import { LovelaceCardConfig } from './../utils/ha-helpers.js';
 
 /* part modified for superstruct */
 export const numberBetween = (min: number, max: number) =>
   refine(number(), `numberBetween(${min}-${max})`, (value) => (value >= min && value <= max ? true : `Expected a number between ${min} and ${max}, got ${value}`));
-
-export const percentage = () => refine(number(), 'percentage', (value) => (value >= MIN_PERCENTAGE && value <= MAX_PERCENTAGE ? true : `Expected a percentage between 0 and 100, got ${value}`));
 
 const CCImageStruct = optional(union([enums([...ICON_VALUES]), pattern(string(), /^mdi:.*/), pattern(string(), URL_REGEX)]));
 
@@ -41,8 +28,12 @@ export const ActionConfigStruct = object({
 });
 export type ActionConfig = Infer<typeof ActionConfigStruct>;
 
+// A background image location: http(s) URL or a path starting with /, the same check as an indicator image URL.
+// An empty string (no image) stays allowed: earlier editor versions wrote it.
+const CCBackgroundImageStruct = optional(union([enums(['']), pattern(string(), URL_REGEX)]));
+
 export const CCStyleConfigStruct = object({
-  background_image: optional(pattern(string(), URL_REGEX)),
+  background_image: CCBackgroundImageStruct,
   color: optional(string()),
   image: CCImageStruct,
   opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
@@ -61,8 +52,9 @@ export type CCStyleBandConfig = Infer<typeof CCStyleBandConfigStruct>;
 
 export const CCDynamicStyleConfigStruct = object({
   attribute: optional(string()),
-  bands: array(CCStyleBandConfigStruct),
-  sensor: string(),
+  bands: optional(array(CCStyleBandConfigStruct)),
+  // optional: without it the style follows its sensor or the card's main sensor (see getSensorAttrib)
+  sensor: optional(string()),
   unknown: optional(CCStyleConfigStruct),
 });
 export type CCDynamicStyleConfig = Infer<typeof CCDynamicStyleConfigStruct>;
@@ -109,6 +101,8 @@ export const CCEntityConfigStruct = object({
   units: optional(string()),
 });
 
+export type CCEntityConfig = Infer<typeof CCEntityConfigStruct>;
+
 export const CCSensorConfigStruct = assign(
   CCEntityConfigStruct,
   object({
@@ -148,7 +142,7 @@ export type CCHeaderConfig = Infer<typeof CCHeaderConfigStruct>;
 export const CCCircleConfigStruct = assign(
   CCPropertiesConfigStruct,
   object({
-    background_image: optional(string()),
+    background_image: CCBackgroundImageStruct,
     background_opacity: optional(numberBetween(OPACITY_TRANSPARENT, OPACITY_VISIBLE)),
     offset_background: optional(boolean()),
     stroke_width: optional(number()),

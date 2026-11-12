@@ -118,4 +118,12 @@ export default defineConfig([
       'sort-vars': ['error', { ignoreCase: true }],
     },
   },
+  {
+    // tests compare against literal values and use snake_case config keys freely
+    files: ['src/test/**/*.ts'],
+    rules: {
+      'camelcase': ['off'],
+      'no-magic-numbers': ['off'],
+    },
+  },
 ]);
