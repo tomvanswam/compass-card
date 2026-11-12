@@ -218,7 +218,7 @@ export class CompassCardDynamicStyleEditor extends LitElement {
     ev.stopPropagation();
     const { sensor, attribute } = ev.detail.value;
     // an attribute of the previous entity makes no sense for a new one
-    const keepAttribute = sensor === this.config?.sensor;
+    const keepAttribute = (sensor || undefined) === (this.config?.sensor || undefined);
     this._update({ attribute: keepAttribute ? attribute : undefined, sensor: sensor || undefined });
   }
 

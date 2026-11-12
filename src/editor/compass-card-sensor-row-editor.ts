@@ -103,7 +103,12 @@ export class CompassCardSensorRowEditor extends LitElement {
     const { index } = ev.target as HTMLElement & { index: number };
     const newConfigEntities = [...(this.entities || [])];
     // Don't delete on empty, just update. User can delete with X button.
-    newConfigEntities[index] = { ...newConfigEntities[index], sensor: value || '' };
+    const row: SensorRow & { attribute?: string } = { ...newConfigEntities[index] };
+    if ((value || '') !== row.sensor) {
+      // an attribute of the previous entity makes no sense for a new one
+      delete row.attribute;
+    }
+    newConfigEntities[index] = { ...row, sensor: value || '' };
     fireEvent(this, 'entities-changed', { entities: newConfigEntities });
   }
 

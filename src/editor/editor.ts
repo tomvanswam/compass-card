@@ -4,7 +4,7 @@ import { COMPASS_LANGUAGES, localize, setHassLanguage } from '../localize/locali
 import { CompassCardEvent, fireEvent, SubElementConfig } from '../utils/events';
 import { css, CSSResult, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
+import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
 import { setOrDelete, withoutEmpty } from './editorHelpers';
@@ -31,6 +31,7 @@ const HA_ELEMENTS = ['ha-form', 'ha-entity-picker', 'ha-expansion-panel', 'ha-so
 export class CompassCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _elementsLoaded = false;
+  private _elementsLoading = false;
   @state() private _config?: CompassCardConfig;
   @state() private _subElementEditorConfig?: SubElementConfig;
 
@@ -60,6 +61,7 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
             .hass=${this.hass}
             .config=${this._subElementEditorConfig.elementConfig}
             .index=${this._subElementEditorConfig.index}
+            .validIndex=${this._validIndicatorIndex(this._subElementEditorConfig.index)}
             @go-back=${this._goBack}
             @config-changed=${this._handleSubElementChanged}
           ></compass-card-indicator-editor>
@@ -254,12 +256,27 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   // Home Assistant loads its editor elements lazily. When they are not there yet, opening the editor of a built-in
   // card (entities) loads them, the documented way for custom card editors.
   private async _loadHaElements(): Promise<void> {
-    if (HA_ELEMENTS.some((element) => !customElements.get(element))) {
-      const helpers = (await window.loadCardHelpers?.()) as CardHelpers | undefined;
-      const card = await helpers?.createCardElement?.({ entities: [], type: 'entities' });
-      await (card?.constructor as { getConfigElement?: () => Promise<unknown> } | undefined)?.getConfigElement?.();
+    if (this._elementsLoading) return;
+    this._elementsLoading = true;
+    try {
+      if (HA_ELEMENTS.some((element) => !customElements.get(element))) {
+        const helpers = (await window.loadCardHelpers?.()) as CardHelpers | undefined;
+        const card = await helpers?.createCardElement?.({ entities: [], type: 'entities' });
+        await (card?.constructor as { getConfigElement?: () => Promise<unknown> } | undefined)?.getConfigElement?.();
+      }
+    } catch (error) {
+      // render anyway: elements that are missing show as empty, which beats a blank editor
+      // eslint-disable-next-line no-console
+      console.warn('compass-card: loading Home Assistant editor elements failed', error);
+    } finally {
+      this._elementsLoaded = true;
     }
-    this._elementsLoaded = true;
+  }
+
+  // Position of an indicator among those whose entity exists, as the card counts them (getIndicatorSensors)
+  private _validIndicatorIndex(index: number): number {
+    const states = this.hass?.states || {};
+    return (this._config?.indicator_sensors || []).slice(INDEX_ELEMENT_0, index).filter((sensor) => sensor.sensor && states[sensor.sensor]).length;
   }
 
   static get styles(): CSSResult {

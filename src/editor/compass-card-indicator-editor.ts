@@ -26,6 +26,8 @@ export class CompassCardIndicatorEditor extends SensorDetailEditor<CCIndicatorSe
   protected readonly titleKey = 'editor.indicator_sensor';
   protected readonly defaultDecimals = CONFIG_DEFAULTS.indicator_sensor.decimals;
   @property({ attribute: false }) public index = INDEX_ELEMENT_0;
+  // Position among the indicators whose entity exists, as the card counts them (getIndicatorSensors)
+  @property({ attribute: false }) public validIndex?: number;
   // Remembers the chosen type while its icon/URL field is still empty (config then has no image)
   @state() private _imageType?: string;
 
@@ -126,7 +128,7 @@ export class CompassCardIndicatorEditor extends SensorDetailEditor<CCIndicatorSe
 
   // Default visibility of a part, as in getIndicatorSensor() in objectHelpers.ts
   private _showDefault(part: IndicatorPart): boolean {
-    return part === 'state_abbreviation' ? abbreviationShowDefault(this.index) : CONFIG_DEFAULTS.indicator_sensor[part].show;
+    return part === 'state_abbreviation' ? abbreviationShowDefault(this.validIndex ?? this.index) : CONFIG_DEFAULTS.indicator_sensor[part].show;
   }
 
   // Effective visibility of a part without dynamic style

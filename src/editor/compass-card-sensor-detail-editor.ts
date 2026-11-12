@@ -68,9 +68,13 @@ export abstract class SensorDetailEditor<T extends CCValueSensorConfig> extends 
 
   private _generalChanged(ev: HaFormValueChanged): void {
     ev.stopPropagation();
+    if (!this.config) {
+      return;
+    }
     const data = ev.detail.value;
-    const newConfig = { ...this.config, sensor: data.sensor || '' } as T;
-    setOrDelete(newConfig, 'attribute', data.attribute);
+    const newConfig: T = { ...this.config, sensor: data.sensor || '' };
+    // an attribute of the previous entity makes no sense for a new one
+    setOrDelete(newConfig, 'attribute', newConfig.sensor === this.config.sensor ? data.attribute : undefined);
     setOrDelete(newConfig, 'units', data.units);
     setOrDelete(newConfig, 'decimals', data.decimals, this.defaultDecimals);
     this.fire(newConfig);

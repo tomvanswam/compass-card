@@ -113,3 +113,4 @@ export const detailEditorStyles = css`
   }
   ${contentStyles}
 `;
+
