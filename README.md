@@ -16,7 +16,17 @@ A custom [Home Assistant](https://home-assistant.io/) dashboard card that displa
 
 ## Installation
 
-### [HACS](https://hacs.xyz/) (Home Assistant Community Store)
+### Marketplace (Home Assistant 2026.11 and newer)
+
+Since Home Assistant 2026.11, HACS is built into Home Assistant as the [Marketplace](https://www.hacs.xyz/docs/marketplace/).
+
+1. In Home Assistant go to **Settings** > **Marketplace**
+1. On the **Browse** tab, search for `compass`
+1. Select Compass Card and press **Install**
+1. Force refresh the Home Assistant page (<kbd>Ctrl</kbd> + <kbd>R</kbd>)
+1. Add compass-card to your dashboard
+
+### [HACS](https://hacs.xyz/) (Home Assistant 2026.10 and older)
 
 1. Go to HACS page on your Home Assistant instance
 1. Select `Frontend`
@@ -100,7 +110,7 @@ indicator_sensors:
 ## Contact
 
 You can find me on the [Home Assistant Community Site](https://community.home-assistant.io/t/compass-card-points-you-in-the-right-direction/217909)<br />
-And occasionally on the [HACS](https://discord.gg/apgchf8) and [Home Assistant](https://www.home-assistant.io/join-chat) Discord
+And occasionally on the [HACS / Marketplace](https://discord.gg/apgchf8) and [Home Assistant](https://www.home-assistant.io/join-chat) Discord
 
 ## Thanks to
 
