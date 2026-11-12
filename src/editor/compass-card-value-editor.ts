@@ -1,7 +1,7 @@
 
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { customElement, property } from 'lit/decorators.js';
-import { detailEditorStyles, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
+import { detailEditorStyles, sensorFieldLabel, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { html, LitElement, TemplateResult } from 'lit';
 import { CCValueSensorConfig } from './editorTypes';
@@ -48,7 +48,7 @@ export class CompassCardValueEditor extends LitElement {
             { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
             unitsDecimalsRow(),
           ]}
-          .computeLabel=${CompassCardValueEditor._computeLabel}
+          .computeLabel=${sensorFieldLabel}
           @value-changed=${this._generalChanged}
         ></ha-form>
         ${VALUE_STYLE_PARTS.map(({ part, fields }) => this._renderPart(part, fields))}
@@ -56,7 +56,7 @@ export class CompassCardValueEditor extends LitElement {
           .hass=${this.hass}
           .data=${{ tap_action: tapAction }}
           .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction, localize('editor.tap_action.entity_helper_sensor')), title: localize('editor.tap_action.title'), type: 'expandable' }]}
-          .computeLabel=${CompassCardValueEditor._computeLabel}
+          .computeLabel=${sensorFieldLabel}
           .computeHelper=${actionHelper}
           @value-changed=${this._tapActionChanged}
         ></ha-form>
@@ -72,7 +72,7 @@ export class CompassCardValueEditor extends LitElement {
         .label=${localize(`editor.dynamic_style.parts.${part}`)}
         .data=${{ color: this.config?.[part]?.color || '', show: this._baseShow(part) }}
         .schema=${[showColorRow()]}
-        .computeLabel=${CompassCardValueEditor._computeLabel}
+        .computeLabel=${sensorFieldLabel}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
         .base=${{ color: this.config?.[part]?.color, show: this._baseShow(part) }}
@@ -94,9 +94,13 @@ export class CompassCardValueEditor extends LitElement {
 
   private _generalChanged(ev: CustomEvent): void {
     ev.stopPropagation();
+    if (!this.config) {
+      return;
+    }
     const data = ev.detail.value;
     const newConfig: CCValueSensorConfig = { ...this.config, sensor: data.sensor || '' };
-    setOrDelete(newConfig, 'attribute', data.attribute);
+    // an attribute of the previous entity makes no sense for a new one
+    setOrDelete(newConfig, 'attribute', newConfig.sensor === this.config.sensor ? data.attribute : undefined);
     setOrDelete(newConfig, 'units', data.units);
     setOrDelete(newConfig, 'decimals', data.decimals, CONFIG_DEFAULTS.value_sensor.decimals);
     this._fire(newConfig);
@@ -122,11 +126,6 @@ export class CompassCardValueEditor extends LitElement {
     const newConfig: CCValueSensorConfig = { ...this.config };
     setOrDelete(newConfig, 'tap_action', actionFromData(ev.detail.value.tap_action, this.config.tap_action));
     this._fire(newConfig);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLabel(schema: any): string {
-    return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.fields.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
   }
 
   private _dynamicStyleChanged(part: ValuePart, ev: CustomEvent): void {

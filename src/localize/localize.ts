@@ -59,9 +59,11 @@ export function setHassLanguage(language: string | undefined): void {
 // Translation for a language code like 'nl', 'pt-BR' or 'zh-Hant', or undefined when there is none
 export function resolveLanguage(code: string | null | undefined): string | undefined {
   if (!code) return undefined;
-  const normalized = code.replace(/['"]+/g, '').replace('-', '_').toLowerCase();
-  const [base] = normalized.split('_');
-  return [normalized, LANGUAGE_ALIASES[normalized], base, LANGUAGE_ALIASES[base]].find((candidate) => candidate && languages[candidate]);
+  const normalized = code.replace(/['"]+/g, '').replace(/-/g, '_').toLowerCase();
+  // most specific first: zh_hant_tw, zh_hant, zh
+  const prefixes: string[] = [];
+  for (let prefix = normalized; prefix; prefix = prefix.includes('_') ? prefix.replace(/_[^_]*$/, '') : '') prefixes.push(prefix);
+  return prefixes.flatMap((prefix) => [prefix, LANGUAGE_ALIASES[prefix]]).find((candidate) => candidate && languages[candidate]);
 }
 
 // Language of the Home Assistant user (hass.locale), then the browser's stored HA language, then English

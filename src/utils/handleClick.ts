@@ -7,6 +7,18 @@ import { fireEvent } from './ha-helpers.js';
  * frontend's own action handling (confirmation, perform-action, toggle, ...) is used.
  * Legacy options (call-service + service_data, new_tab) are converted for backwards compatibility.
  */
+// service_data is free text in the editor; invalid JSON is logged and sent as no data instead of breaking every tap
+function parseServiceData(serviceData: string | undefined): Record<string, unknown> | undefined {
+  if (!serviceData) return undefined;
+  try {
+    return JSON.parse(serviceData);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('compass-card: service_data is not valid JSON', error);
+    return undefined;
+  }
+}
+
 export function toHaAction(actionConfig: ActionConfig): Record<string, unknown> | undefined {
   const { action = 'more-info', entity, navigation_path, new_tab, service, service_data, url, ...rest } = actionConfig;
   const newTab = new_tab === undefined || new_tab;
@@ -25,7 +37,7 @@ export function toHaAction(actionConfig: ActionConfig): Record<string, unknown> 
     case 'perform-action': {
       const performAction = rest.perform_action ?? service;
       if (!performAction) return undefined;
-      return { action: 'perform-action', data: service_data ? JSON.parse(service_data) : undefined, ...rest, perform_action: performAction };
+      return { action: 'perform-action', data: parseServiceData(service_data), ...rest, perform_action: performAction };
     }
     default:
       return { action, ...rest };

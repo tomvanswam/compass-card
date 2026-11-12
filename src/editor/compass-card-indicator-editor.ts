@@ -3,7 +3,7 @@
 import { abbreviationShowDefault, CONFIG_DEFAULTS } from '../defaults';
 import { actionData, actionFromData, actionHelper, actionSchema } from './actionForm';
 import { customElement, property, state } from 'lit/decorators.js';
-import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPercent, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
+import { detailEditorStyles, opacityFromPercent, opacitySelector, opacityToPercent, sensorFieldLabel, setOrDelete, showColorRow, unitsDecimalsRow, updateObject } from './editorHelpers';
 import { fireEvent, HomeAssistant } from '../utils/ha-helpers';
 import { html, LitElement, TemplateResult } from 'lit';
 import { imageData, imageFromData, imageSchema, imageType } from './imageForm';
@@ -27,6 +27,8 @@ export class CompassCardIndicatorEditor extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @property({ attribute: false }) public config?: CCIndicatorSensorConfig;
   @property({ attribute: false }) public index = INDEX_ELEMENT_0;
+  // Position among the indicators whose entity exists, as the card counts them (getIndicatorSensors)
+  @property({ attribute: false }) public validIndex?: number;
   // Remembers the chosen type while its icon/URL field is still empty (config then has no image)
   @state() private _imageType?: string;
 
@@ -62,7 +64,7 @@ export class CompassCardIndicatorEditor extends LitElement {
             { name: 'attribute', selector: { attribute: { entity_id: this.config.sensor } } },
             unitsDecimalsRow(),
           ]}
-          .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+          .computeLabel=${sensorFieldLabel}
           @value-changed=${this._generalChanged}
         ></ha-form>
         ${INDICATOR_STYLE_PARTS.map(({ part, fields }) => this._renderPart(part, fields))}
@@ -70,7 +72,7 @@ export class CompassCardIndicatorEditor extends LitElement {
           .hass=${this.hass}
           .data=${{ tap_action: tapAction }}
           .schema=${[{ name: 'tap_action', schema: actionSchema(tapAction, localize('editor.tap_action.entity_helper_sensor')), title: localize('editor.tap_action.title'), type: 'expandable' }]}
-          .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+          .computeLabel=${sensorFieldLabel}
           .computeHelper=${actionHelper}
           @value-changed=${this._tapActionChanged}
         ></ha-form>
@@ -86,7 +88,7 @@ export class CompassCardIndicatorEditor extends LitElement {
         .label=${localize(`editor.dynamic_style.parts.${part}`)}
         .data=${this._computePartData(part)}
         .schema=${this._computePartSchema(part)}
-        .computeLabel=${CompassCardIndicatorEditor._computeLabel}
+        .computeLabel=${sensorFieldLabel}
         .dynamicStyle=${this.config?.[part]?.dynamic_style}
         .fields=${fields}
         .base=${this._styleBase(part)}
@@ -132,11 +134,6 @@ export class CompassCardIndicatorEditor extends LitElement {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static _computeLabel(schema: any): string {
-    return localize(`editor.sensor_config.${schema.name}`) || localize(`editor.fields.${schema.name}`) || localize(`editor.tap_action.${schema.name}`) || schema.name;
-  }
-
   private _fire(newConfig: CCIndicatorSensorConfig): void {
     fireEvent(this, 'config-changed', { config: newConfig });
   }
@@ -148,7 +145,8 @@ export class CompassCardIndicatorEditor extends LitElement {
     }
     const data = ev.detail.value;
     const newConfig: CCIndicatorSensorConfig = { ...this.config, sensor: data.sensor || '' };
-    setOrDelete(newConfig, 'attribute', data.attribute);
+    // an attribute of the previous entity makes no sense for a new one
+    setOrDelete(newConfig, 'attribute', newConfig.sensor === this.config.sensor ? data.attribute : undefined);
     setOrDelete(newConfig, 'units', data.units);
     setOrDelete(newConfig, 'decimals', data.decimals, CONFIG_DEFAULTS.indicator_sensor.decimals);
     this._fire(newConfig);
@@ -199,7 +197,7 @@ export class CompassCardIndicatorEditor extends LitElement {
 
   // Default visibility of a part, as in getIndicatorSensor() in objectHelpers.ts
   private _showDefault(part: IndicatorPart): boolean {
-    return part === 'state_abbreviation' ? abbreviationShowDefault(this.index) : CONFIG_DEFAULTS.indicator_sensor[part].show;
+    return part === 'state_abbreviation' ? abbreviationShowDefault(this.validIndex ?? this.index) : CONFIG_DEFAULTS.indicator_sensor[part].show;
   }
 
   // Effective visibility of a part without dynamic style

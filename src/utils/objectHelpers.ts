@@ -16,40 +16,28 @@ export function getBoolean(value: boolean | number | string | undefined, defValu
  * Source of a dynamic style's value: 1. its own configured entity, 2. ownSensor (the indicator or value sensor the style
  * belongs to), otherwise 3. the first value sensor and 4. the first indicator sensor (header and compass styles).
  */
-function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConfig | undefined, entities: HassEntities, ownSensor?: CCEntityConfig): CCSensorAttrib {
-  const sa: CCSensorAttrib = {
-    attribute: config.indicator_sensors[0]?.attribute || '',
-    decimals: config.indicator_sensors[0]?.decimals ?? DEFAULT_DECIMALS,
-    entity: entities[config.indicator_sensors[0]?.sensor],
-    sensor: config.indicator_sensors[0]?.sensor || '',
-    units: config.indicator_sensors[0]?.units || entities[config.indicator_sensors[0]?.sensor]?.attributes?.unit_of_measurement || '',
+function sensorAttribFrom(source: CCEntityConfig, entities: HassEntities): CCSensorAttrib {
+  return {
+    attribute: source.attribute || '',
+    decimals: source.decimals ?? DEFAULT_DECIMALS,
+    entity: entities[source.sensor],
+    sensor: source.sensor || '',
+    units: source.units || entities[source.sensor]?.attributes?.unit_of_measurement || '',
   };
+}
 
-  if (config.value_sensors && config.value_sensors.length > NO_ELEMENTS && entities[config.value_sensors[0].sensor]) {
-    sa.attribute = config.value_sensors[0].attribute || '';
-    sa.decimals = config.value_sensors[0].decimals ?? DEFAULT_DECIMALS;
-    sa.entity = entities[config.value_sensors[0].sensor];
-    sa.sensor = config.value_sensors[0].sensor;
-    sa.units = config.value_sensors[0].units || entities[config.value_sensors[0].sensor]?.attributes?.unit_of_measurement || '';
+function getSensorAttrib(config: CompassCardConfig, dynStyle: CCDynamicStyleConfig | undefined, entities: HassEntities, ownSensor?: CCEntityConfig): CCSensorAttrib {
+  if (dynStyle?.sensor) {
+    return { ...sensorAttribFrom({ attribute: dynStyle.attribute, sensor: dynStyle.sensor }, entities), decimals: 0, units: '' };
   }
-
   if (ownSensor?.sensor) {
-    sa.attribute = ownSensor.attribute || '';
-    sa.decimals = ownSensor.decimals ?? DEFAULT_DECIMALS;
-    sa.entity = entities[ownSensor.sensor];
-    sa.sensor = ownSensor.sensor;
-    sa.units = ownSensor.units || entities[ownSensor.sensor]?.attributes?.unit_of_measurement || '';
+    return sensorAttribFrom(ownSensor, entities);
   }
-
-  if (dynStyle && dynStyle.sensor) {
-    sa.attribute = dynStyle.attribute || '';
-    sa.decimals = 0;
-    sa.entity = entities[dynStyle.sensor];
-    sa.sensor = dynStyle.sensor;
-    sa.units = '';
+  const firstValue = config.value_sensors?.[0];
+  if (firstValue && entities[firstValue.sensor]) {
+    return sensorAttribFrom(firstValue, entities);
   }
-
-  return sa;
+  return sensorAttribFrom(config.indicator_sensors[0] || { sensor: '' }, entities);
 }
 
 /**
