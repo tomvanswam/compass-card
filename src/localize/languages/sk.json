@@ -31,11 +31,11 @@
       "units": "",
       "decimals": "",
       "language": "Jazyk",
-      "unknown_direction": "",
+      "unknown_direction": "Náhradné riešenie, keď je smer neznámy",
       "unknown_direction_types": {
-        "north": "",
-        "last": "",
-        "hide": ""
+        "north": "Ukáž na sever",
+        "last": "Zachovať posledný známy smer",
+        "hide": "Skryť indikátor"
       }
     },
     "header_conf": "",
