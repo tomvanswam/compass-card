@@ -91,6 +91,17 @@
     "compass_scale_conf": "Escala (0 = automática)",
     "compass_circle_conf": "Círculo",
     "compass_ticks_conf": "Marcas",
+    "dynamic_offset": {
+      "title": "Offset dinâmico",
+      "sensor": "Entidade",
+      "sensor_helper": "A bússola roda com o valor desta entidade, além do offset",
+      "attribute": "Atributo",
+      "mode": "Rotação",
+      "modes": {
+        "north_up": "O norte segue o valor",
+        "heading_up": "Rumo no topo (o valor fica no topo)"
+      }
+    },
     "dynamic_style": {
       "title": "Estilo dinâmico",
       "sensor": "Entidade",

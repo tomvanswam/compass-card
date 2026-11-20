@@ -91,6 +91,17 @@
     "compass_scale_conf": "Razmera (0 = automatski)",
     "compass_circle_conf": "Krug",
     "compass_ticks_conf": "Podeoci",
+    "dynamic_offset": {
+      "title": "Dinamičko odstupanje",
+      "sensor": "Entitet",
+      "sensor_helper": "Kompas se okreće sa vrednošću ovog entiteta, pored odstupanja",
+      "attribute": "Atribut",
+      "mode": "Rotacija",
+      "modes": {
+        "north_up": "Sever prati vrednost",
+        "heading_up": "Kurs na vrhu (vrednost ostaje na vrhu)"
+      }
+    },
     "dynamic_style": {
       "title": "Dinamički stil",
       "sensor": "Entitet",

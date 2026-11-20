@@ -91,6 +91,17 @@
     "compass_scale_conf": "Měřítko (0 = automaticky)",
     "compass_circle_conf": "Kruh",
     "compass_ticks_conf": "Značky",
+    "dynamic_offset": {
+      "title": "Dynamická kompenzace",
+      "sensor": "Entita",
+      "sensor_helper": "Kompas se otáčí podle hodnoty této entity, navíc ke kompenzaci",
+      "attribute": "Atribut",
+      "mode": "Otáčení",
+      "modes": {
+        "north_up": "Sever sleduje hodnotu",
+        "heading_up": "Kurz nahoře (hodnota zůstává nahoře)"
+      }
+    },
     "dynamic_style": {
       "title": "Dynamický styl",
       "sensor": "Entita",
