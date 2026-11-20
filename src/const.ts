@@ -88,3 +88,4 @@ export const URL_REGEX = /^(?:https?:\/\/|\/)/i;
 export const UNKNOWN_DIRECTION_VALUES = ['north', 'last', 'hide'] as const;
 export const DEFAULT_UNKNOWN_DIRECTION = 'north';
 export const UNKNOWN_STATES = ['unknown', 'unavailable', ''];
+export const DEFAULT_INDICATOR_TEXT_SIZE = 2;
