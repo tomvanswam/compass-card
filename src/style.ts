@@ -139,27 +139,27 @@ const style: CSSResult = css`
     align-items: center;
   }
   .indicator-sensor .abbr {
-    font-size: 2rem;
+    font-size: var(--compass-card-indicator-text-size, 2rem);
     font-weight: 600;
     color: var(--compass-card-indicator-abbr-color, var(--primary-text-color));
   }
   .indicator-sensor .measurement {
     padding-left: 0.2rem;
-    font-size: 1rem;
+    font-size: calc(var(--compass-card-indicator-text-size, 2rem) * 0.5);
     color: var(--compass-card-indicator-units-color, var(--secondary-text-color));
   }
   .indicator-sensor .value {
     padding-left: 0.2rem;
-    font-size: 1rem;
+    font-size: calc(var(--compass-card-indicator-text-size, 2rem) * 0.5);
     color: var(--compass-card-indicator-value-color, var(--primary-text-color));
   }
   .value-sensor .measurement {
-    font-size: 1rem;
+    font-size: calc(var(--compass-card-value-text-size, 2rem) * 0.5);
     padding-left: 0.2rem;
     color: var(--compass-card-value-units-color, var(--secondary-text-color));
   }
   .value-sensor .value {
-    font-size: 2rem;
+    font-size: var(--compass-card-value-text-size, 2rem);
     color: var(--compass-card-value-value-color, var(--primary-text-color));
   }
   [class^='sensor-'] {

@@ -4,7 +4,7 @@ import { COMPASS_LANGUAGES, localize, setHassLanguage } from '../localize/locali
 import { CompassCardEvent, fireEvent, SubElementConfig } from '../utils/events';
 import { css, CSSResult, html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { DEFAULT_ICON_VALUE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
+import { DEFAULT_ICON_VALUE, DEFAULT_INDICATOR_TEXT_SIZE, DEFAULT_UNKNOWN_DIRECTION, INDEX_ELEMENT_0, MAX_INDICATOR_ARRAY_SIZE, MIN_INDICATOR_ARRAY_SIZE, UNKNOWN_DIRECTION_VALUES } from '../const';
 import { HaFormSchemaItem, HaFormValueChanged } from './haTypes';
 import { HomeAssistant, LovelaceCardEditor } from '../utils/ha-helpers';
 import { setOrDelete, withoutEmpty } from './editorHelpers';
@@ -104,9 +104,14 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
       >
         <ha-form
           .hass=${this.hass}
-          .data=${{ language: this._config.language, unknown_direction: this._config.unknown_direction || DEFAULT_UNKNOWN_DIRECTION }}
-          .schema=${CompassCardEditor._indicatorOptionsSchema()}
-          .computeLabel=${(schema: { name: string }) => localize(`editor.sensor_config.${schema.name}`)}
+          .data=${{
+            indicator_text_size: this._config.indicator_text_size ?? DEFAULT_INDICATOR_TEXT_SIZE,
+            language: this._config.language,
+            show_indicator_text: this._config.show_indicator_text !== false,
+            unknown_direction: this._config.unknown_direction || DEFAULT_UNKNOWN_DIRECTION,
+          }}
+          .schema=${CompassCardEditor._indicatorOptionsSchema(this._config.show_indicator_text !== false)}
+          .computeLabel=${CompassCardEditor._computeSensorOptionLabel}
           @value-changed=${this._indicatorOptionsChanged}
         ></ha-form>
       </compass-card-sensor-row-editor>
@@ -117,7 +122,18 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
         type="value"
         @entities-changed=${this._handleValueEntitiesChanged}
         @edit-detail-element=${this._editDetailElement}
-      ></compass-card-sensor-row-editor>
+      >
+        <ha-form
+          .hass=${this.hass}
+          .data=${{
+            show_value_text: this._config.show_value_text !== false,
+            value_text_size: this._config.value_text_size ?? DEFAULT_INDICATOR_TEXT_SIZE,
+          }}
+          .schema=${CompassCardEditor._valueOptionsSchema(this._config.show_value_text !== false)}
+          .computeLabel=${CompassCardEditor._computeSensorOptionLabel}
+          @value-changed=${this._valueOptionsChanged}
+        ></ha-form>
+      </compass-card-sensor-row-editor>
       <ha-form
         .hass=${this.hass}
         .data=${this._computeCardData()}
@@ -204,26 +220,70 @@ export class CompassCardEditor extends LitElement implements LovelaceCardEditor 
   }
 
   // Options shown above the indicator list: abbreviation language and the fallback for an unknown direction
-  private static _indicatorOptionsSchema() {
-    return [
-      { name: 'language', selector: { select: { mode: 'dropdown', options: COMPASS_LANGUAGES.filter((lang) => lang !== '').map((lang) => ({ label: lang, value: lang })) } } },
-      {
-        name: 'unknown_direction',
-        selector: { select: { mode: 'dropdown', options: UNKNOWN_DIRECTION_VALUES.map((value) => ({ label: localize(`editor.sensor_config.unknown_direction_types.${value}`), value })) } },
-      },
-    ];
+  private static _computeSensorOptionLabel(schema: { name: string }): string {
+    if (schema.name === 'show_indicator_text' || schema.name === 'show_value_text') {
+      return localize('editor.fields.show');
+    }
+    if (schema.name === 'indicator_text_size' || schema.name === 'value_text_size') {
+      return localize('editor.fields.size');
+    }
+    return localize(`editor.sensor_config.${schema.name}`);
   }
 
   private static _newIndicator(sensor: string): CCIndicatorSensorConfig {
     return { indicator: { image: DEFAULT_ICON_VALUE }, sensor };
   }
 
+  private static _indicatorOptionsSchema(showText: boolean) {
+      return [
+        {
+          column_min_width: '120px',
+          name: '',
+          schema: [
+            { name: 'show_indicator_text', selector: { boolean: {} } },
+            ...(showText ? [{ name: 'indicator_text_size', selector: { number: { min: 0.1, mode: 'box', step: 0.1, unit_of_measurement: 'rem' } } }] : []),
+          ],
+          type: 'grid',
+        },
+        { name: 'language', selector: { select: { mode: 'dropdown', options: COMPASS_LANGUAGES.filter((lang) => lang !== '').map((lang) => ({ label: lang, value: lang })) } } },
+        {
+          name: 'unknown_direction',
+          selector: { select: { mode: 'dropdown', options: UNKNOWN_DIRECTION_VALUES.map((value) => ({ label: localize(`editor.sensor_config.unknown_direction_types.${value}`), value })) } },
+        },
+      ];
+  }
+
+  // Options shown above the value sensors list: show and size
+  private static _valueOptionsSchema(showText: boolean) {
+      return [
+        {
+          column_min_width: '120px',
+          name: '',
+          schema: [
+            { name: 'show_value_text', selector: { boolean: {} } },
+            ...(showText ? [{ name: 'value_text_size', selector: { number: { min: 0.1, mode: 'box', step: 0.1, unit_of_measurement: 'rem' } } }] : []),
+          ],
+          type: 'grid',
+        },
+      ];
+  }
+
   private _indicatorOptionsChanged(ev: HaFormValueChanged): void {
-    const { language, unknown_direction: unknownDirection } = ev.detail.value;
+    const { indicator_text_size: indicatorTextSize, language, show_indicator_text: showIndicatorText, unknown_direction: unknownDirection } = ev.detail.value;
     this._updateConfig(ev, (config) => {
+      setOrDelete(config, 'show_indicator_text', showIndicatorText, true);
       setOrDelete(config, 'language', language);
+      setOrDelete(config, 'indicator_text_size', indicatorTextSize, DEFAULT_INDICATOR_TEXT_SIZE);
       // The default fallback is left out of the YAML
       setOrDelete(config, 'unknown_direction', unknownDirection, DEFAULT_UNKNOWN_DIRECTION);
+    });
+  }
+
+  private _valueOptionsChanged(ev: HaFormValueChanged): void {
+    const { show_value_text: showValueText, value_text_size: valueTextSize } = ev.detail.value;
+    this._updateConfig(ev, (config) => {
+      setOrDelete(config, 'show_value_text', showValueText, true);
+      setOrDelete(config, 'value_text_size', valueTextSize, DEFAULT_INDICATOR_TEXT_SIZE);
     });
   }
 
