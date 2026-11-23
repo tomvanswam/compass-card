@@ -42,7 +42,7 @@
     "rollup-plugin-server": "^0.7.0",
     "rollup-plugin-typescript2": "^0.37.0",
     "typescript-eslint": "^8.73.0",
-    "vitest": "^5.0.4"
+    "vitest": "^5.1.1"
   },
   "scripts": {
     "start": "rollup -c --watch",
