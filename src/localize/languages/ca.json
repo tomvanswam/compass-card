@@ -91,6 +91,17 @@
     "compass_scale_conf": "Escala (0 = automàtica)",
     "compass_circle_conf": "Cercle",
     "compass_ticks_conf": "Marques",
+    "dynamic_offset": {
+      "title": "Compensació dinàmica",
+      "sensor": "Entitat",
+      "sensor_helper": "La brúixola gira amb el valor d'aquesta entitat, a més de la compensació",
+      "attribute": "Atribut",
+      "mode": "Rotació",
+      "modes": {
+        "north_up": "El nord segueix el valor",
+        "heading_up": "Rumb a dalt (el valor queda a dalt)"
+      }
+    },
     "dynamic_style": {
       "title": "Estil dinàmic",
       "sensor": "Entitat",

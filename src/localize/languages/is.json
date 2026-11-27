@@ -91,6 +91,17 @@
       "compass_scale_conf": "Kvarði (0 = sjálfvirkt)",
       "compass_circle_conf": "Hringur",
       "compass_ticks_conf": "Strik",
+      "dynamic_offset": {
+        "title": "Breytilegt mótvægi",
+        "sensor": "Eining",
+        "sensor_helper": "Áttavitinn snýst með gildi þessarar einingar, til viðbótar við mótvægið",
+        "attribute": "Eigind",
+        "mode": "Snúningur",
+        "modes": {
+          "north_up": "Norður fylgir gildinu",
+          "heading_up": "Stefna efst (gildið helst efst)"
+        }
+      },
       "dynamic_style": {
         "title": "Breytilegur stíll",
         "sensor": "Eining",

@@ -91,6 +91,17 @@
     "compass_scale_conf": "Escala (0 = automática)",
     "compass_circle_conf": "Círculo",
     "compass_ticks_conf": "Marcas",
+    "dynamic_offset": {
+      "title": "Desfase dinámico",
+      "sensor": "Entidad",
+      "sensor_helper": "La brújula gira con el valor de esta entidad, además del desfase",
+      "attribute": "Atributo",
+      "mode": "Rotación",
+      "modes": {
+        "north_up": "El norte sigue el valor",
+        "heading_up": "Rumbo arriba (el valor queda arriba)"
+      }
+    },
     "dynamic_style": {
       "title": "Estilo dinámico",
       "sensor": "Entidad",
