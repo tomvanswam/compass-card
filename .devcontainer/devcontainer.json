@@ -9,10 +9,6 @@
     "homeassistant"
   ],
   "shutdownAction": "stopCompose",
-  "forwardPorts": [
-    8123,
-    4000
-  ],
   "postCreateCommand": "npm ci",
   "postStartCommand": "npm run lint:fix || true",
   "remoteUser": "node",
