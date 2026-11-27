@@ -165,13 +165,17 @@ export const CompassCardConfigStruct = type({
   debug: optional(boolean()),
   header: optional(CCHeaderConfigStruct),
   indicator_sensors: size(array(CCIndicatorSensorConfigStruct), MIN_INDICATOR_ARRAY_SIZE, MAX_INDICATOR_ARRAY_SIZE),
+  indicator_text_size: optional(number()),
   language: optional(enums([...COMPASS_LANGUAGES])),
+  show_indicator_text: optional(boolean()),
+  show_value_text: optional(boolean()),
   tap_action: optional(ActionConfigStruct),
   // deprecated, ignored; kept so existing configurations stay valid
   test_gui: optional(boolean()),
   type: string(),
   unknown_direction: optional(enums([...UNKNOWN_DIRECTION_VALUES])),
   value_sensors: optional(array(CCValueSensorConfigStruct)),
+  value_text_size: optional(number()),
 });
 
 export type CompassCardExtras = Infer<typeof CompassCardConfigStruct>;

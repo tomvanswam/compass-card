@@ -215,7 +215,14 @@ export class CompassCard extends LitElement {
       >
         ${this.showHeader() ? renderHeader(this.header, this.entities) : ''}
         <div class="compass">${this.svgCompass(this.compass.north.offset)}</div>
-        <div class="sensors">${this.renderIndicatorTexts()} ${this.renderValueTexts()}</div>
+        <div class="sensors"
+          style=${[
+            this._config.indicator_text_size ? `--compass-card-indicator-text-size: ${this._config.indicator_text_size}rem;` : '',
+            this._config.value_text_size ? `--compass-card-value-text-size: ${this._config.value_text_size}rem;` : '',
+          ].filter(Boolean).join(' ')}
+        >
+          ${this.renderIndicatorTexts()} ${this.renderValueTexts()}
+        </div>
       </ha-card>
     `;
   }
@@ -226,6 +233,9 @@ export class CompassCard extends LitElement {
 
   // Value lines of the indicator sensors whose abbreviation or value is shown
   private renderIndicatorTexts(): TemplateResult[] {
+    if (this._config.show_indicator_text === false) {
+      return [];
+    }
     return this.indicatorSensors
       .map((indicator, sensorIndex) => ({ indicator, sensorIndex }))
       .filter(({ indicator }) => isVisible(indicator.state_abbreviation, this.entities) || isVisible(indicator.state_value, this.entities))
@@ -239,6 +249,9 @@ export class CompassCard extends LitElement {
 
   // Value lines of the value sensors that are shown
   private renderValueTexts(): TemplateResult[] {
+    if (this._config.show_value_text === false) {
+      return [];
+    }
     return this.valueSensors
       .map((value, sensorIndex) => ({ sensorIndex, value }))
       .filter(({ value }) => isVisible(value.state_value, this.entities))
